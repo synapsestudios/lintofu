@@ -6,6 +6,7 @@ import type {
 } from "../../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
 import type { LintofuRuleDocs } from "../types.js";
+import { findAttribute } from "../utils.js";
 
 const STANDALONE_RULE_KINDS = new Set([
 	"aws_vpc_security_group_ingress_rule",
@@ -49,8 +50,9 @@ const rule: Rule = {
 				const kindLabel = node.labels[0];
 				if (!kindLabel || !STANDALONE_RULE_KINDS.has(kindLabel)) return;
 
-				const sgIdAttr = node.body.attributes.find(
-					(a) => a.name === "security_group_id",
+				const sgIdAttr = findAttribute(
+					node.body.attributes,
+					"security_group_id",
 				);
 				if (!sgIdAttr) return;
 				if (sgIdAttr.expression.type !== "ScopeTraversalExpr") return;
