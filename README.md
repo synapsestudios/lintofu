@@ -3,7 +3,7 @@
 An ESLint plugin for linting [OpenTofu](https://opentofu.org) configurations.
 
 > [!WARNING]
-> **Experimental.** The parser depends on Go's [`syscall/js`](https://pkg.go.dev/syscall/js), which the Go team has declared experimental and exempt from the Go compatibility promise. A future Go release can break us. `lintofu` will stay on `0.x` until `syscall/js` stabilises or we replace it. See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md).
+> The parser depends on Go's [`syscall/js`](https://pkg.go.dev/syscall/js), which the Go team has declared experimental and exempt from the Go compatibility promise. A future Go release can break us. `lintofu` will stay on `0.x` until `syscall/js` stabilises or we replace it. See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md).
 
 Pre-1.0. API and rule set may change. Not yet published.
 
