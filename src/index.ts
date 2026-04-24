@@ -1,3 +1,4 @@
+import { buildCategoryRecommendedRules } from "./configs/category-recommended.js";
 import { buildRecommendedRules } from "./configs/recommended.js";
 import { OpenTofuLanguage } from "./language.js";
 import { initialize } from "./parser/index.js";
@@ -24,10 +25,17 @@ const plugin = {
 			language: "lintofu/opentofu",
 			rules: buildRecommendedRules(rules),
 		},
+		"aws/recommended": {
+			plugins: {} as Record<string, unknown>,
+			files: ["**/*.tf", "**/*.tofu"],
+			language: "lintofu/opentofu",
+			rules: buildCategoryRecommendedRules(rules, "aws"),
+		},
 	},
 };
 
 plugin.configs.recommended.plugins = { lintofu: plugin };
+plugin.configs["aws/recommended"].plugins = { lintofu: plugin };
 
 export default plugin;
 export { OpenTofuLanguage } from "./language.js";
