@@ -1,8 +1,8 @@
 import type { RuleDefinition } from "@eslint/core";
-import type { Block, ObjectConsExpr } from "../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
-import type { LintofuRuleDocs } from "./types.js";
-import { objectItemKeyName } from "./utils.js";
+import type { Block, ObjectConsExpr } from "../../parser/types.js";
+import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
+import type { LintofuRuleDocs } from "../types.js";
+import { objectItemKeyName } from "../utils.js";
 
 type Rule = RuleDefinition<{
 	LangOptions: Record<string, unknown>;

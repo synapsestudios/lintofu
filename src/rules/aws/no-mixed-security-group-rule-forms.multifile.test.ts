@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Linter } from "eslint";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import plugin from "../index.js";
-import { initialize } from "../parser/index.js";
+import plugin from "../../index.js";
+import { initialize } from "../../parser/index.js";
 
 beforeAll(async () => {
 	await initialize();

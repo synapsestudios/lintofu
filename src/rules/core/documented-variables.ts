@@ -1,8 +1,8 @@
 import type { RuleDefinition } from "@eslint/core";
-import type { Block } from "../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
-import type { LintofuRuleDocs } from "./types.js";
-import { checkDescription } from "./utils.js";
+import type { Block } from "../../parser/types.js";
+import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
+import type { LintofuRuleDocs } from "../types.js";
+import { checkDescription } from "../utils.js";
 
 type Rule = RuleDefinition<{
 	LangOptions: Record<string, unknown>;
@@ -20,20 +20,20 @@ const rule: Rule = {
 	meta: {
 		type: "problem",
 		docs: {
-			description: "Require every `output` block to have a `description`.",
+			description: "Require every `variable` block to have a `description`.",
 			recommended: true,
 			severity: "error",
 		},
 		messages: {
 			missingDescription:
-				"Output `{{name}}` is missing a `description` attribute.",
+				"Variable `{{name}}` is missing a `description` attribute.",
 		},
 		schema: [],
 	},
 	create(context) {
 		return {
 			Block(node) {
-				if (node.kind !== "output") return;
+				if (node.kind !== "variable") return;
 				const label = node.labels[0] ?? "<unnamed>";
 				const check = checkDescription(node);
 				if (check.status === "missing") {

@@ -3,9 +3,9 @@ import type {
 	Block,
 	Body,
 	ScopeTraversalExpr,
-} from "../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
-import type { LintofuRuleDocs } from "./types.js";
+} from "../../parser/types.js";
+import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
+import type { LintofuRuleDocs } from "../types.js";
 
 const STANDALONE_RULE_KINDS = new Set([
 	"aws_vpc_security_group_ingress_rule",
