@@ -11,6 +11,7 @@ describe("recommended config, derived from real rule metadata", () => {
 			"lintofu/module-source-pinned": "error",
 			"lintofu/prefer-bare-expression": "warn",
 			"lintofu/no-legacy-security-group-rules": "error",
+			"lintofu/no-mixed-security-group-rule-forms": "warn",
 		});
 	});
 });
