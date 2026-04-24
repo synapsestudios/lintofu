@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.vitest/
+
+# Generated build artifacts. wasm-exec.cjs is vendored (synced from Go SDK)
+# and committed. lintofu-parser.wasm is produced by scripts/build-wasm.sh.
+src/parser/lintofu-parser.wasm
+
+*.log
+.DS_Store

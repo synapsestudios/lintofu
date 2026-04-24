@@ -1,0 +1,16 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  typescript_fast_checks:
+    name: TypeScript Fast Checks
+    uses: ./.github/workflows/typescript_fast_checks.yml
+
+  go_fast_checks:
+    name: Go Fast Checks
+    uses: ./.github/workflows/go_fast_checks.yml

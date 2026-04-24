@@ -1,0 +1,56 @@
+{
+  "name": "lintofu",
+  "version": "0.0.0",
+  "description": "ESLint plugin for linting OpenTofu configurations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "scripts": {
+    "build:wasm": "bash scripts/build-wasm.sh",
+    "build:js": "tsc",
+    "build:assets": "mkdir -p dist/parser && cp src/parser/wasm-exec.cjs src/parser/lintofu-parser.wasm dist/parser/",
+    "build": "npm run build:wasm && npm run build:js && npm run build:assets",
+    "pretest": "npm run build:wasm",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0 || ^10.0.0"
+  },
+  "dependencies": {
+    "@eslint/core": "^1.2.1",
+    "@eslint/plugin-kit": "^0.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "eslint": "^10.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "eslintplugin",
+    "opentofu",
+    "terraform",
+    "hcl",
+    "linting"
+  ]
+}
