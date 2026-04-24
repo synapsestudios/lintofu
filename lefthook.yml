@@ -1,0 +1,32 @@
+pre-commit:
+  parallel: true
+  commands:
+    typescript-typecheck:
+      glob: "src/**/*.ts"
+      run: npm run typecheck
+
+    go-fmt:
+      root: parser-go/
+      glob: "*.go"
+      run: |
+        out=$(gofmt -l .)
+        if [ -n "$out" ]; then
+          echo "files need gofmt:"
+          echo "$out"
+          exit 1
+        fi
+
+    go-vet:
+      root: parser-go/
+      glob: "*.go"
+      run: go vet ./...
+
+pre-push:
+  parallel: true
+  commands:
+    typescript-tests:
+      run: npm test
+
+    go-tests:
+      root: parser-go/
+      run: go test ./...
