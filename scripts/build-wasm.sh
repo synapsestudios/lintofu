@@ -4,10 +4,18 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 GOROOT="$(go env GOROOT)"
-WASM_EXEC_SRC="${GOROOT}/lib/wasm/wasm_exec.js"
 
-if [[ ! -f "${WASM_EXEC_SRC}" ]]; then
-	echo "error: wasm_exec.js not found at ${WASM_EXEC_SRC}" >&2
+# Go 1.24 moved wasm_exec.js from misc/wasm/ to lib/wasm/. Check both.
+WASM_EXEC_SRC=""
+for candidate in "${GOROOT}/lib/wasm/wasm_exec.js" "${GOROOT}/misc/wasm/wasm_exec.js"; do
+	if [[ -f "${candidate}" ]]; then
+		WASM_EXEC_SRC="${candidate}"
+		break
+	fi
+done
+
+if [[ -z "${WASM_EXEC_SRC}" ]]; then
+	echo "error: wasm_exec.js not found in GOROOT (${GOROOT})" >&2
 	exit 1
 fi
 
