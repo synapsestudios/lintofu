@@ -1,6 +1,7 @@
 import type { RuleDefinition } from "@eslint/core";
 import type { Block, ObjectConsExpr } from "../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
+import type { LintofuRuleDocs } from "./types.js";
 import { objectItemKeyName } from "./utils.js";
 
 type Rule = RuleDefinition<{
@@ -12,7 +13,7 @@ type Rule = RuleDefinition<{
 	};
 	Node: TofuNode;
 	MessageIds: "unpinnedProvider";
-	ExtRuleDocs: Record<string, unknown>;
+	ExtRuleDocs: LintofuRuleDocs;
 }>;
 
 const rule: Rule = {
@@ -21,6 +22,8 @@ const rule: Rule = {
 		docs: {
 			description:
 				"Require every provider in `terraform.required_providers` to declare a `version` constraint.",
+			recommended: true,
+			severity: "error",
 		},
 		messages: {
 			unpinnedProvider:

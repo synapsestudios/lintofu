@@ -1,6 +1,7 @@
 import type { RuleDefinition } from "@eslint/core";
 import type { TemplateWrapExpr } from "../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
+import type { LintofuRuleDocs } from "./types.js";
 
 type Rule = RuleDefinition<{
 	LangOptions: Record<string, unknown>;
@@ -11,7 +12,7 @@ type Rule = RuleDefinition<{
 	};
 	Node: TofuNode;
 	MessageIds: "preferBareExpression";
-	ExtRuleDocs: Record<string, unknown>;
+	ExtRuleDocs: LintofuRuleDocs;
 }>;
 
 const rule: Rule = {
@@ -20,6 +21,8 @@ const rule: Rule = {
 		docs: {
 			description:
 				'Prefer the bare expression form over the redundant "${expr}" wrapping.',
+			recommended: true,
+			severity: "warn",
 		},
 		messages: {
 			preferBareExpression:
