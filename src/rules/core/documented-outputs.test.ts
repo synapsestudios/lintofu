@@ -1,7 +1,7 @@
 import { RuleTester } from "eslint";
 import { describe, it } from "vitest";
-import plugin from "../index.js";
-import { initialize } from "../parser/index.js";
+import plugin from "../../index.js";
+import { initialize } from "../../parser/index.js";
 import rule from "./documented-outputs.js";
 
 RuleTester.describe = describe as unknown as typeof RuleTester.describe;

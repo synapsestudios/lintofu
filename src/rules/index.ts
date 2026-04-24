@@ -1,10 +1,10 @@
-import documentedOutputs from "./documented-outputs.js";
-import documentedVariables from "./documented-variables.js";
-import moduleSourcePinned from "./module-source-pinned.js";
-import noLegacySecurityGroupRules from "./no-legacy-security-group-rules.js";
-import noMixedSecurityGroupRuleForms from "./no-mixed-security-group-rule-forms.js";
-import preferBareExpression from "./prefer-bare-expression.js";
-import requiredProvidersPinned from "./required-providers-pinned.js";
+import noLegacySecurityGroupRules from "./aws/no-legacy-security-group-rules.js";
+import noMixedSecurityGroupRuleForms from "./aws/no-mixed-security-group-rule-forms.js";
+import documentedOutputs from "./core/documented-outputs.js";
+import documentedVariables from "./core/documented-variables.js";
+import moduleSourcePinned from "./core/module-source-pinned.js";
+import preferBareExpression from "./core/prefer-bare-expression.js";
+import requiredProvidersPinned from "./core/required-providers-pinned.js";
 
 export const rules = {
 	"documented-variables": documentedVariables,
