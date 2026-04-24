@@ -1,10 +1,7 @@
+import { buildRecommendedRules } from "./configs/recommended.js";
 import { OpenTofuLanguage } from "./language.js";
 import { initialize } from "./parser/index.js";
-import documentedOutputs from "./rules/documented-outputs.js";
-import documentedVariables from "./rules/documented-variables.js";
-import moduleSourcePinned from "./rules/module-source-pinned.js";
-import preferBareExpression from "./rules/prefer-bare-expression.js";
-import requiredProvidersPinned from "./rules/required-providers-pinned.js";
+import { rules } from "./rules/index.js";
 
 // ESLint's Language.parse contract is sync; this top-level await blocks
 // the plugin export until the WASM parser is ready. ESLint's config loader
@@ -19,25 +16,13 @@ const plugin = {
 	languages: {
 		opentofu: new OpenTofuLanguage(),
 	},
-	rules: {
-		"documented-variables": documentedVariables,
-		"documented-outputs": documentedOutputs,
-		"required-providers-pinned": requiredProvidersPinned,
-		"module-source-pinned": moduleSourcePinned,
-		"prefer-bare-expression": preferBareExpression,
-	},
+	rules,
 	configs: {
 		recommended: {
 			plugins: {} as Record<string, unknown>,
 			files: ["**/*.tf", "**/*.tofu"],
 			language: "lintofu/opentofu",
-			rules: {
-				"lintofu/documented-variables": "error",
-				"lintofu/documented-outputs": "error",
-				"lintofu/required-providers-pinned": "error",
-				"lintofu/module-source-pinned": "error",
-				"lintofu/prefer-bare-expression": "warn",
-			},
+			rules: buildRecommendedRules(rules),
 		},
 	},
 };

@@ -1,6 +1,7 @@
 import type { RuleDefinition } from "@eslint/core";
 import type { Block } from "../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
+import type { LintofuRuleDocs } from "./types.js";
 import { checkDescription } from "./utils.js";
 
 type Rule = RuleDefinition<{
@@ -12,7 +13,7 @@ type Rule = RuleDefinition<{
 	};
 	Node: TofuNode;
 	MessageIds: "missingDescription";
-	ExtRuleDocs: Record<string, unknown>;
+	ExtRuleDocs: LintofuRuleDocs;
 }>;
 
 const rule: Rule = {
@@ -20,6 +21,8 @@ const rule: Rule = {
 		type: "problem",
 		docs: {
 			description: "Require every `variable` block to have a `description`.",
+			recommended: true,
+			severity: "error",
 		},
 		messages: {
 			missingDescription:

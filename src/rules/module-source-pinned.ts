@@ -1,6 +1,7 @@
 import type { RuleDefinition } from "@eslint/core";
 import type { Block } from "../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../source-code.js";
+import type { LintofuRuleDocs } from "./types.js";
 import { findAttribute, literalStringValue } from "./utils.js";
 
 type Rule = RuleDefinition<{
@@ -12,7 +13,7 @@ type Rule = RuleDefinition<{
 	};
 	Node: TofuNode;
 	MessageIds: "unpinnedSource";
-	ExtRuleDocs: Record<string, unknown>;
+	ExtRuleDocs: LintofuRuleDocs;
 }>;
 
 function isPinnedSource(source: string, hasVersion: boolean): boolean {
@@ -27,6 +28,8 @@ const rule: Rule = {
 		docs: {
 			description:
 				"Require module sources to be pinned via `?ref=`, a `version` attribute, or a local path.",
+			recommended: true,
+			severity: "error",
 		},
 		messages: {
 			unpinnedSource:
