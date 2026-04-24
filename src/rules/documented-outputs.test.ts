@@ -10,8 +10,8 @@ RuleTester.it = it as unknown as typeof RuleTester.it;
 await initialize();
 
 const tester = new RuleTester({
-	plugins: { opentofu: plugin },
-	language: "opentofu/opentofu",
+	plugins: { lintofu: plugin },
+	language: "lintofu/opentofu",
 });
 
 tester.run("documented-outputs", rule, {
