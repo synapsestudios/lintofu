@@ -2,7 +2,7 @@ import type { RuleDefinition } from "@eslint/core";
 import type { Block } from "../../parser/types.js";
 import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
 import type { LintofuRuleDocs } from "../types.js";
-import { findAttribute, literalStringValue } from "../utils.js";
+import { blockLabel, findAttribute, literalStringValue } from "../utils.js";
 
 type Rule = RuleDefinition<{
 	LangOptions: Record<string, unknown>;
@@ -49,7 +49,7 @@ const rule: Rule = {
 				const hasVersion = !!findAttribute(node.body.attributes, "version");
 				if (isPinnedSource(source, hasVersion)) return;
 
-				const label = node.labels[0] ?? "<unnamed>";
+				const label = blockLabel(node);
 				context.report({
 					node: sourceAttr,
 					messageId: "unpinnedSource",

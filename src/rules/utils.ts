@@ -26,6 +26,10 @@ export function findAttribute(
 	return attrs.find((a) => a.name === name);
 }
 
+export function blockLabel(block: Block): string {
+	return block.labels[0] ?? "<unnamed>";
+}
+
 export type DescriptionCheck =
 	| { status: "missing" }
 	| { status: "empty"; attr: Attribute }
