@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { type Dirent, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parseSync } from "./parser/index.js";
 import type { Block, ScopeTraversalExpr } from "./parser/types.js";
@@ -40,8 +40,14 @@ interface ModuleFile {
 }
 
 function listModuleFiles(moduleDir: string): ModuleFile[] {
+	let entries: Dirent<string>[];
+	try {
+		entries = readdirSync(moduleDir, { withFileTypes: true });
+	} catch {
+		return [];
+	}
 	const out: ModuleFile[] = [];
-	for (const entry of readdirSync(moduleDir, { withFileTypes: true })) {
+	for (const entry of entries) {
 		if (!entry.isFile()) continue;
 		if (!entry.name.endsWith(".tf") && !entry.name.endsWith(".tofu")) continue;
 		const path = join(moduleDir, entry.name);

@@ -12,6 +12,11 @@ export interface TofuParserServices {
 	projectIndex: ProjectIndex;
 }
 
+const EMPTY_INDEX: ProjectIndex = {
+	findResource: () => undefined,
+	resolveTraversal: () => undefined,
+};
+
 // No index signature: it would break structural compatibility with the
 // concrete node interfaces (Block, Attribute, ...). Generic walkers cast
 // to Record<string, unknown> locally instead.
@@ -46,13 +51,9 @@ export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions
 
 	get parserServices(): TofuParserServices {
 		if (this.#cachedServices) return this.#cachedServices;
-		if (!this.#moduleDir) {
-			throw new Error(
-				"lintofu: parserServices.projectIndex requires a module directory. " +
-					"This usually means the source code was constructed without a file path.",
-			);
-		}
-		const projectIndex = getProjectIndex(this.#moduleDir);
+		const projectIndex = this.#moduleDir
+			? getProjectIndex(this.#moduleDir)
+			: EMPTY_INDEX;
 		this.#cachedServices = { projectIndex };
 		return this.#cachedServices;
 	}
