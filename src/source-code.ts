@@ -5,7 +5,17 @@ import type {
 } from "@eslint/core";
 import { TextSourceCodeBase, VisitNodeStep } from "@eslint/plugin-kit";
 import type { Body, NodeType, Range } from "./parser/types.js";
+import { getProjectIndex, type ProjectIndex } from "./project-index.js";
 import { visitorKeys } from "./visitor-keys.js";
+
+export interface TofuParserServices {
+	projectIndex: ProjectIndex;
+}
+
+const EMPTY_INDEX: ProjectIndex = {
+	findResource: () => undefined,
+	resolveTraversal: () => undefined,
+};
 
 // No index signature: it would break structural compatibility with the
 // concrete node interfaces (Block, Attribute, ...). Generic walkers cast
@@ -23,8 +33,29 @@ type TofuSourceCodeOptions = {
 };
 
 export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions> {
-	constructor({ text, ast }: { text: string; ast: Body }) {
+	readonly #moduleDir: string | undefined;
+	#cachedServices: TofuParserServices | undefined;
+
+	constructor({
+		text,
+		ast,
+		moduleDir,
+	}: {
+		text: string;
+		ast: Body;
+		moduleDir?: string;
+	}) {
 		super({ text, ast });
+		this.#moduleDir = moduleDir;
+	}
+
+	get parserServices(): TofuParserServices {
+		if (this.#cachedServices) return this.#cachedServices;
+		const projectIndex = this.#moduleDir
+			? getProjectIndex(this.#moduleDir)
+			: EMPTY_INDEX;
+		this.#cachedServices = { projectIndex };
+		return this.#cachedServices;
 	}
 
 	override getLoc(node: TofuNode): SourceLocation {

@@ -1,3 +1,4 @@
+import { dirname, isAbsolute, resolve } from "node:path";
 import type {
 	File,
 	Language,
@@ -49,6 +50,13 @@ export class OpenTofuLanguage implements Language {
 			typeof file.body === "string"
 				? file.body
 				: new TextDecoder().decode(file.body);
-		return new OpenTofuSourceCode({ text, ast: parseResult.ast });
+		const moduleDir = deriveModuleDir(file.physicalPath ?? file.path);
+		return new OpenTofuSourceCode({ text, ast: parseResult.ast, moduleDir });
 	}
+}
+
+function deriveModuleDir(filePath: string | undefined): string | undefined {
+	if (!filePath) return undefined;
+	const abs = isAbsolute(filePath) ? filePath : resolve(filePath);
+	return dirname(abs);
 }

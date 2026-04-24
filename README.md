@@ -63,6 +63,20 @@ export default [
 | [`module-source-pinned`](./docs/rules/module-source-pinned.md)           | `module` sources must be pinned via `?ref=`, a `version` attribute, or a local path. |
 | [`prefer-bare-expression`](./docs/rules/prefer-bare-expression.md)       | Flag the redundant `"${expr}"` wrapping pattern.                                     |
 | [`no-legacy-security-group-rules`](./docs/rules/no-legacy-security-group-rules.md) | Flag legacy `aws_security_group_rule` and inline `ingress`/`egress` blocks.    |
+| [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
+
+## Parser services
+
+Rules have access to a lazily-built, cross-file index via `context.sourceCode.parserServices.projectIndex`:
+
+```ts
+interface ProjectIndex {
+  findResource(addr: { kind: string; labels: string[] }): Block | undefined;
+  resolveTraversal(expr: ScopeTraversalExpr): Block | undefined;
+}
+```
+
+Scope is every `.tf` / `.tofu` file in the same directory as the file being linted — matching OpenTofu's module boundary. The index is cached per-directory and invalidated via file mtime. `findResource` takes an explicit address; `resolveTraversal` accepts a `ScopeTraversalExpr` like `aws_security_group.foo.id` and returns the defining `Block` or `undefined`.
 
 ## Architecture
 
