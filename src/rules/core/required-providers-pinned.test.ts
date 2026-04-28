@@ -1,23 +1,23 @@
-import { RuleTester } from "eslint";
-import { describe, it } from "vitest";
-import plugin from "../../index.js";
-import { initialize } from "../../parser/index.js";
-import rule from "./required-providers-pinned.js";
+import { RuleTester } from 'eslint';
+import { describe, it } from 'vitest';
+import plugin from '../../index.js';
+import { initialize } from '../../parser/index.js';
+import rule from './required-providers-pinned.js';
 
-RuleTester.describe = describe as unknown as typeof RuleTester.describe;
-RuleTester.it = it as unknown as typeof RuleTester.it;
+RuleTester.describe = describe;
+RuleTester.it = it;
 
 await initialize();
 
 const tester = new RuleTester({
-	plugins: { lintofu: plugin },
-	language: "lintofu/opentofu",
+  plugins: { lintofu: plugin },
+  language: 'lintofu/opentofu',
 });
 
-tester.run("required-providers-pinned", rule, {
-	valid: [
-		{
-			code: `terraform {
+tester.run('required-providers-pinned', rule, {
+  valid: [
+    {
+      code: `terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -25,23 +25,23 @@ tester.run("required-providers-pinned", rule, {
     }
   }
 }`,
-		},
-		{ code: "terraform {}" },
-		{ code: 'resource "x" "y" { bucket = "b" }' },
-	],
-	invalid: [
-		{
-			code: `terraform {
+    },
+    { code: 'terraform {}' },
+    { code: 'resource "x" "y" { bucket = "b" }' },
+  ],
+  invalid: [
+    {
+      code: `terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
     }
   }
 }`,
-			errors: [{ messageId: "unpinnedProvider", data: { name: "aws" } }],
-		},
-		{
-			code: `terraform {
+      errors: [{ messageId: 'unpinnedProvider', data: { name: 'aws' } }],
+    },
+    {
+      code: `terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
@@ -51,10 +51,10 @@ tester.run("required-providers-pinned", rule, {
     }
   }
 }`,
-			errors: [
-				{ messageId: "unpinnedProvider" },
-				{ messageId: "unpinnedProvider" },
-			],
-		},
-	],
+      errors: [
+        { messageId: 'unpinnedProvider' },
+        { messageId: 'unpinnedProvider' },
+      ],
+    },
+  ],
 });
