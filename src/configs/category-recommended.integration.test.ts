@@ -1,12 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { rules } from "../rules/index.js";
-import { buildCategoryRecommendedRules } from "./category-recommended.js";
+import { describe, expect, it } from 'vitest';
+import { rules } from '../rules/index.js';
+import { buildCategoryRecommendedRules } from './category-recommended.js';
 
-describe("aws/recommended config, derived from real rule metadata", () => {
-	it("includes every current aws rule with the expected severity", () => {
-		expect(buildCategoryRecommendedRules(rules, "aws")).toEqual({
-			"lintofu/no-legacy-security-group-rules": "error",
-			"lintofu/no-mixed-security-group-rule-forms": "warn",
-		});
-	});
+describe('aws/recommended config, derived from real rule metadata', () => {
+  it('includes every current aws rule with the expected severity', () => {
+    expect(buildCategoryRecommendedRules(rules, 'aws')).toEqual({
+      'lintofu/no-legacy-security-group-rules': 'error',
+      'lintofu/no-mixed-security-group-rule-forms': 'warn',
+    });
+  });
 });

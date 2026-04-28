@@ -1,6 +1,6 @@
 export interface LintofuRuleDocs {
-	description?: string;
-	recommended?: boolean;
-	severity?: "error" | "warn";
-	category?: string;
+  description?: string;
+  recommended?: boolean;
+  severity?: 'error' | 'warn';
+  category?: string;
 }

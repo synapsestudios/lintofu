@@ -5,6 +5,14 @@ pre-commit:
       glob: "src/**/*.ts"
       run: npm run typecheck
 
+    typescript-lint:
+      glob: "src/**/*.ts"
+      run: npm run lint:ci
+
+    typescript-format:
+      glob: "src/**/*.ts"
+      run: npm run format:check
+
     go-fmt:
       root: parser-go/
       glob: "*.go"

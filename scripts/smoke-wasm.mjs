@@ -1,3 +1,5 @@
+// TODO(#12): include this file in eslint coverage; currently caught by the
+// `**/*.mjs` ignore in eslint.config.mjs.
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
