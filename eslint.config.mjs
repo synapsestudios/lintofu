@@ -34,7 +34,7 @@ export default tseslint.config(
       globals: { ...globals.node },
       sourceType: 'module',
       parserOptions: {
-        projectService: true,
+        project: ['./tsconfig.test.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -68,10 +68,11 @@ export default tseslint.config(
   },
 
   {
-    files: ['**/*.test.ts'],
+    files: ['**/*.test.ts', '**/*.test-d.ts'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
     },
   },
 );
