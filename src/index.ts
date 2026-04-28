@@ -1,3 +1,4 @@
+import type { Plugin } from "@eslint/core";
 import { buildCategoryRecommendedRules } from "./configs/category-recommended.js";
 import { buildRecommendedRules } from "./configs/recommended.js";
 import { OpenTofuLanguage } from "./language.js";
@@ -20,13 +21,13 @@ const plugin = {
 	rules,
 	configs: {
 		recommended: {
-			plugins: {} as Record<string, unknown>,
+			plugins: {} as Record<string, Plugin>,
 			files: ["**/*.tf", "**/*.tofu"],
 			language: "lintofu/opentofu",
 			rules: buildRecommendedRules(rules),
 		},
 		"aws/recommended": {
-			plugins: {} as Record<string, unknown>,
+			plugins: {} as Record<string, Plugin>,
 			files: ["**/*.tf", "**/*.tofu"],
 			language: "lintofu/opentofu",
 			rules: buildCategoryRecommendedRules(rules, "aws"),
@@ -39,4 +40,4 @@ plugin.configs["aws/recommended"].plugins = { lintofu: plugin };
 
 export default plugin;
 export { OpenTofuLanguage } from "./language.js";
-export type { OpenTofuSourceCode } from "./source-code.js";
+export * from "./types.js";

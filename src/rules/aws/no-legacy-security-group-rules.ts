@@ -1,21 +1,8 @@
-import type { RuleDefinition } from "@eslint/core";
-import type { Block } from "../../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
-import type { LintofuRuleDocs } from "../types.js";
+import type { OpenTofuRuleDefinition } from "../../types.js";
 
-type Rule = RuleDefinition<{
-	LangOptions: Record<string, unknown>;
-	Code: OpenTofuSourceCode;
-	RuleOptions: [];
-	Visitor: {
-		Block?(node: Block): void;
-	};
-	Node: TofuNode;
+const rule: OpenTofuRuleDefinition<{
 	MessageIds: "legacySecurityGroupRule";
-	ExtRuleDocs: LintofuRuleDocs;
-}>;
-
-const rule: Rule = {
+}> = {
 	meta: {
 		type: "problem",
 		docs: {

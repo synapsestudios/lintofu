@@ -1,3 +1,4 @@
+import type { Plugin } from "@eslint/core";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -28,7 +29,7 @@ function verify(targetFile: string, moduleDir: string) {
 		[
 			{
 				files: ["**/*.tf", "**/*.tofu"],
-				plugins: { lintofu: plugin as unknown as Linter.Plugin },
+				plugins: { lintofu: plugin as unknown as Plugin },
 				// The `as never` casts bypass flat-config's ESTree-shaped type
 				// checks; the actual Language API is validated at runtime.
 				language: "lintofu/opentofu" as never,
