@@ -1,22 +1,8 @@
-import type { RuleDefinition } from "@eslint/core";
-import type { Block, ObjectConsExpr } from "../../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
-import type { LintofuRuleDocs } from "../types.js";
+import type { ObjectConsExpr } from "../../parser/types.js";
+import type { OpenTofuRuleDefinition } from "../../types.js";
 import { objectItemKeyName } from "../utils.js";
 
-type Rule = RuleDefinition<{
-	LangOptions: Record<string, unknown>;
-	Code: OpenTofuSourceCode;
-	RuleOptions: [];
-	Visitor: {
-		Block?(node: Block): void;
-	};
-	Node: TofuNode;
-	MessageIds: "unpinnedProvider";
-	ExtRuleDocs: LintofuRuleDocs;
-}>;
-
-const rule: Rule = {
+const rule: OpenTofuRuleDefinition<{ MessageIds: "unpinnedProvider" }> = {
 	meta: {
 		type: "problem",
 		docs: {

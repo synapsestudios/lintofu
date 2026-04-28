@@ -1,21 +1,6 @@
-import type { RuleDefinition } from "@eslint/core";
-import type { TemplateWrapExpr } from "../../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
-import type { LintofuRuleDocs } from "../types.js";
+import type { OpenTofuRuleDefinition } from "../../types.js";
 
-type Rule = RuleDefinition<{
-	LangOptions: Record<string, unknown>;
-	Code: OpenTofuSourceCode;
-	RuleOptions: [];
-	Visitor: {
-		TemplateWrapExpr?(node: TemplateWrapExpr): void;
-	};
-	Node: TofuNode;
-	MessageIds: "preferBareExpression";
-	ExtRuleDocs: LintofuRuleDocs;
-}>;
-
-const rule: Rule = {
+const rule: OpenTofuRuleDefinition<{ MessageIds: "preferBareExpression" }> = {
 	meta: {
 		type: "suggestion",
 		docs: {

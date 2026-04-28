@@ -9,7 +9,7 @@ describe("buildRecommendedRules", () => {
 	it("includes a recommended rule with its severity, keyed by lintofu/<name>", () => {
 		const rules = {
 			foo: { meta: { docs: { recommended: true, severity: "error" } } },
-		};
+		} as const;
 		expect(buildRecommendedRules(rules)).toEqual({
 			"lintofu/foo": "error",
 		});
@@ -29,7 +29,7 @@ describe("buildRecommendedRules", () => {
 	it("defaults severity to error when a recommended rule omits it", () => {
 		const rules = {
 			foo: { meta: { docs: { recommended: true } } },
-		};
+		} as const;
 		expect(buildRecommendedRules(rules)).toEqual({
 			"lintofu/foo": "error",
 		});

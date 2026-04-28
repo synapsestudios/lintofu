@@ -1,20 +1,5 @@
-import type { RuleDefinition } from "@eslint/core";
-import type { Block } from "../../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
-import type { LintofuRuleDocs } from "../types.js";
+import type { OpenTofuRuleDefinition } from "../../types.js";
 import { blockLabel, findAttribute, literalStringValue } from "../utils.js";
-
-type Rule = RuleDefinition<{
-	LangOptions: Record<string, unknown>;
-	Code: OpenTofuSourceCode;
-	RuleOptions: [];
-	Visitor: {
-		Block?(node: Block): void;
-	};
-	Node: TofuNode;
-	MessageIds: "unpinnedSource";
-	ExtRuleDocs: LintofuRuleDocs;
-}>;
 
 function isPinnedSource(source: string, hasVersion: boolean): boolean {
 	if (source.startsWith("./") || source.startsWith("../")) return true;
@@ -22,7 +7,7 @@ function isPinnedSource(source: string, hasVersion: boolean): boolean {
 	return hasVersion;
 }
 
-const rule: Rule = {
+const rule: OpenTofuRuleDefinition<{ MessageIds: "unpinnedSource" }> = {
 	meta: {
 		type: "problem",
 		docs: {

@@ -35,7 +35,8 @@ describe("parse", () => {
 		const result = await parse('variable "x" {', { filename: "bad.tf" });
 
 		expect(result.diagnostics.length).toBeGreaterThan(0);
-		const [diag] = result.diagnostics;
+		const diag = result.diagnostics[0];
+		if (!diag) throw new Error("expected at least one diagnostic");
 		expect(diag.severity).toBe("error");
 		expect(diag.summary.length).toBeGreaterThan(0);
 		expect(diag.range.start.line).toBeGreaterThanOrEqual(1);

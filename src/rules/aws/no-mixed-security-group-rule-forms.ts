@@ -1,11 +1,10 @@
-import type { RuleDefinition } from "@eslint/core";
 import type {
 	Block,
 	Body,
 	ScopeTraversalExpr,
 } from "../../parser/types.js";
-import type { OpenTofuSourceCode, TofuNode } from "../../source-code.js";
-import type { LintofuRuleDocs } from "../types.js";
+import type { OpenTofuSourceCode } from "../../source-code.js";
+import type { OpenTofuRuleDefinition } from "../../types.js";
 import { findAttribute } from "../utils.js";
 
 const STANDALONE_RULE_KINDS = new Set([
@@ -14,19 +13,7 @@ const STANDALONE_RULE_KINDS = new Set([
 	"aws_security_group_rule",
 ]);
 
-type Rule = RuleDefinition<{
-	LangOptions: Record<string, unknown>;
-	Code: OpenTofuSourceCode;
-	RuleOptions: [];
-	Visitor: {
-		Block?(node: Block): void;
-	};
-	Node: TofuNode;
-	MessageIds: "mixedForms";
-	ExtRuleDocs: LintofuRuleDocs;
-}>;
-
-const rule: Rule = {
+const rule: OpenTofuRuleDefinition<{ MessageIds: "mixedForms" }> = {
 	meta: {
 		type: "suggestion",
 		docs: {

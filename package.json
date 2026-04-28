@@ -27,7 +27,7 @@
     "pretest": "npm run build:wasm",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
     "clean": "rm -rf dist",
     "prepare": "lefthook install || true",
     "prepublishOnly": "npm run build"
