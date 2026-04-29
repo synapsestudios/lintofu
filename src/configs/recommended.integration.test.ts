@@ -10,6 +10,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/required-providers-pinned': 'error',
       'lintofu/module-source-pinned': 'error',
       'lintofu/prefer-bare-expression': 'warn',
+      'lintofu/no-legacy-provider-proxy': 'error',
       'lintofu/no-template-provider': 'error',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
