@@ -13,21 +13,15 @@ pre-commit:
       glob: "src/**/*.ts"
       run: npm run format:check
 
-    go-fmt:
+    go-fmt-check:
       root: parser-go/
       glob: "*.go"
-      run: |
-        out=$(gofmt -l .)
-        if [ -n "$out" ]; then
-          echo "files need gofmt:"
-          echo "$out"
-          exit 1
-        fi
+      run: make fmt-check
 
-    go-vet:
+    go-lint:
       root: parser-go/
       glob: "*.go"
-      run: go vet ./...
+      run: make lint
 
 pre-push:
   parallel: true
@@ -37,4 +31,4 @@ pre-push:
 
     go-tests:
       root: parser-go/
-      run: go test ./...
+      run: make test
