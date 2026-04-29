@@ -1,7 +1,5 @@
 GOLANGCI_VERSION := 2.11.4
 
-# main.go has //go:build js && wasm, so lint and fmt run under that env to
-# include it. Other files have no build constraints and are unaffected.
 GO_LINT_ENV := GOOS=js GOARCH=wasm
 
 .PHONY: fmt fmt-check lint test install-tools
