@@ -28,12 +28,14 @@ function collectTraversals(expr: Expression, out: ScopeTraversalExpr[]): void {
       return;
     case 'ObjectConsExpr':
       for (const item of expr.items) {
-        collectTraversals(item.keyExpr, out);
+        // Bareword keys (`FOO = ...`) wrap a single-step ScopeTraversalExpr
+        // in ObjectConsKeyExpr; that's a name, not a reference. Quoted /
+        // interpolated keys arrive as TemplateExpr and may contain real refs.
+        if (item.keyExpr.type !== 'ObjectConsKeyExpr') {
+          collectTraversals(item.keyExpr, out);
+        }
         collectTraversals(item.valueExpr, out);
       }
-      return;
-    case 'ObjectConsKeyExpr':
-      collectTraversals(expr.wrapped, out);
       return;
     default:
       return;
