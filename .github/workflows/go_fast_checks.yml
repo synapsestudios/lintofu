@@ -22,8 +22,6 @@ jobs:
         with:
           go-version-file: parser-go/go.mod
 
-      # Installs golangci-lint and runs `golangci-lint run`. Adds the binary
-      # to PATH so the Format Check step below can also call it.
       - name: Lint
         uses: golangci/golangci-lint-action@v8
         with:
