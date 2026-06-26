@@ -14,7 +14,7 @@ output "bucket_arn" { value = "x"  description = "" }             # ❌ empty
 output "bucket_arn" { value = "x"  description = "ARN of bucket" } # ✅
 ```
 
-Dynamic descriptions (interpolations referencing other values) are accepted — the rule can't judge whether a computed value is meaningful.
+Dynamic descriptions (interpolations referencing other values) are accepted, since the rule can't judge whether a computed value is meaningful.
 
 ## Options
 
