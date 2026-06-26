@@ -61,9 +61,8 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
   }
 }`,
     },
-    // FunctionCallExpr surfaces as UnknownExpr; the rule cannot see through
-    // it. Listed under "Limitations" in the rule doc.
-    { code: destroyProvisioner('    command = format("%s", local.x)') },
+    // Allowed refs inside a function call still pass.
+    { code: destroyProvisioner('    command = format("%s", self.id)') },
     {
       code: destroyProvisioner(`    environment = {
       FOO = self.id
@@ -150,6 +149,16 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       FOO = var.foo
     }`),
       errors: [{ messageId: 'disallowedReference', data: { name: 'var.foo' } }],
+    },
+    {
+      code: destroyProvisioner('    command = format("rm -rf %s", var.path)'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.path' } },
+      ],
+    },
+    {
+      code: destroyProvisioner('    command = upper(format("%s", local.x))'),
+      errors: [{ messageId: 'disallowedReference', data: { name: 'local.x' } }],
     },
   ],
 });

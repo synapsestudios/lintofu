@@ -72,6 +72,19 @@ type TemplateExpr struct {
 func (*TemplateExpr) expressionMarker()        {}
 func (e *TemplateExpr) expressionRange() Range { return e.Range }
 
+type FunctionCallExpr struct {
+	Type string       `json:"type"`
+	Name string       `json:"name"`
+	Args []Expression `json:"args"`
+	// ExpandFinal is HCL's `...` spread of the final argument, e.g.
+	// `concat(a, b...)`.
+	ExpandFinal bool  `json:"expandFinal"`
+	Range       Range `json:"range"`
+}
+
+func (*FunctionCallExpr) expressionMarker()        {}
+func (e *FunctionCallExpr) expressionRange() Range { return e.Range }
+
 type ScopeTraversalExpr struct {
 	Type      string      `json:"type"`
 	Traversal []Traverser `json:"traversal"`
@@ -234,6 +247,18 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			Type:  "TemplateExpr",
 			Parts: parts,
 			Range: convertRange(ex.Range()),
+		}
+	case *hclsyntax.FunctionCallExpr:
+		args := make([]Expression, 0, len(ex.Args))
+		for _, a := range ex.Args {
+			args = append(args, convertExpression(a))
+		}
+		return &FunctionCallExpr{
+			Type:        "FunctionCallExpr",
+			Name:        ex.Name,
+			Args:        args,
+			ExpandFinal: ex.ExpandFinal,
+			Range:       convertRange(ex.Range()),
 		}
 	case *hclsyntax.ScopeTraversalExpr:
 		travs := make([]Traverser, 0, len(ex.Traversal))

@@ -147,7 +147,6 @@ Anything marked Not Yet Implemented falls back to `UnknownExpr`, so rules can se
 | `ScopeTraversalExpr` (e.g. `var.foo`, `aws_instance.web.id`) | ✅        |                     |
 | `ObjectConsExpr` / `ObjectConsKeyExpr` (object literals)     | ✅        |                     |
 | `TupleConsExpr` (list literals)                              |           | ❌                  |
-| `FunctionCallExpr`                                           |           | ❌                  |
 | `ConditionalExpr`                                            |           | ❌                  |
 | `ForExpr`                                                    |           | ❌                  |
 | `SplatExpr`                                                  |           | ❌                  |

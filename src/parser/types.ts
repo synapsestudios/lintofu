@@ -40,6 +40,7 @@ export type Expression =
   | LiteralValueExpr
   | TemplateExpr
   | TemplateWrapExpr
+  | FunctionCallExpr
   | ScopeTraversalExpr
   | ObjectConsExpr
   | ObjectConsKeyExpr
@@ -54,6 +55,15 @@ export interface LiteralValueExpr {
 export interface TemplateExpr {
   type: 'TemplateExpr';
   parts: Expression[];
+  range: Range;
+}
+
+export interface FunctionCallExpr {
+  type: 'FunctionCallExpr';
+  name: string;
+  args: Expression[];
+  // HCL's `...` spread of the final argument, e.g. `concat(a, b...)`.
+  expandFinal: boolean;
   range: Range;
 }
 
@@ -128,6 +138,7 @@ export type NodeType =
   | 'LiteralValueExpr'
   | 'TemplateExpr'
   | 'TemplateWrapExpr'
+  | 'FunctionCallExpr'
   | 'ScopeTraversalExpr'
   | 'ObjectConsExpr'
   | 'ObjectConsKeyExpr'
