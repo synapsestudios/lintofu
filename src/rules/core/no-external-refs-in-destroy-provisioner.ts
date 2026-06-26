@@ -4,7 +4,7 @@ import type {
   ScopeTraversalExpr,
 } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { findAttribute } from '../utils.js';
+import { collectTraversals, findAttribute } from '../utils.js';
 
 function isDestroyBareword(expr: Expression): boolean {
   return (
@@ -13,36 +13,6 @@ function isDestroyBareword(expr: Expression): boolean {
     expr.traversal[0]?.type === 'TraverseRoot' &&
     expr.traversal[0].name === 'destroy'
   );
-}
-
-function collectTraversals(expr: Expression, out: ScopeTraversalExpr[]): void {
-  switch (expr.type) {
-    case 'ScopeTraversalExpr':
-      out.push(expr);
-      return;
-    case 'TemplateExpr':
-      for (const part of expr.parts) collectTraversals(part, out);
-      return;
-    case 'TemplateWrapExpr':
-      collectTraversals(expr.wrapped, out);
-      return;
-    case 'FunctionCallExpr':
-      for (const arg of expr.args) collectTraversals(arg, out);
-      return;
-    case 'ObjectConsExpr':
-      for (const item of expr.items) {
-        // Bareword keys (`FOO = ...`) wrap a single-step ScopeTraversalExpr
-        // in ObjectConsKeyExpr; that's a name, not a reference. Quoted /
-        // interpolated keys arrive as TemplateExpr and may contain real refs.
-        if (item.keyExpr.type !== 'ObjectConsKeyExpr') {
-          collectTraversals(item.keyExpr, out);
-        }
-        collectTraversals(item.valueExpr, out);
-      }
-      return;
-    default:
-      return;
-  }
 }
 
 function isAllowedTraversal(expr: ScopeTraversalExpr): boolean {
@@ -89,8 +59,7 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'disallowedReference' }> = {
     function checkAttributes(attrs: readonly Attribute[]): void {
       for (const attr of attrs) {
         if (attr.name === 'when') continue;
-        const traversals: ScopeTraversalExpr[] = [];
-        collectTraversals(attr.expression, traversals);
+        const traversals = collectTraversals(attr.expression);
         for (const t of traversals) {
           if (!isAllowedTraversal(t)) {
             context.report({
