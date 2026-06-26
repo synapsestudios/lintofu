@@ -12,12 +12,18 @@ import { visitorKeys } from '../visitor-keys.js';
 // entry there.
 export function collectTraversals(expr: Expression): ScopeTraversalExpr[] {
   const out: ScopeTraversalExpr[] = [];
-  gather(expr, out);
+  gather(expr, out, new Set());
   return out;
 }
 
-function gather(expr: Expression, out: ScopeTraversalExpr[]): void {
+function gather(
+  expr: Expression,
+  out: ScopeTraversalExpr[],
+  bound: ReadonlySet<string>,
+): void {
   if (expr.type === 'ScopeTraversalExpr') {
+    const root = expr.traversal[0];
+    if (root?.type === 'TraverseRoot' && bound.has(root.name)) return;
     out.push(expr);
     return;
   }
@@ -26,18 +32,30 @@ function gather(expr: Expression, out: ScopeTraversalExpr[]): void {
   if (expr.type === 'ObjectConsKeyExpr') return;
   if (expr.type === 'ObjectConsExpr') {
     for (const item of expr.items) {
-      gather(item.keyExpr, out);
-      gather(item.valueExpr, out);
+      gather(item.keyExpr, out, bound);
+      gather(item.valueExpr, out, bound);
     }
+    return;
+  }
+  if (expr.type === 'ForExpr') {
+    // The collection is evaluated in the outer scope; keyVar/valVar only bind
+    // inside the key/value/cond exprs, so refs there rooted on them are local.
+    gather(expr.collExpr, out, bound);
+    const inner = new Set(bound);
+    if (expr.keyVar) inner.add(expr.keyVar);
+    if (expr.valVar) inner.add(expr.valVar);
+    if (expr.keyExpr) gather(expr.keyExpr, out, inner);
+    gather(expr.valExpr, out, inner);
+    if (expr.condExpr) gather(expr.condExpr, out, inner);
     return;
   }
   const indexed = expr as unknown as Record<string, unknown>;
   for (const key of visitorKeys[expr.type]) {
     const child = indexed[key];
     if (Array.isArray(child)) {
-      for (const c of child) if (isExpression(c)) gather(c, out);
+      for (const c of child) if (isExpression(c)) gather(c, out, bound);
     } else if (isExpression(child)) {
-      gather(child, out);
+      gather(child, out, bound);
     }
   }
 }

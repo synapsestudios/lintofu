@@ -202,6 +202,62 @@ func TestConditionalExprNested(t *testing.T) {
 	}
 }
 
+func TestForExprList(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = [for v in var.xs : v.id] }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	fe, ok := expr.(*ForExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ForExpr", expr)
+	}
+	if fe.Type != "ForExpr" {
+		t.Errorf("Type = %q", fe.Type)
+	}
+	if fe.ValVar != "v" {
+		t.Errorf("ValVar = %q, want %q", fe.ValVar, "v")
+	}
+	if fe.KeyVar != "" {
+		t.Errorf("KeyVar = %q, want empty", fe.KeyVar)
+	}
+	if fe.KeyExpr != nil {
+		t.Errorf("KeyExpr = %#v, want nil", fe.KeyExpr)
+	}
+	if _, ok := fe.CollExpr.(*ScopeTraversalExpr); !ok {
+		t.Errorf("CollExpr type = %T, want *ScopeTraversalExpr", fe.CollExpr)
+	}
+	if _, ok := fe.ValExpr.(*ScopeTraversalExpr); !ok {
+		t.Errorf("ValExpr type = %T, want *ScopeTraversalExpr", fe.ValExpr)
+	}
+}
+
+func TestForExprObject(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = {for k, v in var.m : k => v} }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	fe, ok := expr.(*ForExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ForExpr", expr)
+	}
+	if fe.KeyVar != "k" {
+		t.Errorf("KeyVar = %q, want %q", fe.KeyVar, "k")
+	}
+	if fe.ValVar != "v" {
+		t.Errorf("ValVar = %q, want %q", fe.ValVar, "v")
+	}
+	if _, ok := fe.KeyExpr.(*ScopeTraversalExpr); !ok {
+		t.Errorf("KeyExpr type = %T, want *ScopeTraversalExpr", fe.KeyExpr)
+	}
+	if _, ok := fe.ValExpr.(*ScopeTraversalExpr); !ok {
+		t.Errorf("ValExpr type = %T, want *ScopeTraversalExpr", fe.ValExpr)
+	}
+}
+
 func TestDiagnosticFlatten(t *testing.T) {
 	t.Parallel()
 	result := Parse([]byte(`variable "x" {`), "t.tf")

@@ -162,6 +162,21 @@ type ConditionalExpr struct {
 func (*ConditionalExpr) expressionMarker()        {}
 func (e *ConditionalExpr) expressionRange() Range { return e.Range }
 
+type ForExpr struct {
+	Type     string     `json:"type"`
+	KeyVar   string     `json:"keyVar"`
+	ValVar   string     `json:"valVar"`
+	CollExpr Expression `json:"collExpr"`
+	KeyExpr  Expression `json:"keyExpr,omitempty"`
+	ValExpr  Expression `json:"valExpr"`
+	CondExpr Expression `json:"condExpr,omitempty"`
+	Group    bool       `json:"group"`
+	Range    Range      `json:"range"`
+}
+
+func (*ForExpr) expressionMarker()        {}
+func (e *ForExpr) expressionRange() Range { return e.Range }
+
 type UnknownExpr struct {
 	Type        string `json:"type"`
 	UnknownKind string `json:"unknownKind"`
@@ -313,6 +328,18 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			TrueResult:  convertExpression(ex.TrueResult),
 			FalseResult: convertExpression(ex.FalseResult),
 			Range:       convertRange(ex.Range()),
+		}
+	case *hclsyntax.ForExpr:
+		return &ForExpr{
+			Type:     "ForExpr",
+			KeyVar:   ex.KeyVar,
+			ValVar:   ex.ValVar,
+			CollExpr: convertExpression(ex.CollExpr),
+			KeyExpr:  convertExpression(ex.KeyExpr),
+			ValExpr:  convertExpression(ex.ValExpr),
+			CondExpr: convertExpression(ex.CondExpr),
+			Group:    ex.Group,
+			Range:    convertRange(ex.Range()),
 		}
 	default:
 		return &UnknownExpr{

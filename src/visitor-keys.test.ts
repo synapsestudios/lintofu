@@ -30,6 +30,7 @@ describe('visitorKeys', () => {
         'Block',
         'Body',
         'ConditionalExpr',
+        'ForExpr',
         'FunctionCallExpr',
         'LiteralValueExpr',
         'ObjectConsExpr',

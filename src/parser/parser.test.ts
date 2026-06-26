@@ -77,4 +77,29 @@ describe('parse', () => {
     expect(expr.trueResult.type).toBe('ScopeTraversalExpr');
     expect(expr.falseResult.type).toBe('TemplateExpr');
   });
+
+  it('parses a list comprehension into a ForExpr', async () => {
+    const result = await parse('locals { x = [for v in var.xs : v.id] }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'ForExpr') {
+      throw new Error(`expected ForExpr, got ${expr?.type}`);
+    }
+    expect(expr.valVar).toBe('v');
+    expect(expr.keyVar).toBe('');
+    expect(expr.keyExpr).toBeUndefined();
+    expect(expr.collExpr.type).toBe('ScopeTraversalExpr');
+    expect(expr.valExpr.type).toBe('ScopeTraversalExpr');
+  });
+
+  it('parses an object comprehension into a ForExpr with key and value', async () => {
+    const result = await parse('locals { x = {for k, v in var.m : k => v} }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'ForExpr') {
+      throw new Error(`expected ForExpr, got ${expr?.type}`);
+    }
+    expect(expr.keyVar).toBe('k');
+    expect(expr.valVar).toBe('v');
+    expect(expr.keyExpr?.type).toBe('ScopeTraversalExpr');
+    expect(expr.valExpr.type).toBe('ScopeTraversalExpr');
+  });
 });
