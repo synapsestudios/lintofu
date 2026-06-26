@@ -258,6 +258,41 @@ func TestForExprObject(t *testing.T) {
 	}
 }
 
+func TestSplatExprAttr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = aws_instance.x[*].id }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	se, ok := expr.(*SplatExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *SplatExpr", expr)
+	}
+	if se.Type != "SplatExpr" {
+		t.Errorf("Type = %q", se.Type)
+	}
+	if _, ok := se.Source.(*ScopeTraversalExpr); !ok {
+		t.Errorf("Source type = %T, want *ScopeTraversalExpr", se.Source)
+	}
+}
+
+func TestSplatExprAttrDotForm(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = aws_instance.x.*.id }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	se, ok := expr.(*SplatExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *SplatExpr", expr)
+	}
+	if _, ok := se.Source.(*ScopeTraversalExpr); !ok {
+		t.Errorf("Source type = %T, want *ScopeTraversalExpr", se.Source)
+	}
+}
+
 func TestDiagnosticFlatten(t *testing.T) {
 	t.Parallel()
 	result := Parse([]byte(`variable "x" {`), "t.tf")

@@ -36,6 +36,7 @@ describe('visitorKeys', () => {
         'ObjectConsExpr',
         'ObjectConsKeyExpr',
         'ScopeTraversalExpr',
+        'SplatExpr',
         'TemplateExpr',
         'TemplateWrapExpr',
         'TraverseAttr',

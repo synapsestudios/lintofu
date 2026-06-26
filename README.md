@@ -130,7 +130,7 @@ flowchart TD
 ## Known limitations
 
 - **Experimental dependency on `syscall/js`.** See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md). The project inherits its experimental status from Go's WASM JS interop package. Pinning a Go version in CI is the mitigation.
-- **AST coverage is partial.** List literals, splats, index expressions, binary operators, and a few other expression types currently fall back to `UnknownExpr`, so rules that need to inspect their internals can't. They will be added as rules need them.
+- **AST coverage is partial.** List literals, index expressions, binary operators, and a few other expression types currently fall back to `UnknownExpr`, so rules that need to inspect their internals can't. They will be added as rules need them.
 - **`.tf.json` / `.tofu.json` not supported.** The JSON form of HCL is not 1:1 with native syntax; see [hashicorp/hcl#627 for the rationale](https://github.com/hashicorp/hcl/issues/627).
 - **No TFLint custom-rule compatibility.** An opinionated migration example may land later; a general compatibility layer is not planned for early releases.
 - **Performance is unprofiled.** Go+WASM boot costs ~100ms per ESLint process; per-file parse is sub-millisecond after boot.
@@ -147,7 +147,6 @@ Anything marked Not Yet Implemented falls back to `UnknownExpr`, so rules can se
 | `ScopeTraversalExpr` (e.g. `var.foo`, `aws_instance.web.id`) | ✅        |                     |
 | `ObjectConsExpr` / `ObjectConsKeyExpr` (object literals)     | ✅        |                     |
 | `TupleConsExpr` (list literals)                              |           | ❌                  |
-| `SplatExpr`                                                  |           | ❌                  |
 | `IndexExpr`                                                  |           | ❌                  |
 | `RelativeTraversalExpr`                                      |           | ❌                  |
 | `BinaryOpExpr` / `UnaryOpExpr`                               |           | ❌                  |

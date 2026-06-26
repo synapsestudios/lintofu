@@ -102,4 +102,13 @@ describe('parse', () => {
     expect(expr.keyExpr?.type).toBe('ScopeTraversalExpr');
     expect(expr.valExpr.type).toBe('ScopeTraversalExpr');
   });
+
+  it('parses a splat into a SplatExpr with a traversal source', async () => {
+    const result = await parse('locals { x = aws_instance.x[*].id }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'SplatExpr') {
+      throw new Error(`expected SplatExpr, got ${expr?.type}`);
+    }
+    expect(expr.source.type).toBe('ScopeTraversalExpr');
+  });
 });
