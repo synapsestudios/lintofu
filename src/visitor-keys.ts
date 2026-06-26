@@ -10,6 +10,7 @@ export const visitorKeys: Record<NodeType, readonly string[]> = {
   Attribute: ['expression'],
   TemplateExpr: ['parts'],
   TemplateWrapExpr: ['wrapped'],
+  FunctionCallExpr: ['args'],
   ScopeTraversalExpr: ['traversal'],
   ObjectConsExpr: ['items'],
   ObjectConsKeyExpr: ['wrapped'],

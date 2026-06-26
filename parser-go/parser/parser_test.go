@@ -92,8 +92,8 @@ func TestCtyToGoPrimitives(t *testing.T) {
 
 func TestUnknownExprFallback(t *testing.T) {
 	t.Parallel()
-	// upper(...) is FunctionCallExpr — currently unhandled by convertExpression.
-	result := Parse([]byte(`locals { x = upper("foo") }`), "t.tf")
+	// a ? b : c is ConditionalExpr — still unhandled by convertExpression.
+	result := Parse([]byte(`locals { x = a ? b : c }`), "t.tf")
 	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
 	unknown, ok := expr.(*UnknownExpr)
 	if !ok {
@@ -102,8 +102,65 @@ func TestUnknownExprFallback(t *testing.T) {
 	if unknown.Type != "UnknownExpr" {
 		t.Errorf("Type = %q", unknown.Type)
 	}
-	if !strings.Contains(unknown.UnknownKind, "FunctionCallExpr") {
-		t.Errorf("UnknownKind = %q, want it to contain \"FunctionCallExpr\"", unknown.UnknownKind)
+	if !strings.Contains(unknown.UnknownKind, "ConditionalExpr") {
+		t.Errorf("UnknownKind = %q, want it to contain \"ConditionalExpr\"", unknown.UnknownKind)
+	}
+}
+
+func TestFunctionCallExpr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = format("rm -rf %s", var.path) }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	call, ok := expr.(*FunctionCallExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *FunctionCallExpr", expr)
+	}
+	if call.Type != "FunctionCallExpr" {
+		t.Errorf("Type = %q", call.Type)
+	}
+	if call.Name != "format" {
+		t.Errorf("Name = %q, want \"format\"", call.Name)
+	}
+	if len(call.Args) != 2 {
+		t.Fatalf("len(Args) = %d, want 2", len(call.Args))
+	}
+	if _, ok := call.Args[1].(*ScopeTraversalExpr); !ok {
+		t.Errorf("Args[1] type = %T, want *ScopeTraversalExpr", call.Args[1])
+	}
+	if call.ExpandFinal {
+		t.Error("ExpandFinal = true, want false")
+	}
+}
+
+func TestFunctionCallExprExpandFinal(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = concat([1], vals...) }`), "t.tf")
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	call, ok := expr.(*FunctionCallExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *FunctionCallExpr", expr)
+	}
+	if !call.ExpandFinal {
+		t.Error("ExpandFinal = false, want true for `vals...` spread")
+	}
+}
+
+func TestFunctionCallExprNoArgs(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = uuid() }`), "t.tf")
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	call, ok := expr.(*FunctionCallExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *FunctionCallExpr", expr)
+	}
+	if call.Name != "uuid" {
+		t.Errorf("Name = %q, want \"uuid\"", call.Name)
+	}
+	if len(call.Args) != 0 {
+		t.Errorf("len(Args) = %d, want 0", len(call.Args))
 	}
 }
 

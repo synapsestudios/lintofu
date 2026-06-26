@@ -54,4 +54,16 @@ describe('parse', () => {
     const result = await parse('variable', { filename: 'named.tf' });
     expect(result.diagnostics.length).toBeGreaterThan(0);
   });
+
+  it('parses a function call into a FunctionCallExpr with typed args', async () => {
+    const result = await parse('locals { x = format("rm -rf %s", var.path) }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'FunctionCallExpr') {
+      throw new Error(`expected FunctionCallExpr, got ${expr?.type}`);
+    }
+    expect(expr.name).toBe('format');
+    expect(expr.args).toHaveLength(2);
+    expect(expr.args[1]?.type).toBe('ScopeTraversalExpr');
+    expect(expr.expandFinal).toBe(false);
+  });
 });

@@ -26,6 +26,9 @@ function collectTraversals(expr: Expression, out: ScopeTraversalExpr[]): void {
     case 'TemplateWrapExpr':
       collectTraversals(expr.wrapped, out);
       return;
+    case 'FunctionCallExpr':
+      for (const arg of expr.args) collectTraversals(arg, out);
+      return;
     case 'ObjectConsExpr':
       for (const item of expr.items) {
         // Bareword keys (`FOO = ...`) wrap a single-step ScopeTraversalExpr
