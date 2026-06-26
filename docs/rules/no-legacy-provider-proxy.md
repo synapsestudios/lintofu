@@ -36,7 +36,7 @@ terraform {
 
 ## Limitations
 
-The rule cannot tell whether the file belongs to a root module or a child module. In a root module, `provider "aws" { alias = "x" }` is technically legal — it declares an alias that inherits the default configuration. If you have such a case on purpose, disable the rule for that file or block.
+The rule cannot tell whether the file belongs to a root module or a child module. In a root module, `provider "aws" { alias = "x" }` is technically legal, since it declares an alias that inherits the default configuration. If you have such a case on purpose, disable the rule for that file or block.
 
 ## Autofix
 

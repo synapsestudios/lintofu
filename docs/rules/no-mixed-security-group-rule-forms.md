@@ -44,7 +44,7 @@ Files excluded from linting via `ignores` but present in the same directory stil
 
 ## Autofix
 
-None. Consolidating onto one style is a design decision, not a mechanical transformation.
+None. Consolidating onto one style is a design decision; choosing which form to keep requires human judgment.
 
 ## Options
 

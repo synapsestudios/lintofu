@@ -3,7 +3,7 @@
 An ESLint plugin for linting [OpenTofu](https://opentofu.org) configurations.
 
 > [!WARNING]
-> The parser depends on Go's [`syscall/js`](https://pkg.go.dev/syscall/js), which the Go team has declared experimental and exempt from the Go compatibility promise. A future Go release can break us. `lintofu` will stay on `0.x` until `syscall/js` stabilises or we replace it. See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md).
+> The parser depends on Go's [`syscall/js`](https://pkg.go.dev/syscall/js), which the Go team has declared experimental and exempt from the Go compatibility promise. A future Go release can break us. `lintofu` will stay on `0.x` until `syscall/js` stabilizes or we replace it. See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md).
 
 Pre-1.0. API and rule set may change. Not yet published.
 
@@ -11,11 +11,13 @@ Pre-1.0. API and rule set may change. Not yet published.
 
 `lintofu` is an **ESLint language plugin** (the same mechanism that powers [`@eslint/json`](https://github.com/eslint/json) and [`@eslint/css`](https://github.com/eslint/css)). It parses `.tf` and `.tofu` files using HashiCorp's own `hcl/v2` parser (compiled to WebAssembly) and exposes the AST to ESLint rules so you can enforce OpenTofu coding conventions alongside the rest of your ESLint rules.
 
-## What it is not
+## Scope
 
-- **Not a replacement for `tofu validate`.** Validation is OpenTofu's job.
-- **Not competition for a future built-in OpenTofu linter.** The [OpenTofu linting RFC](https://github.com/opentofu/opentofu/pull/3999) covers semantic/evaluated rules (type-checking, symbol resolution) that need the full language runtime. `lintofu` stays on the syntactic/stylistic side (conventions, documentation, pinning) where ESLint's ecosystem is already a good fit.
-- **Not a TFLint fork.** TFLint doesn't support OpenTofu-specific features. This is a fresh ESLint-native tool.
+`lintofu` checks syntactic and stylistic conventions: documentation, pinning, and the structural patterns listed under [Rules](#rules). Its boundaries:
+
+- Semantic validation belongs to `tofu validate`. `lintofu` leaves that to OpenTofu.
+- Semantic and evaluated rules (type-checking, symbol resolution) belong to the future built-in linter described in the [OpenTofu linting RFC](https://github.com/opentofu/opentofu/pull/3999), which needs the full language runtime. `lintofu` stays on the syntactic and stylistic side, where ESLint's ecosystem already fits.
+- `lintofu` is a fresh ESLint-native tool. It shares no code with TFLint, which lacks OpenTofu-specific feature support.
 
 ## Install
 
@@ -79,7 +81,7 @@ interface ProjectIndex {
 }
 ```
 
-Scope is every `.tf` / `.tofu` file in the same directory as the file being linted — matching OpenTofu's module boundary. The index is cached per-directory and invalidated via file mtime. `findResource` takes an explicit address; `resolveTraversal` accepts a `ScopeTraversalExpr` like `aws_security_group.foo.id` and returns the defining `Block` or `undefined`.
+Scope is every `.tf` / `.tofu` file in the same directory as the file being linted, which matches OpenTofu's module boundary. The index is cached per-directory and invalidated via file mtime. `findResource` takes an explicit address; `resolveTraversal` accepts a `ScopeTraversalExpr` like `aws_security_group.foo.id` and returns the defining `Block` or `undefined`.
 
 ## Writing your own rule
 
