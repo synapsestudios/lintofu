@@ -46,6 +46,7 @@ export type Expression =
   | ObjectConsKeyExpr
   | ConditionalExpr
   | ForExpr
+  | SplatExpr
   | UnknownExpr;
 
 export interface LiteralValueExpr {
@@ -134,6 +135,13 @@ export interface ForExpr {
   range: Range;
 }
 
+export interface SplatExpr {
+  type: 'SplatExpr';
+  source: Expression;
+  each: Expression;
+  range: Range;
+}
+
 export interface UnknownExpr {
   type: 'UnknownExpr';
   unknownKind: string;
@@ -166,6 +174,7 @@ export type NodeType =
   | 'ObjectConsKeyExpr'
   | 'ConditionalExpr'
   | 'ForExpr'
+  | 'SplatExpr'
   | 'UnknownExpr'
   | 'TraverseRoot'
   | 'TraverseAttr';

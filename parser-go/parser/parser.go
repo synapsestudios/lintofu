@@ -177,6 +177,16 @@ type ForExpr struct {
 func (*ForExpr) expressionMarker()        {}
 func (e *ForExpr) expressionRange() Range { return e.Range }
 
+type SplatExpr struct {
+	Type   string     `json:"type"`
+	Source Expression `json:"source"`
+	Each   Expression `json:"each"`
+	Range  Range      `json:"range"`
+}
+
+func (*SplatExpr) expressionMarker()        {}
+func (e *SplatExpr) expressionRange() Range { return e.Range }
+
 type UnknownExpr struct {
 	Type        string `json:"type"`
 	UnknownKind string `json:"unknownKind"`
@@ -340,6 +350,13 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			CondExpr: convertExpression(ex.CondExpr),
 			Group:    ex.Group,
 			Range:    convertRange(ex.Range()),
+		}
+	case *hclsyntax.SplatExpr:
+		return &SplatExpr{
+			Type:   "SplatExpr",
+			Source: convertExpression(ex.Source),
+			Each:   convertExpression(ex.Each),
+			Range:  convertRange(ex.Range()),
 		}
 	default:
 		return &UnknownExpr{

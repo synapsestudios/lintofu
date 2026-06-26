@@ -77,6 +77,8 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
         '    command = join(",", [for x in self.triggers.items : x])',
       ),
     },
+    // A splat over an allowed root passes.
+    { code: destroyProvisioner('    command = self.x[*].id') },
   ],
   invalid: [
     {
@@ -221,6 +223,13 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       ),
       errors: [
         { messageId: 'disallowedReference', data: { name: 'var.list' } },
+      ],
+    },
+    // Ref hidden in the source of a splat.
+    {
+      code: destroyProvisioner('    command = aws_instance.x[*].id'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'aws_instance.x' } },
       ],
     },
   ],

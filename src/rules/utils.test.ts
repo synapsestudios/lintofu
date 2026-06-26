@@ -58,4 +58,10 @@ describe('collectTraversals', () => {
       names(await exprOf('[for o in var.outer : [for i in o.items : i.id]]')),
     ).toEqual(['var.outer']);
   });
+
+  it('collects the source of a splat expression', async () => {
+    expect(names(await exprOf('aws_instance.x[*].id'))).toEqual([
+      'aws_instance.x',
+    ]);
+  });
 });
