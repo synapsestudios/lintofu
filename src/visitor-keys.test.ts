@@ -29,6 +29,7 @@ describe('visitorKeys', () => {
         'Attribute',
         'Block',
         'Body',
+        'ConditionalExpr',
         'FunctionCallExpr',
         'LiteralValueExpr',
         'ObjectConsExpr',
@@ -47,7 +48,7 @@ describe('visitorKeys', () => {
     const fixture = [
       'variable "region" {',
       '  description = "hello ${var.x}"',
-      '  default     = 5',
+      '  default     = var.enabled ? var.a : var.b',
       '}',
       'terraform {',
       '  required_providers = {',

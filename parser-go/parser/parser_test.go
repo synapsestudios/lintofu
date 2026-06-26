@@ -92,8 +92,8 @@ func TestCtyToGoPrimitives(t *testing.T) {
 
 func TestUnknownExprFallback(t *testing.T) {
 	t.Parallel()
-	// a ? b : c is ConditionalExpr — still unhandled by convertExpression.
-	result := Parse([]byte(`locals { x = a ? b : c }`), "t.tf")
+	// [1, 2] is TupleConsExpr, still unhandled by convertExpression.
+	result := Parse([]byte(`locals { x = [1, 2] }`), "t.tf")
 	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
 	unknown, ok := expr.(*UnknownExpr)
 	if !ok {
@@ -102,8 +102,8 @@ func TestUnknownExprFallback(t *testing.T) {
 	if unknown.Type != "UnknownExpr" {
 		t.Errorf("Type = %q", unknown.Type)
 	}
-	if !strings.Contains(unknown.UnknownKind, "ConditionalExpr") {
-		t.Errorf("UnknownKind = %q, want it to contain \"ConditionalExpr\"", unknown.UnknownKind)
+	if !strings.Contains(unknown.UnknownKind, "TupleConsExpr") {
+		t.Errorf("UnknownKind = %q, want it to contain \"TupleConsExpr\"", unknown.UnknownKind)
 	}
 }
 
@@ -161,6 +161,44 @@ func TestFunctionCallExprNoArgs(t *testing.T) {
 	}
 	if len(call.Args) != 0 {
 		t.Errorf("len(Args) = %d, want 0", len(call.Args))
+	}
+}
+
+func TestConditionalExpr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = local.cond ? var.a : "b" }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	cond, ok := expr.(*ConditionalExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ConditionalExpr", expr)
+	}
+	if cond.Type != "ConditionalExpr" {
+		t.Errorf("Type = %q", cond.Type)
+	}
+	if _, ok := cond.Condition.(*ScopeTraversalExpr); !ok {
+		t.Errorf("Condition type = %T, want *ScopeTraversalExpr", cond.Condition)
+	}
+	if _, ok := cond.TrueResult.(*ScopeTraversalExpr); !ok {
+		t.Errorf("TrueResult type = %T, want *ScopeTraversalExpr", cond.TrueResult)
+	}
+	if _, ok := cond.FalseResult.(*TemplateExpr); !ok {
+		t.Errorf("FalseResult type = %T, want *TemplateExpr", cond.FalseResult)
+	}
+}
+
+func TestConditionalExprNested(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = a ? b : c ? d : e }`), "t.tf")
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	cond, ok := expr.(*ConditionalExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ConditionalExpr", expr)
+	}
+	if _, ok := cond.FalseResult.(*ConditionalExpr); !ok {
+		t.Errorf("FalseResult type = %T, want *ConditionalExpr", cond.FalseResult)
 	}
 }
 

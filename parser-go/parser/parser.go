@@ -151,6 +151,17 @@ type TemplateWrapExpr struct {
 func (*TemplateWrapExpr) expressionMarker()        {}
 func (e *TemplateWrapExpr) expressionRange() Range { return e.Range }
 
+type ConditionalExpr struct {
+	Type        string     `json:"type"`
+	Condition   Expression `json:"condition"`
+	TrueResult  Expression `json:"trueResult"`
+	FalseResult Expression `json:"falseResult"`
+	Range       Range      `json:"range"`
+}
+
+func (*ConditionalExpr) expressionMarker()        {}
+func (e *ConditionalExpr) expressionRange() Range { return e.Range }
+
 type UnknownExpr struct {
 	Type        string `json:"type"`
 	UnknownKind string `json:"unknownKind"`
@@ -294,6 +305,14 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			Type:    "TemplateWrapExpr",
 			Wrapped: convertExpression(ex.Wrapped),
 			Range:   convertRange(ex.Range()),
+		}
+	case *hclsyntax.ConditionalExpr:
+		return &ConditionalExpr{
+			Type:        "ConditionalExpr",
+			Condition:   convertExpression(ex.Condition),
+			TrueResult:  convertExpression(ex.TrueResult),
+			FalseResult: convertExpression(ex.FalseResult),
+			Range:       convertRange(ex.Range()),
 		}
 	default:
 		return &UnknownExpr{
