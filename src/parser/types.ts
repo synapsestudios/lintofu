@@ -44,6 +44,7 @@ export type Expression =
   | ScopeTraversalExpr
   | ObjectConsExpr
   | ObjectConsKeyExpr
+  | ConditionalExpr
   | UnknownExpr;
 
 export interface LiteralValueExpr {
@@ -112,6 +113,14 @@ export interface ObjectConsKeyExpr {
   range: Range;
 }
 
+export interface ConditionalExpr {
+  type: 'ConditionalExpr';
+  condition: Expression;
+  trueResult: Expression;
+  falseResult: Expression;
+  range: Range;
+}
+
 export interface UnknownExpr {
   type: 'UnknownExpr';
   unknownKind: string;
@@ -142,6 +151,7 @@ export type NodeType =
   | 'ScopeTraversalExpr'
   | 'ObjectConsExpr'
   | 'ObjectConsKeyExpr'
+  | 'ConditionalExpr'
   | 'UnknownExpr'
   | 'TraverseRoot'
   | 'TraverseAttr';

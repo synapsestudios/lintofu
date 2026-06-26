@@ -68,6 +68,8 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       FOO = self.id
     }`),
     },
+    // Allowed refs in both branches of a conditional still pass.
+    { code: destroyProvisioner('    command = true ? self.id : count.index') },
   ],
   invalid: [
     {
@@ -159,6 +161,41 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
     {
       code: destroyProvisioner('    command = upper(format("%s", local.x))'),
       errors: [{ messageId: 'disallowedReference', data: { name: 'local.x' } }],
+    },
+    // Refs hidden in a conditional's condition and true-result.
+    {
+      code: destroyProvisioner(
+        '    command = var.cleanup ? local.cleanup_cmd : "true"',
+      ),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.cleanup' } },
+        {
+          messageId: 'disallowedReference',
+          data: { name: 'local.cleanup_cmd' },
+        },
+      ],
+    },
+    // Ref hidden in a conditional's false-result.
+    {
+      code: destroyProvisioner('    command = true ? self.id : local.y'),
+      errors: [{ messageId: 'disallowedReference', data: { name: 'local.y' } }],
+    },
+    // Ref hidden in a nested conditional's deepest branch.
+    {
+      code: destroyProvisioner(
+        '    command = true ? self.id : true ? self.name : local.deep',
+      ),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'local.deep' } },
+      ],
+    },
+    // Conditional nested inside a template interpolation.
+    {
+      code: destroyProvisioner('    command = "${var.a ? local.b : "c"}"'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.a' } },
+        { messageId: 'disallowedReference', data: { name: 'local.b' } },
+      ],
     },
   ],
 });

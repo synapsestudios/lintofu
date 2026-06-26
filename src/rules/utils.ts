@@ -3,7 +3,52 @@ import type {
   Block,
   Expression,
   ObjectConsItem,
+  ScopeTraversalExpr,
 } from '../parser/types.js';
+import { visitorKeys } from '../visitor-keys.js';
+
+// Collects every ScopeTraversalExpr reachable from expr, descending via
+// visitorKeys so new expression types are handled as soon as they have an
+// entry there.
+export function collectTraversals(expr: Expression): ScopeTraversalExpr[] {
+  const out: ScopeTraversalExpr[] = [];
+  gather(expr, out);
+  return out;
+}
+
+function gather(expr: Expression, out: ScopeTraversalExpr[]): void {
+  if (expr.type === 'ScopeTraversalExpr') {
+    out.push(expr);
+    return;
+  }
+  // A bareword object key (`FOO = ...`) arrives as ObjectConsKeyExpr wrapping a
+  // single-step ScopeTraversalExpr; that's a name, never a reference.
+  if (expr.type === 'ObjectConsKeyExpr') return;
+  if (expr.type === 'ObjectConsExpr') {
+    for (const item of expr.items) {
+      gather(item.keyExpr, out);
+      gather(item.valueExpr, out);
+    }
+    return;
+  }
+  const indexed = expr as unknown as Record<string, unknown>;
+  for (const key of visitorKeys[expr.type]) {
+    const child = indexed[key];
+    if (Array.isArray(child)) {
+      for (const c of child) if (isExpression(c)) gather(c, out);
+    } else if (isExpression(child)) {
+      gather(child, out);
+    }
+  }
+}
+
+function isExpression(value: unknown): value is Expression {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Record<string, unknown>).type === 'string'
+  );
+}
 
 // Returns the concatenated string only when expr is a TemplateExpr made
 // entirely of literal string parts. Returns undefined for interpolated or

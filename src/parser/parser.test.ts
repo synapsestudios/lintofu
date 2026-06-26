@@ -66,4 +66,15 @@ describe('parse', () => {
     expect(expr.args[1]?.type).toBe('ScopeTraversalExpr');
     expect(expr.expandFinal).toBe(false);
   });
+
+  it('parses a ternary into a ConditionalExpr with typed branches', async () => {
+    const result = await parse('locals { x = local.cond ? var.a : "b" }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'ConditionalExpr') {
+      throw new Error(`expected ConditionalExpr, got ${expr?.type}`);
+    }
+    expect(expr.condition.type).toBe('ScopeTraversalExpr');
+    expect(expr.trueResult.type).toBe('ScopeTraversalExpr');
+    expect(expr.falseResult.type).toBe('TemplateExpr');
+  });
 });
