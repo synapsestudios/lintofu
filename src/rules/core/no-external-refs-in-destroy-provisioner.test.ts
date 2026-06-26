@@ -70,6 +70,13 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
     },
     // Allowed refs in both branches of a conditional still pass.
     { code: destroyProvisioner('    command = true ? self.id : count.index') },
+    // A for-expression loop var used as a traversal root is locally bound,
+    // not an external reference.
+    {
+      code: destroyProvisioner(
+        '    command = join(",", [for x in self.triggers.items : x])',
+      ),
+    },
   ],
   invalid: [
     {
@@ -195,6 +202,25 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       errors: [
         { messageId: 'disallowedReference', data: { name: 'var.a' } },
         { messageId: 'disallowedReference', data: { name: 'local.b' } },
+      ],
+    },
+    // Ref hidden in the collection of an object comprehension.
+    {
+      code: destroyProvisioner(
+        `    environment = { for k, v in var.envs : k => v }`,
+      ),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.envs' } },
+      ],
+    },
+    // Ref hidden in the collection of a list comprehension; the loop var s is
+    // not flagged.
+    {
+      code: destroyProvisioner(
+        '    command = join(",", [for s in var.list : s.secret])',
+      ),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.list' } },
       ],
     },
   ],
