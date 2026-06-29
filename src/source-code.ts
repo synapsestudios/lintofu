@@ -1,8 +1,58 @@
-import type { SourceLocation, SourceRange, TraversalStep } from '@eslint/core';
-import { TextSourceCodeBase, VisitNodeStep } from '@eslint/plugin-kit';
-import type { Body, NodeType, Range } from './parser/types.js';
+import type {
+  DirectiveType,
+  FileProblem,
+  SourceLocation,
+  SourceRange,
+  TraversalStep,
+} from '@eslint/core';
+import {
+  ConfigCommentParser,
+  Directive,
+  TextSourceCodeBase,
+  VisitNodeStep,
+} from '@eslint/plugin-kit';
+import type { Body, Comment, NodeType, Range } from './parser/types.js';
 import { getProjectIndex, type ProjectIndex } from './project-index.js';
 import { visitorKeys } from './visitor-keys.js';
+
+const commentParser = new ConfigCommentParser();
+
+// Maps a parsed directive label to its ESLint directive type. A comment is
+// only a disable directive if its label is one of these keys.
+const DIRECTIVE_TYPES: Record<string, DirectiveType> = {
+  'eslint-disable': 'disable',
+  'eslint-enable': 'enable',
+  'eslint-disable-line': 'disable-line',
+  'eslint-disable-next-line': 'disable-next-line',
+};
+
+// Strips the comment delimiter so the remaining text is what
+// ConfigCommentParser expects: `#` is one char, `//` and `/* */` are two.
+function stripDelimiter(comment: Comment): string {
+  if (comment.kind === 'block') {
+    return comment.value.slice(2, -2);
+  }
+  return comment.value.startsWith('//')
+    ? comment.value.slice(2)
+    : comment.value.slice(1);
+}
+
+function spansMultipleLines(comment: Comment): boolean {
+  return comment.range.start.line !== comment.range.end.line;
+}
+
+// Returns the disable-directive details for a comment, or undefined if it is
+// not a disable/enable directive. Shared by getDisableDirectives (to build
+// directives) and getInlineConfigNodes (to flag them under noInlineConfig).
+function parseDisableDirective(
+  comment: Comment,
+): { type: DirectiveType; value: string; justification: string } | undefined {
+  const parsed = commentParser.parseDirective(stripDelimiter(comment));
+  if (!parsed) return undefined;
+  const type = DIRECTIVE_TYPES[parsed.label];
+  if (!type) return undefined;
+  return { type, value: parsed.value, justification: parsed.justification };
+}
 
 export interface TofuParserServices {
   projectIndex: ProjectIndex;
@@ -25,24 +75,62 @@ interface TofuSourceCodeOptions {
   LangOptions: Record<string, unknown>;
   RootNode: Body;
   SyntaxElementWithLoc: TofuNode;
-  ConfigNode: unknown;
+  ConfigNode: Comment;
 }
 
 export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions> {
   readonly #moduleDir: string | undefined;
+  readonly comments: Comment[];
   #cachedServices: TofuParserServices | undefined;
 
   constructor({
     text,
     ast,
+    comments = [],
     moduleDir,
   }: {
     text: string;
     ast: Body;
+    comments?: Comment[];
     moduleDir?: string;
   }) {
     super({ text, ast });
+    this.comments = comments;
     this.#moduleDir = moduleDir;
+  }
+
+  getDisableDirectives(): {
+    directives: Directive[];
+    problems: FileProblem[];
+  } {
+    const directives: Directive[] = [];
+    const problems: FileProblem[] = [];
+
+    for (const comment of this.comments) {
+      const directive = parseDisableDirective(comment);
+      if (!directive) continue;
+      const { type, value, justification } = directive;
+
+      if (type === 'disable-line' && spansMultipleLines(comment)) {
+        problems.push({
+          ruleId: null,
+          message:
+            'eslint-disable-line comment should not span multiple lines.',
+          loc: this.getLoc(comment),
+        });
+        continue;
+      }
+
+      directives.push(
+        new Directive({ type, node: comment, value, justification }),
+      );
+    }
+
+    return { directives, problems };
+  }
+
+  getInlineConfigNodes(): Comment[] {
+    return this.comments.filter((c) => parseDisableDirective(c) !== undefined);
   }
 
   get parserServices(): TofuParserServices {

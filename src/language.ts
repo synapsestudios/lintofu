@@ -6,7 +6,7 @@ import type {
   ParseResult,
 } from '@eslint/core';
 import { dirname, isAbsolute, resolve } from 'node:path';
-import { type Body, parseSync } from './parser/index.js';
+import { type Body, type Comment, parseSync } from './parser/index.js';
 import { OpenTofuSourceCode } from './source-code.js';
 
 export class OpenTofuLanguage implements Language {
@@ -41,7 +41,9 @@ export class OpenTofuLanguage implements Language {
       };
     }
 
-    return { ok: true, ast: result.ast };
+    // Comments ride on the parse result's open index signature and are
+    // read back in createSourceCode; they are not part of the AST.
+    return { ok: true, ast: result.ast, comments: result.comments };
   }
 
   createSourceCode(
@@ -54,7 +56,13 @@ export class OpenTofuLanguage implements Language {
         ? file.body
         : new TextDecoder().decode(file.body);
     const moduleDir = deriveModuleDir(file.physicalPath);
-    return new OpenTofuSourceCode({ text, ast: parseResult.ast, moduleDir });
+    const comments = (parseResult.comments as Comment[] | undefined) ?? [];
+    return new OpenTofuSourceCode({
+      text,
+      ast: parseResult.ast,
+      comments,
+      moduleDir,
+    });
   }
 }
 

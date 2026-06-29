@@ -203,8 +203,18 @@ type Diagnostic struct {
 	Range    Range  `json:"range"`
 }
 
+// Comment is not an AST node: it lives on its own channel so rule visitors
+// never receive it. Kind is "line" (# or //) or "block" (/* */).
+type Comment struct {
+	Type  string `json:"type"`
+	Kind  string `json:"kind"`
+	Value string `json:"value"`
+	Range Range  `json:"range"`
+}
+
 type Result struct {
 	AST         *Body        `json:"ast"`
+	Comments    []*Comment   `json:"comments"`
 	Diagnostics []Diagnostic `json:"diagnostics"`
 }
 
@@ -212,7 +222,10 @@ type Result struct {
 func Parse(src []byte, filename string) Result {
 	file, diags := hclsyntax.ParseConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
 
-	result := Result{Diagnostics: convertDiagnostics(diags)}
+	result := Result{
+		Comments:    collectComments(src, filename),
+		Diagnostics: convertDiagnostics(diags),
+	}
 	if file == nil {
 		result.AST = emptyBody()
 		return result
@@ -445,6 +458,69 @@ func convertDiagnostics(diags hcl.Diagnostics) []Diagnostic {
 		})
 	}
 	return out
+}
+
+// collectComments runs a separate lexer pass because ParseConfig does not
+// retain comments on the resulting Body. The lexer keeps comments out of
+// strings, templates, and heredocs, so a # inside a quoted string never
+// surfaces as a comment token. Lex diagnostics are ignored: ParseConfig
+// already owns error reporting.
+func collectComments(src []byte, filename string) []*Comment {
+	tokens, _ := hclsyntax.LexConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
+	out := make([]*Comment, 0)
+	for _, tok := range tokens {
+		if tok.Type != hclsyntax.TokenComment {
+			continue
+		}
+		out = append(out, convertComment(tok))
+	}
+	return out
+}
+
+func convertComment(tok hclsyntax.Token) *Comment {
+	bytes := tok.Bytes
+	rng := convertRange(tok.Range)
+	kind := "block"
+	if isLineComment(bytes) {
+		kind = "line"
+		bytes, rng = trimLineCommentNewline(bytes, rng)
+	}
+	return &Comment{
+		Type:  "Comment",
+		Kind:  kind,
+		Value: string(bytes),
+		Range: rng,
+	}
+}
+
+func isLineComment(b []byte) bool {
+	if len(b) > 0 && b[0] == '#' {
+		return true
+	}
+	return len(b) >= 2 && b[0] == '/' && b[1] == '/'
+}
+
+// trimLineCommentNewline drops the trailing newline HCL includes in a line
+// comment token. Line comments are single-line, so the trimmed end is
+// recomputed from the start using the byte length of the remaining text.
+func trimLineCommentNewline(b []byte, rng Range) ([]byte, Range) {
+	trimmed := b
+	for len(trimmed) > 0 {
+		last := trimmed[len(trimmed)-1]
+		if last != '\n' && last != '\r' {
+			break
+		}
+		trimmed = trimmed[:len(trimmed)-1]
+	}
+	if len(trimmed) == len(b) {
+		return b, rng
+	}
+	rng.End = Pos{
+		Line:   rng.Start.Line,
+		Column: rng.Start.Column + len(trimmed),
+		Offset: rng.Start.Offset + len(trimmed),
+	}
+	return trimmed, rng
 }
 
 func emptyBody() *Body {
