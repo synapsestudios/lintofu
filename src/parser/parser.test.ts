@@ -112,3 +112,53 @@ describe('parse', () => {
     expect(expr.source.type).toBe('ScopeTraversalExpr');
   });
 });
+
+describe('comments', () => {
+  it('collects a # line comment with its trailing newline trimmed', async () => {
+    const result = await parse('# note\nvariable "v" {}', { filename: 'c.tf' });
+
+    expect(result.comments).toHaveLength(1);
+    const comment = result.comments[0];
+    if (!comment) throw new Error('expected one comment');
+    expect(comment.type).toBe('Comment');
+    expect(comment.kind).toBe('line');
+    expect(comment.value).toBe('# note');
+    // The trailing newline must NOT extend the range onto line 2, or
+    // same-line directive detection and the unused-directive autofix break.
+    expect(comment.range.start.line).toBe(1);
+    expect(comment.range.end.line).toBe(1);
+  });
+
+  it('trims the trailing newline from a // line comment too', async () => {
+    const result = await parse('// note\nvariable "v" {}', {
+      filename: 'c.tf',
+    });
+
+    const comment = result.comments[0];
+    if (!comment) throw new Error('expected one comment');
+    expect(comment.kind).toBe('line');
+    expect(comment.value).toBe('// note');
+    expect(comment.range.end.line).toBe(1);
+  });
+
+  it('keeps a block comment range intact (no newline to trim)', async () => {
+    const result = await parse('/* note */\nvariable "v" {}', {
+      filename: 'c.tf',
+    });
+
+    const comment = result.comments[0];
+    if (!comment) throw new Error('expected one comment');
+    expect(comment.kind).toBe('block');
+    expect(comment.value).toBe('/* note */');
+    expect(comment.range.start.line).toBe(1);
+    expect(comment.range.end.line).toBe(1);
+  });
+
+  it('does not treat a # inside a quoted string as a comment', async () => {
+    const result = await parse('variable "v" {\n  default = "a # b"\n}', {
+      filename: 'c.tf',
+    });
+
+    expect(result.comments).toEqual([]);
+  });
+});

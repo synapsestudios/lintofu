@@ -155,8 +155,19 @@ export interface Diagnostic {
   range: Range;
 }
 
+// Not an AST node: comments travel on their own channel and are never added
+// to NodeType, visitorKeys, or traverse(). Kind is 'line' (# or //) or
+// 'block' (/* */).
+export interface Comment {
+  type: 'Comment';
+  kind: 'line' | 'block';
+  value: string;
+  range: Range;
+}
+
 export interface ParseResult {
   ast: Body;
+  comments: Comment[];
   diagnostics: Diagnostic[];
 }
 

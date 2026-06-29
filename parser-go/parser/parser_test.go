@@ -362,3 +362,48 @@ locals {
 		t.Errorf("diagnostics missing/wrong type in round-tripped JSON: %s", b)
 	}
 }
+
+func TestLineCommentTrimsTrailingNewline(t *testing.T) {
+	t.Parallel()
+	for _, prefix := range []string{"#", "//"} {
+		result := Parse([]byte(prefix+" note\nvariable \"v\" {}"), "t.tf")
+		if len(result.Comments) != 1 {
+			t.Fatalf("%s: got %d comments, want 1", prefix, len(result.Comments))
+		}
+		c := result.Comments[0]
+		if c.Type != "Comment" || c.Kind != "line" {
+			t.Errorf("%s: Type/Kind = %q/%q", prefix, c.Type, c.Kind)
+		}
+		if c.Value != prefix+" note" {
+			t.Errorf("%s: Value = %q", prefix, c.Value)
+		}
+		// The trailing newline must not push the end onto line 2.
+		if c.Range.Start.Line != 1 || c.Range.End.Line != 1 {
+			t.Errorf("%s: range spans lines %d..%d, want 1..1",
+				prefix, c.Range.Start.Line, c.Range.End.Line)
+		}
+	}
+}
+
+func TestBlockCommentRangeIntact(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte("/* note */\nvariable \"v\" {}"), "t.tf")
+	if len(result.Comments) != 1 {
+		t.Fatalf("got %d comments, want 1", len(result.Comments))
+	}
+	c := result.Comments[0]
+	if c.Kind != "block" || c.Value != "/* note */" {
+		t.Errorf("Kind/Value = %q/%q", c.Kind, c.Value)
+	}
+	if c.Range.End.Line != 1 {
+		t.Errorf("block comment end line = %d, want 1", c.Range.End.Line)
+	}
+}
+
+func TestCommentInsideStringIsNotCollected(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte("variable \"v\" {\n  default = \"a # b\"\n}"), "t.tf")
+	if len(result.Comments) != 0 {
+		t.Errorf("got %d comments, want 0: %+v", len(result.Comments), result.Comments)
+	}
+}
