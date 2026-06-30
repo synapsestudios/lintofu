@@ -5,7 +5,7 @@ An ESLint plugin for linting [OpenTofu](https://opentofu.org) configurations.
 > [!WARNING]
 > The parser depends on Go's [`syscall/js`](https://pkg.go.dev/syscall/js), which the Go team has declared experimental and exempt from the Go compatibility promise. A future Go release can break us. `lintofu` will stay on `0.x` until `syscall/js` stabilizes or we replace it. See [ADR 0001](./docs/adr/0001-syscall-js-experimental.md).
 
-Pre-1.0. API and rule set may change. Not yet published.
+Pre-1.0. API and rule set may change. Published to GitHub Packages under the `@synapsestudios` scope while it's being tested internally; a move to the public npm registry will follow.
 
 ## What it is
 
@@ -22,7 +22,14 @@ Pre-1.0. API and rule set may change. Not yet published.
 ## Install
 
 ```sh
-npm install --save-dev lintofu
+npm install --save-dev @synapsestudios/lintofu
+```
+
+The package lives in GitHub Packages, so consumers need an `.npmrc` that maps the `@synapsestudios` scope to the registry and supplies a token with `read:packages`:
+
+```
+@synapsestudios:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
 Requires Node ^20.19, ^22.13, or >=24 and ESLint ^9 || ^10.
@@ -31,7 +38,7 @@ Requires Node ^20.19, ^22.13, or >=24 and ESLint ^9 || ^10.
 
 ```js
 // eslint.config.js
-import lintofu from "lintofu";
+import lintofu from "@synapsestudios/lintofu";
 
 export default [lintofu.configs.recommended];
 ```
@@ -40,7 +47,7 @@ Or wire up manually for full control:
 
 ```js
 // eslint.config.js
-import lintofu from "lintofu";
+import lintofu from "@synapsestudios/lintofu";
 
 export default [
   {
@@ -88,7 +95,7 @@ Scope is every `.tf` / `.tofu` file in the same directory as the file being lint
 `lintofu` re-exports the same rule-authoring types it uses internally, so a custom rule type-checks without reaching into private modules.
 
 ```ts
-import type { OpenTofuRuleDefinition } from "lintofu";
+import type { OpenTofuRuleDefinition } from "@synapsestudios/lintofu";
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: "missingTags" }> = {
   meta: {

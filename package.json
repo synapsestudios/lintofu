@@ -1,10 +1,17 @@
 {
-  "name": "lintofu",
+  "name": "@synapsestudios/lintofu",
   "version": "0.0.0",
   "description": "ESLint plugin for linting OpenTofu configurations",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/synapsestudios/lintofu.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
