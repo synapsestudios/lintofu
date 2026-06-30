@@ -83,6 +83,8 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
     { code: destroyProvisioner('    command = self.x[0]') },
     // A non-constant index with an allowed collection and key passes.
     { code: destroyProvisioner('    command = self.x[count.index]') },
+    // A relative traversal off a parenthesized allowed root passes.
+    { code: destroyProvisioner('    command = (self).id') },
   ],
   invalid: [
     {
@@ -258,6 +260,20 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
           messageId: 'disallowedReference',
           data: { name: 'var.commands[0]' },
         },
+      ],
+    },
+    // Ref hidden in the parenthesized source of a relative traversal.
+    {
+      code: destroyProvisioner('    command = (var.bastion).address'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.bastion' } },
+      ],
+    },
+    // Ref hidden in a function-call source of a relative traversal.
+    {
+      code: destroyProvisioner('    command = try(var.bastion, null).address'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.bastion' } },
       ],
     },
   ],

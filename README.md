@@ -155,9 +155,9 @@ Anything marked Not Yet Implemented falls back to `UnknownExpr`, so rules can se
 | `TemplateWrapExpr`                                           | ✅        |                     |
 | `ScopeTraversalExpr` (e.g. `var.foo`, `aws_instance.web.id`) | ✅        |                     |
 | `ObjectConsExpr` / `ObjectConsKeyExpr` (object literals)     | ✅        |                     |
+| `RelativeTraversalExpr` (e.g. `(var.x).id`)                  | ✅        |                     |
+| `ParenthesesExpr` (e.g. `(var.x)`)                           | ✅        |                     |
 | `TupleConsExpr` (list literals)                              |           | ❌                  |
-| `RelativeTraversalExpr`                                      |           | ❌                  |
 | `BinaryOpExpr` / `UnaryOpExpr`                               |           | ❌                  |
-| `ParenthesesExpr`                                            |           | ❌                  |
 
 [^ast-coverage]: This list is non-exhaustive and will likely be expanded as new expression types are added to the parser.

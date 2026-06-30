@@ -205,6 +205,31 @@ type IndexExpr struct {
 func (*IndexExpr) expressionMarker()        {}
 func (e *IndexExpr) expressionRange() Range { return e.Range }
 
+// A traversal chained onto a non-variable source, e.g. the `.id` in
+// `aws_instance.x[*].id` (source is the splat's anonymous symbol) or the
+// `.address` in `(var.x).address` (source is a ParenthesesExpr). A traversal
+// rooted on a bare symbol folds into ScopeTraversalExpr instead.
+type RelativeTraversalExpr struct {
+	Type      string      `json:"type"`
+	Source    Expression  `json:"source"`
+	Traversal []Traverser `json:"traversal"`
+	Range     Range       `json:"range"`
+}
+
+func (*RelativeTraversalExpr) expressionMarker()        {}
+func (e *RelativeTraversalExpr) expressionRange() Range { return e.Range }
+
+// `(expr)`: explicit grouping parens. hclsyntax keeps the node so a traversal
+// or operator hanging off the group has something to attach to.
+type ParenthesesExpr struct {
+	Type       string     `json:"type"`
+	Expression Expression `json:"expression"`
+	Range      Range      `json:"range"`
+}
+
+func (*ParenthesesExpr) expressionMarker()        {}
+func (e *ParenthesesExpr) expressionRange() Range { return e.Range }
+
 type UnknownExpr struct {
 	Type        string `json:"type"`
 	UnknownKind string `json:"unknownKind"`
@@ -394,6 +419,23 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			Type:       "IndexExpr",
 			Collection: convertExpression(ex.Collection),
 			Key:        convertExpression(ex.Key),
+			Range:      convertRange(ex.Range()),
+		}
+	case *hclsyntax.RelativeTraversalExpr:
+		travs := make([]Traverser, 0, len(ex.Traversal))
+		for _, t := range ex.Traversal {
+			travs = append(travs, convertTraverser(t))
+		}
+		return &RelativeTraversalExpr{
+			Type:      "RelativeTraversalExpr",
+			Source:    convertExpression(ex.Source),
+			Traversal: travs,
+			Range:     convertRange(ex.Range()),
+		}
+	case *hclsyntax.ParenthesesExpr:
+		return &ParenthesesExpr{
+			Type:       "ParenthesesExpr",
+			Expression: convertExpression(ex.Expression),
 			Range:      convertRange(ex.Range()),
 		}
 	default:

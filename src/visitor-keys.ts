@@ -18,6 +18,8 @@ export const visitorKeys: Record<NodeType, readonly string[]> = {
   ForExpr: ['collExpr', 'keyExpr', 'valExpr', 'condExpr'],
   SplatExpr: ['source', 'each'],
   IndexExpr: ['collection', 'key'],
+  RelativeTraversalExpr: ['source'],
+  ParenthesesExpr: ['expression'],
   LiteralValueExpr: [],
   UnknownExpr: [],
   TraverseRoot: [],
