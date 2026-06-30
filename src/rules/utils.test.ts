@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { initialize, parse } from '../parser/index.js';
 import type { Expression } from '../parser/types.js';
-import { collectTraversals } from './utils.js';
+import { collectTraversals, traversalText } from './utils.js';
 
 beforeAll(async () => {
   await initialize();
@@ -15,9 +15,7 @@ async function exprOf(code: string): Promise<Expression> {
 }
 
 function names(expr: Expression): string[] {
-  return collectTraversals(expr).map((t) =>
-    t.traversal.map((s) => s.name).join('.'),
-  );
+  return collectTraversals(expr).map(traversalText);
 }
 
 describe('collectTraversals', () => {
@@ -63,5 +61,16 @@ describe('collectTraversals', () => {
     expect(names(await exprOf('aws_instance.x[*].id'))).toEqual([
       'aws_instance.x',
     ]);
+  });
+
+  it('collects both positions of a non-constant index expression', async () => {
+    expect(names(await exprOf('local.map[var.lookup_key]'))).toEqual([
+      'local.map',
+      'var.lookup_key',
+    ]);
+  });
+
+  it('renders a folded constant index as part of the traversal text', async () => {
+    expect(names(await exprOf('var.commands[0]'))).toEqual(['var.commands[0]']);
   });
 });

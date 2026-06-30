@@ -79,6 +79,10 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
     },
     // A splat over an allowed root passes.
     { code: destroyProvisioner('    command = self.x[*].id') },
+    // A constant index over an allowed root folds into the traversal and passes.
+    { code: destroyProvisioner('    command = self.x[0]') },
+    // A non-constant index with an allowed collection and key passes.
+    { code: destroyProvisioner('    command = self.x[count.index]') },
   ],
   invalid: [
     {
@@ -230,6 +234,30 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       code: destroyProvisioner('    command = aws_instance.x[*].id'),
       errors: [
         { messageId: 'disallowedReference', data: { name: 'aws_instance.x' } },
+      ],
+    },
+    // Refs in both positions of a non-constant index expression.
+    {
+      code: destroyProvisioner('    command = var.commands[var.i]'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.commands' } },
+        { messageId: 'disallowedReference', data: { name: 'var.i' } },
+      ],
+    },
+    // Ref only in the key; the allowed collection self is not flagged.
+    {
+      code: destroyProvisioner('    command = self.triggers[var.idx]'),
+      errors: [{ messageId: 'disallowedReference', data: { name: 'var.idx' } }],
+    },
+    // A constant index folds into the traversal; the disallowed root is still
+    // flagged (this input previously crashed the rule on a null traverser).
+    {
+      code: destroyProvisioner('    command = var.commands[0]'),
+      errors: [
+        {
+          messageId: 'disallowedReference',
+          data: { name: 'var.commands[0]' },
+        },
       ],
     },
   ],

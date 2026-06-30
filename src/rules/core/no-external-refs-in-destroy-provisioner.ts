@@ -4,7 +4,7 @@ import type {
   ScopeTraversalExpr,
 } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { collectTraversals, findAttribute } from '../utils.js';
+import { collectTraversals, findAttribute, traversalText } from '../utils.js';
 
 function isDestroyBareword(expr: Expression): boolean {
   return (
@@ -34,10 +34,6 @@ function isAllowedTraversal(expr: ScopeTraversalExpr): boolean {
     );
   }
   return false;
-}
-
-function traversalText(expr: ScopeTraversalExpr): string {
-  return expr.traversal.map((t) => t.name).join('.');
 }
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: 'disallowedReference' }> = {

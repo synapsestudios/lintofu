@@ -17,8 +17,10 @@ export const visitorKeys: Record<NodeType, readonly string[]> = {
   ConditionalExpr: ['condition', 'trueResult', 'falseResult'],
   ForExpr: ['collExpr', 'keyExpr', 'valExpr', 'condExpr'],
   SplatExpr: ['source', 'each'],
+  IndexExpr: ['collection', 'key'],
   LiteralValueExpr: [],
   UnknownExpr: [],
   TraverseRoot: [],
   TraverseAttr: [],
+  TraverseIndex: [],
 };

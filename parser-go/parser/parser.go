@@ -114,6 +114,14 @@ type TraverseAttr struct {
 
 func (*TraverseAttr) traverserMarker() {}
 
+type TraverseIndex struct {
+	Type  string `json:"type"`
+	Key   any    `json:"key"`
+	Range Range  `json:"range"`
+}
+
+func (*TraverseIndex) traverserMarker() {}
+
 type ObjectConsExpr struct {
 	Type  string           `json:"type"`
 	Items []ObjectConsItem `json:"items"`
@@ -186,6 +194,16 @@ type SplatExpr struct {
 
 func (*SplatExpr) expressionMarker()        {}
 func (e *SplatExpr) expressionRange() Range { return e.Range }
+
+type IndexExpr struct {
+	Type       string     `json:"type"`
+	Collection Expression `json:"collection"`
+	Key        Expression `json:"key"`
+	Range      Range      `json:"range"`
+}
+
+func (*IndexExpr) expressionMarker()        {}
+func (e *IndexExpr) expressionRange() Range { return e.Range }
 
 type UnknownExpr struct {
 	Type        string `json:"type"`
@@ -371,6 +389,13 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			Each:   convertExpression(ex.Each),
 			Range:  convertRange(ex.Range()),
 		}
+	case *hclsyntax.IndexExpr:
+		return &IndexExpr{
+			Type:       "IndexExpr",
+			Collection: convertExpression(ex.Collection),
+			Key:        convertExpression(ex.Key),
+			Range:      convertRange(ex.Range()),
+		}
 	default:
 		return &UnknownExpr{
 			Type:        "UnknownExpr",
@@ -392,6 +417,12 @@ func convertTraverser(t hcl.Traverser) Traverser {
 		return &TraverseAttr{
 			Type:  "TraverseAttr",
 			Name:  tr.Name,
+			Range: convertRange(tr.SrcRange),
+		}
+	case hcl.TraverseIndex:
+		return &TraverseIndex{
+			Type:  "TraverseIndex",
+			Key:   ctyToGo(tr.Key),
 			Range: convertRange(tr.SrcRange),
 		}
 	default:

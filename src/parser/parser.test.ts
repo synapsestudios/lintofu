@@ -111,6 +111,29 @@ describe('parse', () => {
     }
     expect(expr.source.type).toBe('ScopeTraversalExpr');
   });
+
+  it('parses a non-constant index into an IndexExpr', async () => {
+    const result = await parse('locals { x = var.commands[var.i] }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'IndexExpr') {
+      throw new Error(`expected IndexExpr, got ${expr?.type}`);
+    }
+    expect(expr.collection.type).toBe('ScopeTraversalExpr');
+    expect(expr.key.type).toBe('ScopeTraversalExpr');
+  });
+
+  it('folds a constant index into the traversal as a TraverseIndex', async () => {
+    const result = await parse('locals { x = var.commands[0] }');
+    const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
+    if (expr?.type !== 'ScopeTraversalExpr') {
+      throw new Error(`expected ScopeTraversalExpr, got ${expr?.type}`);
+    }
+    const last = expr.traversal[expr.traversal.length - 1];
+    if (last?.type !== 'TraverseIndex') {
+      throw new Error(`expected TraverseIndex, got ${last?.type}`);
+    }
+    expect(last.key).toBe(0);
+  });
 });
 
 describe('comments', () => {
