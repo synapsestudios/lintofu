@@ -293,6 +293,75 @@ func TestSplatExprAttrDotForm(t *testing.T) {
 	}
 }
 
+// A non-constant index key produces an IndexExpr; both the collection and
+// the key are inspectable sub-expressions.
+func TestIndexExpr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = var.commands[var.i] }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	ie, ok := expr.(*IndexExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *IndexExpr", expr)
+	}
+	if ie.Type != "IndexExpr" {
+		t.Errorf("Type = %q", ie.Type)
+	}
+	if _, ok := ie.Collection.(*ScopeTraversalExpr); !ok {
+		t.Errorf("Collection type = %T, want *ScopeTraversalExpr", ie.Collection)
+	}
+	if _, ok := ie.Key.(*ScopeTraversalExpr); !ok {
+		t.Errorf("Key type = %T, want *ScopeTraversalExpr", ie.Key)
+	}
+}
+
+// A constant index is folded into the traversal as a TraverseIndex step
+// rather than an IndexExpr.
+func TestTraverseIndexNumber(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = var.commands[0] }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	st, ok := expr.(*ScopeTraversalExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ScopeTraversalExpr", expr)
+	}
+	if len(st.Traversal) != 3 {
+		t.Fatalf("traversal len = %d, want 3", len(st.Traversal))
+	}
+	ti, ok := st.Traversal[2].(*TraverseIndex)
+	if !ok {
+		t.Fatalf("traversal[2] type = %T, want *TraverseIndex", st.Traversal[2])
+	}
+	if ti.Key != float64(0) {
+		t.Errorf("Key = %v, want 0", ti.Key)
+	}
+}
+
+func TestTraverseIndexString(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = local.map["region"] }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	st, ok := expr.(*ScopeTraversalExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *ScopeTraversalExpr", expr)
+	}
+	ti, ok := st.Traversal[len(st.Traversal)-1].(*TraverseIndex)
+	if !ok {
+		t.Fatalf("last traverser type = %T, want *TraverseIndex", st.Traversal[len(st.Traversal)-1])
+	}
+	if ti.Key != "region" {
+		t.Errorf("Key = %v, want region", ti.Key)
+	}
+}
+
 func TestDiagnosticFlatten(t *testing.T) {
 	t.Parallel()
 	result := Parse([]byte(`variable "x" {`), "t.tf")

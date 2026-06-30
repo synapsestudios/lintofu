@@ -74,7 +74,6 @@ resource "null_resource" "cleanup" {
 
 The parser currently surfaces several expression types as `UnknownExpr`, so the rule cannot see traversals nested inside them:
 
-- `IndexExpr`
 - `RelativeTraversalExpr`
 - `BinaryOpExpr` / `UnaryOpExpr`
 - `ParenthesesExpr`

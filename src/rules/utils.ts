@@ -68,6 +68,20 @@ function isExpression(value: unknown): value is Expression {
   );
 }
 
+// Renders a traversal back to source-like text: `var.commands[0]`,
+// `local.map["region"]`. Index steps are bracketed; attr/root steps dotted.
+export function traversalText(expr: ScopeTraversalExpr): string {
+  let out = '';
+  for (const step of expr.traversal) {
+    if (step.type === 'TraverseIndex') {
+      out += `[${typeof step.key === 'string' ? JSON.stringify(step.key) : String(step.key)}]`;
+    } else {
+      out += out === '' ? step.name : `.${step.name}`;
+    }
+  }
+  return out;
+}
+
 // Returns the concatenated string only when expr is a TemplateExpr made
 // entirely of literal string parts. Returns undefined for interpolated or
 // otherwise dynamic values so rules can opt out of judging them.

@@ -47,6 +47,7 @@ export type Expression =
   | ConditionalExpr
   | ForExpr
   | SplatExpr
+  | IndexExpr
   | UnknownExpr;
 
 export interface LiteralValueExpr {
@@ -83,7 +84,7 @@ export interface ScopeTraversalExpr {
   range: Range;
 }
 
-export type Traverser = TraverseRoot | TraverseAttr;
+export type Traverser = TraverseRoot | TraverseAttr | TraverseIndex;
 
 export interface TraverseRoot {
   type: 'TraverseRoot';
@@ -94,6 +95,12 @@ export interface TraverseRoot {
 export interface TraverseAttr {
   type: 'TraverseAttr';
   name: string;
+  range: Range;
+}
+
+export interface TraverseIndex {
+  type: 'TraverseIndex';
+  key: string | number | boolean | null;
   range: Range;
 }
 
@@ -142,6 +149,15 @@ export interface SplatExpr {
   range: Range;
 }
 
+// `x[k]` where k is non-constant. A constant index folds into the enclosing
+// ScopeTraversalExpr as a TraverseIndex step instead.
+export interface IndexExpr {
+  type: 'IndexExpr';
+  collection: Expression;
+  key: Expression;
+  range: Range;
+}
+
 export interface UnknownExpr {
   type: 'UnknownExpr';
   unknownKind: string;
@@ -186,6 +202,8 @@ export type NodeType =
   | 'ConditionalExpr'
   | 'ForExpr'
   | 'SplatExpr'
+  | 'IndexExpr'
   | 'UnknownExpr'
   | 'TraverseRoot'
-  | 'TraverseAttr';
+  | 'TraverseAttr'
+  | 'TraverseIndex';
