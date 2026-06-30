@@ -476,3 +476,58 @@ func TestCommentInsideStringIsNotCollected(t *testing.T) {
 		t.Errorf("got %d comments, want 0: %+v", len(result.Comments), result.Comments)
 	}
 }
+
+// `(var.x).address`: the parens force a RelativeTraversalExpr whose source is
+// a ParenthesesExpr wrapping the inner traversal, not a bare ScopeTraversalExpr.
+func TestRelativeTraversalExprParens(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = (var.bastion).address }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	rte, ok := expr.(*RelativeTraversalExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *RelativeTraversalExpr", expr)
+	}
+	if rte.Type != "RelativeTraversalExpr" {
+		t.Errorf("Type = %q", rte.Type)
+	}
+	if len(rte.Traversal) != 1 {
+		t.Fatalf("traversal len = %d, want 1", len(rte.Traversal))
+	}
+	attr, ok := rte.Traversal[0].(*TraverseAttr)
+	if !ok || attr.Name != "address" {
+		t.Errorf("traversal[0] = %#v, want TraverseAttr address", rte.Traversal[0])
+	}
+	paren, ok := rte.Source.(*ParenthesesExpr)
+	if !ok {
+		t.Fatalf("Source type = %T, want *ParenthesesExpr", rte.Source)
+	}
+	if _, ok := paren.Expression.(*ScopeTraversalExpr); !ok {
+		t.Errorf("ParenthesesExpr.Expression type = %T, want *ScopeTraversalExpr", paren.Expression)
+	}
+}
+
+// `aws_instance.x[*].id`: the splat stays a SplatExpr; the `.id` is a
+// RelativeTraversalExpr in the splat's Each, rooted on the anonymous symbol.
+func TestRelativeTraversalExprSplatEach(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = aws_instance.x[*].id }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	se, ok := expr.(*SplatExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *SplatExpr", expr)
+	}
+	rte, ok := se.Each.(*RelativeTraversalExpr)
+	if !ok {
+		t.Fatalf("Each type = %T, want *RelativeTraversalExpr", se.Each)
+	}
+	attr, ok := rte.Traversal[0].(*TraverseAttr)
+	if !ok || attr.Name != "id" {
+		t.Errorf("traversal[0] = %#v, want TraverseAttr id", rte.Traversal[0])
+	}
+}

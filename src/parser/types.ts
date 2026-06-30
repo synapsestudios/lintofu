@@ -48,6 +48,8 @@ export type Expression =
   | ForExpr
   | SplatExpr
   | IndexExpr
+  | RelativeTraversalExpr
+  | ParenthesesExpr
   | UnknownExpr;
 
 export interface LiteralValueExpr {
@@ -158,6 +160,24 @@ export interface IndexExpr {
   range: Range;
 }
 
+// A traversal chained onto a non-variable source: the `.id` in
+// `aws_instance.x[*].id` or the `.address` in `(var.x).address`. A traversal
+// rooted on a bare symbol folds into ScopeTraversalExpr instead.
+export interface RelativeTraversalExpr {
+  type: 'RelativeTraversalExpr';
+  source: Expression;
+  traversal: Traverser[];
+  range: Range;
+}
+
+// `(expr)`: explicit grouping parens, kept so a chained traversal or operator
+// has something to attach to.
+export interface ParenthesesExpr {
+  type: 'ParenthesesExpr';
+  expression: Expression;
+  range: Range;
+}
+
 export interface UnknownExpr {
   type: 'UnknownExpr';
   unknownKind: string;
@@ -203,6 +223,8 @@ export type NodeType =
   | 'ForExpr'
   | 'SplatExpr'
   | 'IndexExpr'
+  | 'RelativeTraversalExpr'
+  | 'ParenthesesExpr'
   | 'UnknownExpr'
   | 'TraverseRoot'
   | 'TraverseAttr'
