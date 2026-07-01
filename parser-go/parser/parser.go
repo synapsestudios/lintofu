@@ -230,6 +230,30 @@ type ParenthesesExpr struct {
 func (*ParenthesesExpr) expressionMarker()        {}
 func (e *ParenthesesExpr) expressionRange() Range { return e.Range }
 
+// Op is the operator's name (e.g. "equal", "logicalAnd", "add"), not its
+// source symbol; see operationName.
+type BinaryOpExpr struct {
+	Type  string     `json:"type"`
+	Op    string     `json:"op"`
+	LHS   Expression `json:"lhs"`
+	RHS   Expression `json:"rhs"`
+	Range Range      `json:"range"`
+}
+
+func (*BinaryOpExpr) expressionMarker()        {}
+func (e *BinaryOpExpr) expressionRange() Range { return e.Range }
+
+// `!x`, `-x`. Op is "logicalNot" or "negate"; see operationName.
+type UnaryOpExpr struct {
+	Type    string     `json:"type"`
+	Op      string     `json:"op"`
+	Operand Expression `json:"operand"`
+	Range   Range      `json:"range"`
+}
+
+func (*UnaryOpExpr) expressionMarker()        {}
+func (e *UnaryOpExpr) expressionRange() Range { return e.Range }
+
 type UnknownExpr struct {
 	Type        string `json:"type"`
 	UnknownKind string `json:"unknownKind"`
@@ -438,6 +462,21 @@ func convertExpression(e hclsyntax.Expression) Expression {
 			Expression: convertExpression(ex.Expression),
 			Range:      convertRange(ex.Range()),
 		}
+	case *hclsyntax.BinaryOpExpr:
+		return &BinaryOpExpr{
+			Type:  "BinaryOpExpr",
+			Op:    operationName(ex.Op),
+			LHS:   convertExpression(ex.LHS),
+			RHS:   convertExpression(ex.RHS),
+			Range: convertRange(ex.Range()),
+		}
+	case *hclsyntax.UnaryOpExpr:
+		return &UnaryOpExpr{
+			Type:    "UnaryOpExpr",
+			Op:      operationName(ex.Op),
+			Operand: convertExpression(ex.Val),
+			Range:   convertRange(ex.Range()),
+		}
 	default:
 		return &UnknownExpr{
 			Type:        "UnknownExpr",
@@ -491,6 +530,46 @@ func ctyToGo(v cty.Value) any {
 
 func goTypeName(e hclsyntax.Expression) string {
 	return fmt.Sprintf("%T", e)
+}
+
+// operationName maps hclsyntax's operator singletons (compared by pointer
+// identity) to a stable name. Covers both binary and unary operators;
+// OpLogicalNot and OpNegate are the unary ones.
+func operationName(op *hclsyntax.Operation) string {
+	switch op {
+	case hclsyntax.OpEqual:
+		return "equal"
+	case hclsyntax.OpNotEqual:
+		return "notEqual"
+	case hclsyntax.OpGreaterThan:
+		return "greaterThan"
+	case hclsyntax.OpGreaterThanOrEqual:
+		return "greaterThanOrEqual"
+	case hclsyntax.OpLessThan:
+		return "lessThan"
+	case hclsyntax.OpLessThanOrEqual:
+		return "lessThanOrEqual"
+	case hclsyntax.OpAdd:
+		return "add"
+	case hclsyntax.OpSubtract:
+		return "subtract"
+	case hclsyntax.OpMultiply:
+		return "multiply"
+	case hclsyntax.OpDivide:
+		return "divide"
+	case hclsyntax.OpModulo:
+		return "modulo"
+	case hclsyntax.OpLogicalAnd:
+		return "logicalAnd"
+	case hclsyntax.OpLogicalOr:
+		return "logicalOr"
+	case hclsyntax.OpLogicalNot:
+		return "logicalNot"
+	case hclsyntax.OpNegate:
+		return "negate"
+	default:
+		return "unknown"
+	}
 }
 
 func convertBlock(b *hclsyntax.Block) *Block {

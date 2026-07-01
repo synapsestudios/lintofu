@@ -27,6 +27,7 @@ describe('visitorKeys', () => {
     expect(keys).toEqual(
       [
         'Attribute',
+        'BinaryOpExpr',
         'Block',
         'Body',
         'ConditionalExpr',
@@ -45,6 +46,7 @@ describe('visitorKeys', () => {
         'TraverseAttr',
         'TraverseIndex',
         'TraverseRoot',
+        'UnaryOpExpr',
         'UnknownExpr',
       ].sort(),
     );

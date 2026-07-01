@@ -276,5 +276,20 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
         { messageId: 'disallowedReference', data: { name: 'var.bastion' } },
       ],
     },
+    // Refs hidden in both operands of a binary op are now both flagged.
+    {
+      code: destroyProvisioner('    command = "${var.a == var.b}"'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.a' } },
+        { messageId: 'disallowedReference', data: { name: 'var.b' } },
+      ],
+    },
+    // Ref hidden in a unary op's operand is flagged.
+    {
+      code: destroyProvisioner('    command = "${!var.enabled}"'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.enabled' } },
+      ],
+    },
   ],
 });

@@ -50,6 +50,8 @@ export type Expression =
   | IndexExpr
   | RelativeTraversalExpr
   | ParenthesesExpr
+  | BinaryOpExpr
+  | UnaryOpExpr
   | UnknownExpr;
 
 export interface LiteralValueExpr {
@@ -178,6 +180,40 @@ export interface ParenthesesExpr {
   range: Range;
 }
 
+export type BinaryOp =
+  | 'equal'
+  | 'notEqual'
+  | 'greaterThan'
+  | 'greaterThanOrEqual'
+  | 'lessThan'
+  | 'lessThanOrEqual'
+  | 'add'
+  | 'subtract'
+  | 'multiply'
+  | 'divide'
+  | 'modulo'
+  | 'logicalAnd'
+  | 'logicalOr';
+
+// `a == b`, `a + b`, `a && b`. `op` is the operator's name, not its symbol.
+export interface BinaryOpExpr {
+  type: 'BinaryOpExpr';
+  op: BinaryOp;
+  lhs: Expression;
+  rhs: Expression;
+  range: Range;
+}
+
+export type UnaryOp = 'logicalNot' | 'negate';
+
+// `!x`, `-x`. `op` is the operator's name, not its symbol.
+export interface UnaryOpExpr {
+  type: 'UnaryOpExpr';
+  op: UnaryOp;
+  operand: Expression;
+  range: Range;
+}
+
 export interface UnknownExpr {
   type: 'UnknownExpr';
   unknownKind: string;
@@ -225,6 +261,8 @@ export type NodeType =
   | 'IndexExpr'
   | 'RelativeTraversalExpr'
   | 'ParenthesesExpr'
+  | 'BinaryOpExpr'
+  | 'UnaryOpExpr'
   | 'UnknownExpr'
   | 'TraverseRoot'
   | 'TraverseAttr'

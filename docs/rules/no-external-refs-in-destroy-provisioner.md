@@ -74,7 +74,6 @@ resource "null_resource" "cleanup" {
 
 The parser currently surfaces several expression types as `UnknownExpr`, so the rule cannot see traversals nested inside them:
 
-- `BinaryOpExpr` / `UnaryOpExpr`
 - `TupleConsExpr`
 
 Disallowed references hidden inside these expressions slip past the rule. `tofu validate` still catches them at plan time.

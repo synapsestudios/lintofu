@@ -20,6 +20,8 @@ export const visitorKeys: Record<NodeType, readonly string[]> = {
   IndexExpr: ['collection', 'key'],
   RelativeTraversalExpr: ['source'],
   ParenthesesExpr: ['expression'],
+  BinaryOpExpr: ['lhs', 'rhs'],
+  UnaryOpExpr: ['operand'],
   LiteralValueExpr: [],
   UnknownExpr: [],
   TraverseRoot: [],
