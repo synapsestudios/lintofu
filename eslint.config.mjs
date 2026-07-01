@@ -68,6 +68,24 @@ export default tseslint.config(
   },
 
   {
+    files: ['src/rules/core/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/rules/aws/**', '../aws/*', '../aws/**'],
+              message:
+                'core rules must not import provider utilities; move a provider-agnostic helper to core/utils.ts instead',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  {
     files: ['**/*.test.ts', '**/*.test-d.ts'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',

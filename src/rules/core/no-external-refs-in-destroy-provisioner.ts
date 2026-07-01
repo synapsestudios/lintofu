@@ -4,7 +4,7 @@ import type {
   ScopeTraversalExpr,
 } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { collectTraversals, findAttribute, traversalText } from '../utils.js';
+import { collectTraversals, findAttribute, traversalText } from './utils.js';
 
 function isDestroyBareword(expr: Expression): boolean {
   return (

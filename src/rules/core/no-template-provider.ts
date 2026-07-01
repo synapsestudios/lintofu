@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { literalStringValue, objectItemKeyName } from '../utils.js';
+import { literalStringValue, objectItemKeyName } from './utils.js';
 
 function isHashicorpTemplateSource(source: string): boolean {
   const segments = source.split('/');

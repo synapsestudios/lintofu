@@ -4,8 +4,8 @@ import type {
   Expression,
   ObjectConsItem,
   ScopeTraversalExpr,
-} from '../parser/types.js';
-import { visitorKeys } from '../visitor-keys.js';
+} from '../../parser/types.js';
+import { visitorKeys } from '../../visitor-keys.js';
 
 // Collects every ScopeTraversalExpr reachable from expr, descending via
 // visitorKeys so new expression types are handled as soon as they have an
@@ -101,23 +101,6 @@ export function findAttribute(
   name: string,
 ): Attribute | undefined {
   return attrs.find((a) => a.name === name);
-}
-
-export function engineName(block: Block): string | undefined {
-  const attr = findAttribute(block.body.attributes, 'engine');
-  if (!attr) return undefined;
-  return literalStringValue(attr.expression);
-}
-
-export function autoMinorUpgradeEnabled(block: Block): boolean {
-  const attr = findAttribute(
-    block.body.attributes,
-    'auto_minor_version_upgrade',
-  );
-  if (!attr) return true;
-  const expr = attr.expression;
-  if (expr.type !== 'LiteralValueExpr') return false;
-  return expr.value !== false;
 }
 
 export function trimNumericVersion(

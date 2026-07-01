@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { blockLabel, checkDescription } from '../utils.js';
+import { blockLabel, checkDescription } from './utils.js';
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: 'missingDescription' }> = {
   meta: {

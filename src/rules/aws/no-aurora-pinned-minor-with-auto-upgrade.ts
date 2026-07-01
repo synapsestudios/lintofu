@@ -2,13 +2,12 @@ import type { Block } from '../../parser/types.js';
 import type { OpenTofuSourceCode } from '../../source-code.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
 import {
-  autoMinorUpgradeEnabled,
-  engineName,
   findAttribute,
   literalStringValue,
   traversalHead,
   trimNumericVersion,
-} from '../utils.js';
+} from '../core/utils.js';
+import { autoMinorUpgradeEnabled, engineName } from './utils.js';
 
 const CLUSTER_KIND = 'aws_rds_cluster';
 const INSTANCE_KIND = 'aws_rds_cluster_instance';

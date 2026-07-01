@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { literalStringValue } from '../utils.js';
+import { literalStringValue } from './utils.js';
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: 'legacyProviderProxy' }> = {
   meta: {

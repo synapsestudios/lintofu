@@ -1,7 +1,7 @@
 import type { Block, Body, ScopeTraversalExpr } from '../../parser/types.js';
 import type { OpenTofuSourceCode } from '../../source-code.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { findAttribute, traversalHead } from '../utils.js';
+import { findAttribute, traversalHead } from '../core/utils.js';
 
 const STANDALONE_RULE_KINDS = new Set([
   'aws_vpc_security_group_ingress_rule',

@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { blockLabel, findAttribute, literalStringValue } from '../utils.js';
+import { blockLabel, findAttribute, literalStringValue } from './utils.js';
 
 function isPinnedSource(source: string, hasVersion: boolean): boolean {
   if (source.startsWith('./') || source.startsWith('../')) return true;
