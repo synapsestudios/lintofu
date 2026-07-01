@@ -14,6 +14,7 @@ export const visitorKeys: Record<NodeType, readonly string[]> = {
   ScopeTraversalExpr: ['traversal'],
   ObjectConsExpr: ['items'],
   ObjectConsKeyExpr: ['wrapped'],
+  TupleConsExpr: ['exprs'],
   ConditionalExpr: ['condition', 'trueResult', 'falseResult'],
   ForExpr: ['collExpr', 'keyExpr', 'valExpr', 'condExpr'],
   SplatExpr: ['source', 'each'],

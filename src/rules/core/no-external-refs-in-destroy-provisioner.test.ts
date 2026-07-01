@@ -85,6 +85,8 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
     { code: destroyProvisioner('    command = self.x[count.index]') },
     // A relative traversal off a parenthesized allowed root passes.
     { code: destroyProvisioner('    command = (self).id') },
+    // An allowed ref inside a tuple element passes.
+    { code: destroyProvisioner('    command = jsonencode([self.id])') },
   ],
   invalid: [
     {
@@ -289,6 +291,13 @@ tester.run('no-external-refs-in-destroy-provisioner', rule, {
       code: destroyProvisioner('    command = "${!var.enabled}"'),
       errors: [
         { messageId: 'disallowedReference', data: { name: 'var.enabled' } },
+      ],
+    },
+    // Ref hidden in a tuple element inside a function call is flagged.
+    {
+      code: destroyProvisioner('    command = jsonencode([var.secret])'),
+      errors: [
+        { messageId: 'disallowedReference', data: { name: 'var.secret' } },
       ],
     },
   ],

@@ -92,18 +92,59 @@ func TestCtyToGoPrimitives(t *testing.T) {
 
 func TestUnknownExprFallback(t *testing.T) {
 	t.Parallel()
-	// [1, 2] is TupleConsExpr, still unhandled by convertExpression.
-	result := Parse([]byte(`locals { x = [1, 2] }`), "t.tf")
-	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
-	unknown, ok := expr.(*UnknownExpr)
+	// The splat's Each is an AnonSymbolExpr, still unhandled by convertExpression.
+	result := Parse([]byte(`locals { x = aws_instance.y[*] }`), "t.tf")
+	splat, ok := result.AST.Blocks[0].Body.Attributes[0].Expression.(*SplatExpr)
 	if !ok {
-		t.Fatalf("expr type = %T, want *UnknownExpr", expr)
+		t.Fatalf("expr type = %T, want *SplatExpr", result.AST.Blocks[0].Body.Attributes[0].Expression)
+	}
+	unknown, ok := splat.Each.(*UnknownExpr)
+	if !ok {
+		t.Fatalf("Each type = %T, want *UnknownExpr", splat.Each)
 	}
 	if unknown.Type != "UnknownExpr" {
 		t.Errorf("Type = %q", unknown.Type)
 	}
-	if !strings.Contains(unknown.UnknownKind, "TupleConsExpr") {
-		t.Errorf("UnknownKind = %q, want it to contain \"TupleConsExpr\"", unknown.UnknownKind)
+	if !strings.Contains(unknown.UnknownKind, "AnonSymbolExpr") {
+		t.Errorf("UnknownKind = %q, want it to contain \"AnonSymbolExpr\"", unknown.UnknownKind)
+	}
+}
+
+func TestTupleConsExpr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = [var.a, var.b] }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	tuple, ok := expr.(*TupleConsExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *TupleConsExpr", expr)
+	}
+	if tuple.Type != "TupleConsExpr" {
+		t.Errorf("Type = %q", tuple.Type)
+	}
+	if len(tuple.Exprs) != 2 {
+		t.Fatalf("len(Exprs) = %d, want 2", len(tuple.Exprs))
+	}
+	if _, ok := tuple.Exprs[0].(*ScopeTraversalExpr); !ok {
+		t.Errorf("Exprs[0] type = %T, want *ScopeTraversalExpr", tuple.Exprs[0])
+	}
+	if _, ok := tuple.Exprs[1].(*ScopeTraversalExpr); !ok {
+		t.Errorf("Exprs[1] type = %T, want *ScopeTraversalExpr", tuple.Exprs[1])
+	}
+}
+
+func TestTupleConsExprEmpty(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = [] }`), "t.tf")
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	tuple, ok := expr.(*TupleConsExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *TupleConsExpr", expr)
+	}
+	if len(tuple.Exprs) != 0 {
+		t.Errorf("len(Exprs) = %d, want 0", len(tuple.Exprs))
 	}
 }
 

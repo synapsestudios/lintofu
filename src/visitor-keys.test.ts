@@ -43,6 +43,7 @@ describe('visitorKeys', () => {
         'SplatExpr',
         'TemplateExpr',
         'TemplateWrapExpr',
+        'TupleConsExpr',
         'TraverseAttr',
         'TraverseIndex',
         'TraverseRoot',

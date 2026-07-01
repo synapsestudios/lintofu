@@ -44,6 +44,7 @@ export type Expression =
   | ScopeTraversalExpr
   | ObjectConsExpr
   | ObjectConsKeyExpr
+  | TupleConsExpr
   | ConditionalExpr
   | ForExpr
   | SplatExpr
@@ -123,6 +124,12 @@ export interface ObjectConsItem {
 export interface ObjectConsKeyExpr {
   type: 'ObjectConsKeyExpr';
   wrapped: Expression;
+  range: Range;
+}
+
+export interface TupleConsExpr {
+  type: 'TupleConsExpr';
+  exprs: Expression[];
   range: Range;
 }
 
@@ -255,6 +262,7 @@ export type NodeType =
   | 'ScopeTraversalExpr'
   | 'ObjectConsExpr'
   | 'ObjectConsKeyExpr'
+  | 'TupleConsExpr'
   | 'ConditionalExpr'
   | 'ForExpr'
   | 'SplatExpr'
