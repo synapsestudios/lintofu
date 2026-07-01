@@ -1,3 +1,4 @@
+import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
@@ -22,4 +23,6 @@ export const rules = {
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
+  'no-aurora-pinned-minor-with-auto-upgrade':
+    noAuroraPinnedMinorWithAutoUpgrade,
 };

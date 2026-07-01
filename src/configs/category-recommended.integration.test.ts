@@ -8,6 +8,7 @@ describe('aws/recommended config, derived from real rule metadata', () => {
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
       'lintofu/no-pinned-minor-with-auto-upgrade': 'warn',
+      'lintofu/no-aurora-pinned-minor-with-auto-upgrade': 'warn',
     });
   });
 });
