@@ -1,12 +1,11 @@
 import type { Attribute, Block } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
 import {
-  autoMinorUpgradeEnabled,
-  engineName,
   findAttribute,
   literalStringValue,
   trimNumericVersion,
-} from '../utils.js';
+} from '../core/utils.js';
+import { autoMinorUpgradeEnabled, engineName } from './utils.js';
 
 interface Violation {
   node: Attribute;

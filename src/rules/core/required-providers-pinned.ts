@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { objectItemKeyName } from '../utils.js';
+import { objectItemKeyName } from './utils.js';
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: 'unpinnedProvider' }> = {
   meta: {
