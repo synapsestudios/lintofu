@@ -1,7 +1,7 @@
 import type { Block, Body, ScopeTraversalExpr } from '../../parser/types.js';
 import type { OpenTofuSourceCode } from '../../source-code.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { findAttribute } from '../utils.js';
+import { findAttribute, traversalHead } from '../utils.js';
 
 const STANDALONE_RULE_KINDS = new Set([
   'aws_vpc_security_group_ingress_rule',
@@ -64,15 +64,6 @@ function resolveSecurityGroup(
     if (inSource) return inSource;
   }
   return sourceCode.parserServices.projectIndex.resolveTraversal(expr);
-}
-
-function traversalHead(
-  expr: ScopeTraversalExpr,
-): readonly [string, string] | undefined {
-  const [root, name] = expr.traversal;
-  if (root?.type !== 'TraverseRoot') return undefined;
-  if (name?.type !== 'TraverseAttr') return undefined;
-  return [root.name, name.name];
 }
 
 function findBlock(

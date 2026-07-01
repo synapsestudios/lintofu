@@ -1,7 +1,14 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { initialize, parse } from '../parser/index.js';
-import type { Expression } from '../parser/types.js';
-import { collectTraversals, traversalText } from './utils.js';
+import type { Block, Expression } from '../parser/types.js';
+import {
+  autoMinorUpgradeEnabled,
+  collectTraversals,
+  engineName,
+  traversalHead,
+  traversalText,
+  trimNumericVersion,
+} from './utils.js';
 
 beforeAll(async () => {
   await initialize();
@@ -13,6 +20,105 @@ async function exprOf(code: string): Promise<Expression> {
   if (!expr) throw new Error('no expression parsed');
   return expr;
 }
+
+async function blockOf(code: string): Promise<Block> {
+  const result = await parse(code);
+  const block = result.ast.blocks[0];
+  if (!block) throw new Error('no block parsed');
+  return block;
+}
+
+describe('engineName', () => {
+  it('returns the literal engine value', async () => {
+    const block = await blockOf(
+      `resource "aws_rds_cluster" "c" {
+  engine = "aurora-postgresql"
+}`,
+    );
+    expect(engineName(block)).toBe('aurora-postgresql');
+  });
+
+  it('returns undefined when engine is absent', async () => {
+    const block = await blockOf(`resource "aws_rds_cluster" "c" {}`);
+    expect(engineName(block)).toBeUndefined();
+  });
+
+  it('returns undefined when engine is dynamic', async () => {
+    const block = await blockOf(
+      `resource "aws_rds_cluster" "c" {
+  engine = var.engine
+}`,
+    );
+    expect(engineName(block)).toBeUndefined();
+  });
+});
+
+describe('autoMinorUpgradeEnabled', () => {
+  it('defaults to true when the attribute is absent', async () => {
+    const block = await blockOf(`resource "aws_rds_cluster_instance" "ci" {}`);
+    expect(autoMinorUpgradeEnabled(block)).toBe(true);
+  });
+
+  it('is true when set to a literal true', async () => {
+    const block = await blockOf(
+      `resource "aws_rds_cluster_instance" "ci" {
+  auto_minor_version_upgrade = true
+}`,
+    );
+    expect(autoMinorUpgradeEnabled(block)).toBe(true);
+  });
+
+  it('is false when set to a literal false', async () => {
+    const block = await blockOf(
+      `resource "aws_rds_cluster_instance" "ci" {
+  auto_minor_version_upgrade = false
+}`,
+    );
+    expect(autoMinorUpgradeEnabled(block)).toBe(false);
+  });
+
+  it('is false when the value is dynamic (cannot prove it is on)', async () => {
+    const block = await blockOf(
+      `resource "aws_rds_cluster_instance" "ci" {
+  auto_minor_version_upgrade = var.amvu
+}`,
+    );
+    expect(autoMinorUpgradeEnabled(block)).toBe(false);
+  });
+});
+
+describe('trimNumericVersion', () => {
+  it('trims a version pinned deeper than the target depth', () => {
+    expect(trimNumericVersion('15.4', 1)).toBe('15');
+    expect(trimNumericVersion('8.0.34', 2)).toBe('8.0');
+  });
+
+  it('returns undefined when already at or above the target depth', () => {
+    expect(trimNumericVersion('15', 1)).toBeUndefined();
+    expect(trimNumericVersion('8.0', 2)).toBeUndefined();
+  });
+
+  it('returns undefined for non-numeric segments', () => {
+    expect(trimNumericVersion('8.0.mysql_aurora.3.04.0', 1)).toBeUndefined();
+    expect(trimNumericVersion('6.x', 1)).toBeUndefined();
+  });
+});
+
+describe('traversalHead', () => {
+  it('returns the root and first attribute of a resource traversal', async () => {
+    const expr = await exprOf('aws_rds_cluster.c.id');
+    if (expr.type !== 'ScopeTraversalExpr')
+      throw new Error('expected traversal');
+    expect(traversalHead(expr)).toEqual(['aws_rds_cluster', 'c']);
+  });
+
+  it('returns undefined for a single-step traversal', async () => {
+    const expr = await exprOf('var');
+    if (expr.type !== 'ScopeTraversalExpr')
+      throw new Error('expected traversal');
+    expect(traversalHead(expr)).toBeUndefined();
+  });
+});
 
 function names(expr: Expression): string[] {
   return collectTraversals(expr).map(traversalText);

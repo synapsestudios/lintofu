@@ -103,6 +103,42 @@ export function findAttribute(
   return attrs.find((a) => a.name === name);
 }
 
+export function engineName(block: Block): string | undefined {
+  const attr = findAttribute(block.body.attributes, 'engine');
+  if (!attr) return undefined;
+  return literalStringValue(attr.expression);
+}
+
+export function autoMinorUpgradeEnabled(block: Block): boolean {
+  const attr = findAttribute(
+    block.body.attributes,
+    'auto_minor_version_upgrade',
+  );
+  if (!attr) return true;
+  const expr = attr.expression;
+  if (expr.type !== 'LiteralValueExpr') return false;
+  return expr.value !== false;
+}
+
+export function trimNumericVersion(
+  version: string,
+  depth: number,
+): string | undefined {
+  const parts = version.split('.');
+  if (!parts.every((p) => /^\d+$/.test(p))) return undefined;
+  if (parts.length <= depth) return undefined;
+  return parts.slice(0, depth).join('.');
+}
+
+export function traversalHead(
+  expr: ScopeTraversalExpr,
+): readonly [string, string] | undefined {
+  const [root, name] = expr.traversal;
+  if (root?.type !== 'TraverseRoot') return undefined;
+  if (name?.type !== 'TraverseAttr') return undefined;
+  return [root.name, name.name];
+}
+
 export function blockLabel(block: Block): string {
   return block.labels[0] ?? '<unnamed>';
 }

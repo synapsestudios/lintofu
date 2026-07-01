@@ -61,6 +61,7 @@ export interface TofuParserServices {
 const EMPTY_INDEX: ProjectIndex = {
   findResource: () => undefined,
   resolveTraversal: () => undefined,
+  resourcesByType: () => [],
 };
 
 // No index signature: it would break structural compatibility with the
