@@ -158,6 +158,6 @@ Anything marked Not Yet Implemented falls back to `UnknownExpr`, so rules can se
 | `RelativeTraversalExpr` (e.g. `(var.x).id`)                  | ✅        |                     |
 | `ParenthesesExpr` (e.g. `(var.x)`)                           | ✅        |                     |
 | `BinaryOpExpr` / `UnaryOpExpr` (e.g. `a == b`, `!a`, `-a`)   | ✅        |                     |
-| `TupleConsExpr` (list literals)                              |           | ❌                  |
+| `TupleConsExpr` (list literals)                              | ✅        |                     |
 
 [^ast-coverage]: This list is non-exhaustive and will likely be expanded as new expression types are added to the parser.

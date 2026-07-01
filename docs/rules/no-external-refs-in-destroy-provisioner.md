@@ -72,13 +72,7 @@ resource "null_resource" "cleanup" {
 
 ## Limitations
 
-The parser currently surfaces several expression types as `UnknownExpr`, so the rule cannot see traversals nested inside them:
-
-- `TupleConsExpr`
-
-Disallowed references hidden inside these expressions slip past the rule. `tofu validate` still catches them at plan time.
-
-The rule also only matches the bareword `when = destroy`. The quoted form `when = "destroy"` is not detected; OpenTofu accepts the bareword form, and the quoted form is left to `tofu validate`.
+The rule only matches the bareword `when = destroy`. The quoted form `when = "destroy"` is not detected; OpenTofu accepts the bareword form, and the quoted form is left to `tofu validate`.
 
 ## Autofix
 

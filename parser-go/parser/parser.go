@@ -136,6 +136,15 @@ type ObjectConsItem struct {
 	ValueExpr Expression `json:"valueExpr"`
 }
 
+type TupleConsExpr struct {
+	Type  string       `json:"type"`
+	Exprs []Expression `json:"exprs"`
+	Range Range        `json:"range"`
+}
+
+func (*TupleConsExpr) expressionMarker()        {}
+func (e *TupleConsExpr) expressionRange() Range { return e.Range }
+
 // Wraps a key expression so a bare identifier like `version = "x"` isn't
 // mistaken for a reference to a real symbol.
 type ObjectConsKeyExpr struct {
@@ -397,6 +406,16 @@ func convertExpression(e hclsyntax.Expression) Expression {
 		return &ObjectConsExpr{
 			Type:  "ObjectConsExpr",
 			Items: items,
+			Range: convertRange(ex.Range()),
+		}
+	case *hclsyntax.TupleConsExpr:
+		exprs := make([]Expression, 0, len(ex.Exprs))
+		for _, e := range ex.Exprs {
+			exprs = append(exprs, convertExpression(e))
+		}
+		return &TupleConsExpr{
+			Type:  "TupleConsExpr",
+			Exprs: exprs,
 			Range: convertRange(ex.Range()),
 		}
 	case *hclsyntax.ObjectConsKeyExpr:
