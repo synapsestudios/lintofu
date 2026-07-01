@@ -1,6 +1,12 @@
 import type { Attribute, Block } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { findAttribute, literalStringValue } from '../utils.js';
+import {
+  autoMinorUpgradeEnabled,
+  engineName,
+  findAttribute,
+  literalStringValue,
+  trimNumericVersion,
+} from '../utils.js';
 
 interface Violation {
   node: Attribute;
@@ -54,7 +60,7 @@ const rule: OpenTofuRuleDefinition<{
         if (!kind) return;
         const handler = RESOURCE_HANDLERS[kind];
         if (!handler) return;
-        if (!autoUpgradeEnabled(node)) return;
+        if (!autoMinorUpgradeEnabled(node)) return;
 
         const violation = handler(node);
         if (!violation) return;
@@ -70,17 +76,6 @@ const rule: OpenTofuRuleDefinition<{
 
 export default rule;
 
-function autoUpgradeEnabled(block: Block): boolean {
-  const attr = findAttribute(
-    block.body.attributes,
-    'auto_minor_version_upgrade',
-  );
-  if (!attr) return true;
-  const expr = attr.expression;
-  if (expr.type !== 'LiteralValueExpr') return false;
-  return expr.value !== false;
-}
-
 function checkDbInstance(block: Block): Violation | undefined {
   const engine = engineName(block);
   if (engine === undefined) return undefined;
@@ -92,16 +87,17 @@ function checkDbInstance(block: Block): Violation | undefined {
   const version = literalStringValue(versionAttr.expression);
   if (version === undefined) return undefined;
 
-  const parts = version.split('.');
-  if (!parts.every((p) => /^\d+$/.test(p))) return undefined;
-
+  const major = version.split('.')[0] ?? '';
   const depth =
-    engine === 'postgres' && Number(parts[0]) < POSTGRES_INTEGER_MAJOR_FLOOR
+    engine === 'postgres' &&
+    /^\d+$/.test(major) &&
+    Number(major) < POSTGRES_INTEGER_MAJOR_FLOOR
       ? 2
       : baseDepth;
-  if (parts.length <= depth) return undefined;
 
-  return { node: versionAttr, safeForm: parts.slice(0, depth).join('.') };
+  const safeForm = trimNumericVersion(version, depth);
+  if (safeForm === undefined) return undefined;
+  return { node: versionAttr, safeForm };
 }
 
 function checkElastiCache(block: Block): Violation | undefined {
@@ -119,10 +115,4 @@ function checkElastiCache(block: Block): Violation | undefined {
   if (!/^\d+$/.test(parts[1] ?? '')) return undefined;
 
   return { node: versionAttr, safeForm: '6.x' };
-}
-
-function engineName(block: Block): string | undefined {
-  const attr = findAttribute(block.body.attributes, 'engine');
-  if (!attr) return undefined;
-  return literalStringValue(attr.expression);
 }

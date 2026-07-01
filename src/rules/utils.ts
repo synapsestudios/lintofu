@@ -103,6 +103,51 @@ export function findAttribute(
   return attrs.find((a) => a.name === name);
 }
 
+// The block's `engine` as a literal string, or undefined when absent or dynamic.
+export function engineName(block: Block): string | undefined {
+  const attr = findAttribute(block.body.attributes, 'engine');
+  if (!attr) return undefined;
+  return literalStringValue(attr.expression);
+}
+
+// Whether `auto_minor_version_upgrade` is on. Absent defaults to true (the AWS
+// default); a literal false is off; a dynamic value is treated as off since we
+// can't prove it's on.
+export function autoMinorUpgradeEnabled(block: Block): boolean {
+  const attr = findAttribute(
+    block.body.attributes,
+    'auto_minor_version_upgrade',
+  );
+  if (!attr) return true;
+  const expr = attr.expression;
+  if (expr.type !== 'LiteralValueExpr') return false;
+  return expr.value !== false;
+}
+
+// The version truncated to `depth` dot-separated segments, but only when every
+// segment is numeric and the version pins deeper than `depth`. Returns undefined
+// for dynamic/non-numeric strings or versions already at or above the depth.
+export function trimNumericVersion(
+  version: string,
+  depth: number,
+): string | undefined {
+  const parts = version.split('.');
+  if (!parts.every((p) => /^\d+$/.test(p))) return undefined;
+  if (parts.length <= depth) return undefined;
+  return parts.slice(0, depth).join('.');
+}
+
+// The `[root, firstAttr]` of a resource-style traversal (`aws_x.name.attr`), or
+// undefined when the traversal doesn't start with a root then an attribute.
+export function traversalHead(
+  expr: ScopeTraversalExpr,
+): readonly [string, string] | undefined {
+  const [root, name] = expr.traversal;
+  if (root?.type !== 'TraverseRoot') return undefined;
+  if (name?.type !== 'TraverseAttr') return undefined;
+  return [root.name, name.name];
+}
+
 export function blockLabel(block: Block): string {
   return block.labels[0] ?? '<unnamed>';
 }
