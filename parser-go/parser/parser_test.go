@@ -531,3 +531,86 @@ func TestRelativeTraversalExprSplatEach(t *testing.T) {
 		t.Errorf("traversal[0] = %#v, want TraverseAttr id", rte.Traversal[0])
 	}
 }
+
+func TestBinaryOpExpr(t *testing.T) {
+	t.Parallel()
+	result := Parse([]byte(`locals { x = var.a == var.b }`), "t.tf")
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("unexpected diagnostics: %+v", result.Diagnostics)
+	}
+	expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+	bin, ok := expr.(*BinaryOpExpr)
+	if !ok {
+		t.Fatalf("expr type = %T, want *BinaryOpExpr", expr)
+	}
+	if bin.Type != "BinaryOpExpr" {
+		t.Errorf("Type = %q", bin.Type)
+	}
+	if bin.Op != "equal" {
+		t.Errorf("Op = %q, want \"equal\"", bin.Op)
+	}
+	if _, ok := bin.LHS.(*ScopeTraversalExpr); !ok {
+		t.Errorf("LHS type = %T, want *ScopeTraversalExpr", bin.LHS)
+	}
+	if _, ok := bin.RHS.(*ScopeTraversalExpr); !ok {
+		t.Errorf("RHS type = %T, want *ScopeTraversalExpr", bin.RHS)
+	}
+}
+
+// One operator per category (comparison already covered by TestBinaryOpExpr):
+// exercises the operationName mapping without asserting all thirteen.
+func TestBinaryOpExprOps(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		src    string
+		wantOp string
+	}{
+		{`locals { x = var.a + var.b }`, "add"},
+		{`locals { x = var.a && var.b }`, "logicalAnd"},
+	}
+	for _, tc := range cases {
+		result := Parse([]byte(tc.src), "t.tf")
+		if len(result.Diagnostics) != 0 {
+			t.Fatalf("%s: unexpected diagnostics: %+v", tc.src, result.Diagnostics)
+		}
+		expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+		bin, ok := expr.(*BinaryOpExpr)
+		if !ok {
+			t.Fatalf("%s: expr type = %T, want *BinaryOpExpr", tc.src, expr)
+		}
+		if bin.Op != tc.wantOp {
+			t.Errorf("%s: Op = %q, want %q", tc.src, bin.Op, tc.wantOp)
+		}
+	}
+}
+
+func TestUnaryOpExpr(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		src    string
+		wantOp string
+	}{
+		{`locals { x = !var.enabled }`, "logicalNot"},
+		{`locals { x = -var.n }`, "negate"},
+	}
+	for _, tc := range cases {
+		result := Parse([]byte(tc.src), "t.tf")
+		if len(result.Diagnostics) != 0 {
+			t.Fatalf("%s: unexpected diagnostics: %+v", tc.src, result.Diagnostics)
+		}
+		expr := result.AST.Blocks[0].Body.Attributes[0].Expression
+		un, ok := expr.(*UnaryOpExpr)
+		if !ok {
+			t.Fatalf("%s: expr type = %T, want *UnaryOpExpr", tc.src, expr)
+		}
+		if un.Type != "UnaryOpExpr" {
+			t.Errorf("%s: Type = %q", tc.src, un.Type)
+		}
+		if un.Op != tc.wantOp {
+			t.Errorf("%s: Op = %q, want %q", tc.src, un.Op, tc.wantOp)
+		}
+		if _, ok := un.Operand.(*ScopeTraversalExpr); !ok {
+			t.Errorf("%s: Operand type = %T, want *ScopeTraversalExpr", tc.src, un.Operand)
+		}
+	}
+}
