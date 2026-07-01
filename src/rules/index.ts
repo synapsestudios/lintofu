@@ -1,5 +1,6 @@
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
+import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
@@ -20,4 +21,5 @@ export const rules = {
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,
+  'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
 };
