@@ -1,18 +1,31 @@
-import type { Block } from '../../parser/types.js';
+import type { Attribute, Block } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
 import { findAttribute, literalStringValue } from '../utils.js';
 
-const MIN_AUTO_UPGRADE_REDIS_MAJOR = 6;
+interface Violation {
+  node: Attribute;
+  safeForm: string;
+}
 
-const TARGETS: Record<string, { engineGate?: (block: Block) => boolean }> = {
-  aws_db_instance: {},
-  aws_rds_cluster_instance: {},
-  aws_memorydb_cluster: {},
-  aws_mq_broker: {},
-  aws_elasticache_cluster: { engineGate: elasticacheAutoUpgradeApplies },
-  aws_elasticache_replication_group: {
-    engineGate: elasticacheAutoUpgradeApplies,
-  },
+const DB_INSTANCE_SAFE_DEPTH: Record<string, number> = {
+  postgres: 1,
+  mysql: 2,
+  mariadb: 2,
+  'db2-ae': 2,
+  'db2-se': 2,
+};
+
+const POSTGRES_INTEGER_MAJOR_FLOOR = 10;
+
+const ELASTICACHE_AUTO_UPGRADE_MAJOR = 6;
+
+const RESOURCE_HANDLERS: Record<
+  string,
+  (block: Block) => Violation | undefined
+> = {
+  aws_db_instance: checkDbInstance,
+  aws_elasticache_cluster: checkElastiCache,
+  aws_elasticache_replication_group: checkElastiCache,
 };
 
 const rule: OpenTofuRuleDefinition<{
@@ -22,14 +35,14 @@ const rule: OpenTofuRuleDefinition<{
     type: 'suggestion',
     docs: {
       description:
-        'Flag AWS engine resources that pin a minor `engine_version` while `auto_minor_version_upgrade` is enabled; the auto-bumped minor drifts from config on every plan.',
+        'Flag AWS engine resources that pin `engine_version` deeper than an enabled `auto_minor_version_upgrade` will hold stable, which drifts on every plan.',
       recommended: true,
       severity: 'warn',
       category: 'aws',
     },
     messages: {
       pinnedMinorWithAutoUpgrade:
-        '`engine_version` pins a minor version while `auto_minor_version_upgrade` is enabled; the engine will auto-upgrade the minor and every subsequent plan will want to revert it. Drop the minor from `engine_version` (e.g. use `"15"`) or set `auto_minor_version_upgrade = false`. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades',
+        '`engine_version` pins a minor version that `auto_minor_version_upgrade` will move, so every plan drifts. Use `{{safeForm}}`, or set `auto_minor_version_upgrade = false`.',
     },
     schema: [],
   },
@@ -39,24 +52,16 @@ const rule: OpenTofuRuleDefinition<{
         if (node.kind !== 'resource') return;
         const kind = node.labels[0];
         if (!kind) return;
-        const target = TARGETS[kind];
-        if (!target) return;
-
-        if (target.engineGate && !target.engineGate(node)) return;
+        const handler = RESOURCE_HANDLERS[kind];
+        if (!handler) return;
         if (!autoUpgradeEnabled(node)) return;
 
-        const versionAttr = findAttribute(
-          node.body.attributes,
-          'engine_version',
-        );
-        if (!versionAttr) return;
-        const version = literalStringValue(versionAttr.expression);
-        if (version === undefined) return;
-        if (!pinsMinorVersion(version)) return;
-
+        const violation = handler(node);
+        if (!violation) return;
         context.report({
-          node: versionAttr,
+          node: violation.node,
           messageId: 'pinnedMinorWithAutoUpgrade',
+          data: { safeForm: violation.safeForm },
         });
       },
     };
@@ -76,23 +81,48 @@ function autoUpgradeEnabled(block: Block): boolean {
   return expr.value !== false;
 }
 
-function pinsMinorVersion(version: string): boolean {
-  const segments = version.split('.');
-  if (!segments.every((s) => /^\d+$/.test(s))) return false;
-  return segments.length >= 2;
-}
-
-function elasticacheAutoUpgradeApplies(block: Block): boolean {
-  const engineAttr = findAttribute(block.body.attributes, 'engine');
-  const engine = engineAttr
-    ? literalStringValue(engineAttr.expression)
-    : 'redis';
-  if (engine !== 'redis' && engine !== 'valkey') return false;
+function checkDbInstance(block: Block): Violation | undefined {
+  const engine = engineName(block);
+  if (engine === undefined) return undefined;
+  const baseDepth = DB_INSTANCE_SAFE_DEPTH[engine];
+  if (baseDepth === undefined) return undefined;
 
   const versionAttr = findAttribute(block.body.attributes, 'engine_version');
-  if (!versionAttr) return false;
+  if (!versionAttr) return undefined;
   const version = literalStringValue(versionAttr.expression);
-  if (version === undefined) return false;
-  const major = Number(version.split('.')[0]);
-  return Number.isInteger(major) && major >= MIN_AUTO_UPGRADE_REDIS_MAJOR;
+  if (version === undefined) return undefined;
+
+  const parts = version.split('.');
+  if (!parts.every((p) => /^\d+$/.test(p))) return undefined;
+
+  const depth =
+    engine === 'postgres' && Number(parts[0]) < POSTGRES_INTEGER_MAJOR_FLOOR
+      ? 2
+      : baseDepth;
+  if (parts.length <= depth) return undefined;
+
+  return { node: versionAttr, safeForm: parts.slice(0, depth).join('.') };
+}
+
+function checkElastiCache(block: Block): Violation | undefined {
+  const engine = engineName(block) ?? 'redis';
+  if (engine !== 'redis' && engine !== 'valkey') return undefined;
+
+  const versionAttr = findAttribute(block.body.attributes, 'engine_version');
+  if (!versionAttr) return undefined;
+  const version = literalStringValue(versionAttr.expression);
+  if (version === undefined) return undefined;
+
+  const parts = version.split('.');
+  if (!/^\d+$/.test(parts[0] ?? '')) return undefined;
+  if (Number(parts[0]) !== ELASTICACHE_AUTO_UPGRADE_MAJOR) return undefined;
+  if (!/^\d+$/.test(parts[1] ?? '')) return undefined;
+
+  return { node: versionAttr, safeForm: '6.x' };
+}
+
+function engineName(block: Block): string | undefined {
+  const attr = findAttribute(block.body.attributes, 'engine');
+  if (!attr) return undefined;
+  return literalStringValue(attr.expression);
 }

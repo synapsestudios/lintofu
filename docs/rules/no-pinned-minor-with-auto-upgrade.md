@@ -1,53 +1,48 @@
 # no-pinned-minor-with-auto-upgrade
 
-Warn when an AWS engine resource pins a minor `engine_version` (for example `"15.5"`) while `auto_minor_version_upgrade` is enabled.
+Warn when an AWS engine resource pins `engine_version` more precisely than an enabled `auto_minor_version_upgrade` will hold stable.
 
 ## Why
 
-`auto_minor_version_upgrade` lets AWS bump the engine to a newer minor version during the maintenance window, and it defaults to `true`. Once that happens, the pinned minor in your config no longer matches the live version, so every subsequent plan wants to revert the minor bump. The config and reality fight on every apply.
+`auto_minor_version_upgrade` lets AWS move the engine to a newer minor version during the maintenance window, and it defaults to `true`. If `engine_version` pins the exact segment that AWS moves, the config no longer matches the live version after an upgrade, and every subsequent plan wants to revert the bump.
 
-Two fixes resolve the contradiction:
-
-- Set `engine_version` to a major-only constraint (`"15"`) so it tracks the latest minor, or
-- Set `auto_minor_version_upgrade = false` and own the upgrades yourself.
+The provider suppresses that diff when `engine_version` is a prefix of the running version and records the resolved value in `engine_version_actual`. The fix is to pin only up to the drift-safe boundary for the engine, or to set `auto_minor_version_upgrade = false`.
 
 ## What it flags
 
 ```hcl
 resource "aws_db_instance" "db" {
   engine                     = "postgres"
-  engine_version             = "15.5"  # pinned minor
+  engine_version             = "15.4"  # pins the minor
   auto_minor_version_upgrade = true    # or omitted, which defaults to true
 }
 ```
 
-The warning is emitted on the `engine_version` attribute.
+The warning is emitted on the `engine_version` attribute and names the drift-safe form to use (`"15"` here).
 
-## Version matching
+## Engine awareness
 
-The rule reports only when `engine_version` is a clean numeric version: every dot-separated segment is an integer, and there are two or more segments. `"15"` is a major-only constraint and passes. `"15.5"` and `"8.0.34"` pin a minor and are flagged.
+The drift-safe boundary is engine-specific, because the segment AWS auto-moves differs by engine. The rule reads the `engine` attribute and only flags a version pinned deeper than that engine's boundary. Values it cannot parse as a clean numeric version, interpolated values, and a non-literal `auto_minor_version_upgrade` are all skipped.
 
-A segment that is not purely numeric makes the version unparseable, and the rule skips it. Aurora MySQL uses a version string of the form `"8.0.mysql_aurora.3.04.0"`, which carries the non-numeric segment `mysql_aurora`. The rule cannot tell which part is the minor, so it leaves Aurora MySQL versions alone. Aurora PostgreSQL uses plain numeric versions such as `"15.4"` and is flagged normally.
+| Resource / engine | Drift-safe form | Flagged example | Source |
+| --- | --- | --- | --- |
+| `aws_db_instance` postgres (major ≥ 10) | `"15"` | `"15.4"` | [RDS PostgreSQL version numbering](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.VersionID.html) |
+| `aws_db_instance` postgres (major < 10) | `"9.6"` | `"9.6.12"` | [RDS PostgreSQL version numbering](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.VersionID.html) |
+| `aws_db_instance` mysql | `"8.0"` | `"8.0.34"` | [RDS MySQL version numbering](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.MySQL.VersionID.html) |
+| `aws_db_instance` mariadb | `"10.6"` | `"10.6.14"` | [RDS MariaDB version numbering](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.MariaDB.VersionID.html) |
+| `aws_db_instance` db2-ae, db2-se | `"11.5"` | `"11.5.9.0"` | [RDS Db2 version management](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Db2.Concepts.VersionMgmt.html) |
+| `aws_elasticache_cluster`, `aws_elasticache_replication_group` redis/valkey major 6 | `"6.x"` | `"6.2"` | [Provider elasticache_replication_group docs](https://github.com/hashicorp/terraform-provider-aws/blob/main/website/docs/r/elasticache_replication_group.html.markdown) |
 
-Interpolated or referenced values (`engine_version = var.pg_version`) are skipped, as is a non-literal `auto_minor_version_upgrade` such as a variable or expression.
+## Exemptions
 
-## Scope
+These are recognized and intentionally left alone. Each has a documented reason.
 
-Flagged resources, each of which has both `auto_minor_version_upgrade` and a settable `engine_version`:
+`aws_db_instance` **oracle-\*** and **sqlserver-\***: the docs define no drift-safe numeric prefix. Oracle's minor version is a Release Update or Supplemental Patch Bundle suffix (`19.0.0.0.ru-2025-10...`), and SQL Server's resolvable versions carry a full build and `.vN` suffix (`16.00.4250.1.v1`). There is no shorter form to recommend.
 
-- `aws_db_instance`
-- `aws_rds_cluster_instance` (Aurora)
-- `aws_memorydb_cluster`
-- `aws_mq_broker`
-- `aws_elasticache_cluster`
-- `aws_elasticache_replication_group`
+`aws_elasticache_*` **redis/valkey major 7+**, **redis 5 and below**, and **memcached**: for major 7+ the minor is mandatory (`"7.2"`), so no shorter form exists; below major 6 `auto_minor_version_upgrade` is not supported; memcached does not support it at all.
 
-For ElastiCache, auto minor upgrade takes effect only on the `redis` and `valkey` engines at major version 6 or above. Memcached, and redis or valkey below major 6, are skipped.
+`aws_memorydb_cluster`: MemoryDB accepts only `major.minor` (`"7.1"`) and rejects a full version, so there is no over-precise form to flag.
 
-### Excluded resources
+`aws_mq_broker`: RabbitMQ is specified as `major.minor` and is already drift-safe; ActiveMQ pins a full `X.Y.Z` version with no shorter form, and current ActiveMQ versions require `auto_minor_version_upgrade` to stay enabled.
 
-`aws_rds_cluster` has no `auto_minor_version_upgrade` argument, only `allow_major_version_upgrade`. On Aurora, minor auto-upgrade is controlled on the companion `aws_rds_cluster_instance`, which this rule covers.
-
-`aws_neptune_cluster_instance` is skipped because the provider states that configuring `engine_version` has no effect.
-
-`aws_docdb_cluster_instance` is skipped because `auto_minor_version_upgrade` does not apply to Amazon DocumentDB, and `engine_version` is read-only there.
+`aws_rds_cluster` and `aws_rds_cluster_instance` (Aurora): the two operands live in different blocks. `engine_version` is a cluster-level control and is inert on the instance, while `auto_minor_version_upgrade` is expressed on the instance. A single-block rule cannot evaluate the pair. A cross-resource rule is tracked separately.
