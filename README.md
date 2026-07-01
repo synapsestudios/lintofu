@@ -77,6 +77,7 @@ export default [
 | [`no-legacy-security-group-rules`](./docs/rules/no-legacy-security-group-rules.md) | Flag legacy `aws_security_group_rule` and inline `ingress`/`egress` blocks.    |
 | [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
 | [`no-pinned-minor-with-auto-upgrade`](./docs/rules/no-pinned-minor-with-auto-upgrade.md) | Warn when `engine_version` is pinned deeper than an enabled `auto_minor_version_upgrade` holds stable (drift), per engine. |
+| [`no-aurora-pinned-minor-with-auto-upgrade`](./docs/rules/no-aurora-pinned-minor-with-auto-upgrade.md) | Warn when an Aurora PostgreSQL cluster pins `engine_version` deeper than auto minor upgrade across its instances holds stable (drift). |
 
 ## Parser services
 
@@ -86,10 +87,11 @@ Rules have access to a lazily-built, cross-file index via `context.sourceCode.pa
 interface ProjectIndex {
   findResource(addr: { kind: string; labels: string[] }): Block | undefined;
   resolveTraversal(expr: ScopeTraversalExpr): Block | undefined;
+  resourcesByType(type: string): readonly Block[];
 }
 ```
 
-Scope is every `.tf` / `.tofu` file in the same directory as the file being linted, which matches OpenTofu's module boundary. The index is cached per-directory and invalidated via file mtime. `findResource` takes an explicit address; `resolveTraversal` accepts a `ScopeTraversalExpr` like `aws_security_group.foo.id` and returns the defining `Block` or `undefined`.
+Scope is every `.tf` / `.tofu` file in the same directory as the file being linted, which matches OpenTofu's module boundary. The index is cached per-directory and invalidated via file mtime. `findResource` takes an explicit address; `resolveTraversal` accepts a `ScopeTraversalExpr` like `aws_security_group.foo.id` and returns the defining `Block` or `undefined`; `resourcesByType` returns every resource block of a type (e.g. `aws_rds_cluster_instance`), which cross-resource rules use to enumerate a whole type.
 
 ## Writing your own rule
 

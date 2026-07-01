@@ -45,4 +45,4 @@ These are recognized and intentionally left alone. Each has a documented reason.
 
 `aws_mq_broker`: RabbitMQ is specified as `major.minor` and is already drift-safe; ActiveMQ pins a full `X.Y.Z` version with no shorter form, and current ActiveMQ versions require `auto_minor_version_upgrade` to stay enabled.
 
-`aws_rds_cluster` and `aws_rds_cluster_instance` (Aurora): the two operands live in different blocks. `engine_version` is a cluster-level control and is inert on the instance, while `auto_minor_version_upgrade` is expressed on the instance. A single-block rule cannot evaluate the pair. A cross-resource rule is tracked in [#77](https://github.com/synapsestudios/lintofu/issues/77).
+`aws_rds_cluster` and `aws_rds_cluster_instance` (Aurora): the two operands live in different blocks. `engine_version` is a cluster-level control and is inert on the instance, while `auto_minor_version_upgrade` is expressed on the instance. A single-block rule cannot evaluate the pair, so Aurora is handled by the cross-resource [`no-aurora-pinned-minor-with-auto-upgrade`](./no-aurora-pinned-minor-with-auto-upgrade.md) rule instead.
