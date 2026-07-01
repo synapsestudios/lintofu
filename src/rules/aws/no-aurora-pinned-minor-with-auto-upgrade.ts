@@ -72,9 +72,22 @@ function clusterInstancesFor(
   sourceCode: OpenTofuSourceCode,
 ): Block[] {
   const out: Block[] = [];
-  for (const block of sourceCode.ast.blocks) {
-    if (isInstanceOf(block, cluster)) out.push(block);
-  }
+  const seen = new Set<string>();
+  const collect = (blocks: readonly Block[]) => {
+    for (const block of blocks) {
+      if (!isInstanceOf(block, cluster)) continue;
+      const key = block.labels.join('.');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(block);
+    }
+  };
+  // In-source blocks win over the on-disk index copy of the same resource: the
+  // file being linted is authoritative when it differs from what's on disk.
+  collect(sourceCode.ast.blocks);
+  collect(
+    sourceCode.parserServices.projectIndex.resourcesByType(INSTANCE_KIND),
+  );
   return out;
 }
 

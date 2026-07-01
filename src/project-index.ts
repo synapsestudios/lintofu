@@ -11,6 +11,9 @@ export interface ResourceAddress {
 export interface ProjectIndex {
   findResource(addr: ResourceAddress): Block | undefined;
   resolveTraversal(expr: ScopeTraversalExpr): Block | undefined;
+  // Every resource block of a given type (the first resource label, e.g.
+  // `aws_rds_cluster_instance`) across the module.
+  resourcesByType(type: string): readonly Block[];
 }
 
 interface CachedIndex {
@@ -63,12 +66,19 @@ function fingerprintFiles(files: ModuleFile[]): string {
 
 function buildIndex(files: ModuleFile[]): ProjectIndex {
   const blocksByAddress = new Map<string, Block>();
+  const resourcesByType = new Map<string, Block[]>();
 
   for (const file of files) {
     const text = readFileSync(file.path, 'utf8');
     const result = parseSync(text, { filename: file.path });
     for (const block of result.ast.blocks) {
       blocksByAddress.set(addressKey(block.kind, block.labels), block);
+      if (block.kind === 'resource' && block.labels[0] !== undefined) {
+        const type = block.labels[0];
+        const list = resourcesByType.get(type);
+        if (list) list.push(block);
+        else resourcesByType.set(type, [block]);
+      }
     }
   }
 
@@ -80,6 +90,9 @@ function buildIndex(files: ModuleFile[]): ProjectIndex {
       const addr = traversalToResourceAddress(expr);
       if (!addr) return undefined;
       return index.findResource(addr);
+    },
+    resourcesByType(type) {
+      return resourcesByType.get(type) ?? [];
     },
   };
   return index;

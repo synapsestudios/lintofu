@@ -187,3 +187,29 @@ describe('projectIndex.resolveTraversal', () => {
     expect(index.resolveTraversal(varRef)).toBeUndefined();
   });
 });
+
+describe('projectIndex.resourcesByType', () => {
+  it('returns every resource of a type across sibling files', () => {
+    writeFileSync(
+      join(dir, 'a.tf'),
+      `resource "aws_rds_cluster_instance" "a" {}`,
+    );
+    writeFileSync(
+      join(dir, 'b.tf'),
+      `resource "aws_rds_cluster_instance" "b" {}
+resource "aws_rds_cluster" "c" {}`,
+    );
+
+    const index = getProjectIndex(dir);
+    const instances = index.resourcesByType('aws_rds_cluster_instance');
+
+    expect(instances.map((b) => b.labels[1]).sort()).toEqual(['a', 'b']);
+  });
+
+  it('returns an empty array for a type with no resources', () => {
+    writeFileSync(join(dir, 'main.tf'), `resource "aws_rds_cluster" "c" {}`);
+
+    const index = getProjectIndex(dir);
+    expect(index.resourcesByType('aws_rds_cluster_instance')).toEqual([]);
+  });
+});
