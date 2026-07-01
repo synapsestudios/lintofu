@@ -17,7 +17,6 @@ const tester = new RuleTester({
 tester.run('no-aurora-pinned-minor-with-auto-upgrade', rule, {
   valid: [
     {
-      // An instance opts out, so auto upgrade won't fire cluster-wide.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
@@ -28,7 +27,6 @@ resource "aws_rds_cluster_instance" "ci" {
 }`,
     },
     {
-      // Cluster-wide upgrade needs every instance on; one off is enough.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
@@ -42,7 +40,6 @@ resource "aws_rds_cluster_instance" "b" {
 }`,
     },
     {
-      // Already a bare major, nothing to trim.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15"
@@ -52,14 +49,12 @@ resource "aws_rds_cluster_instance" "ci" {
 }`,
     },
     {
-      // No instance references the cluster; can't establish auto upgrade.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
 }`,
     },
     {
-      // Instance references a different cluster.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
@@ -69,7 +64,6 @@ resource "aws_rds_cluster_instance" "ci" {
 }`,
     },
     {
-      // aurora-mysql versions have no clean numeric prefix; out of scope.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-mysql"
   engine_version = "8.0.mysql_aurora.3.04.0"
@@ -79,7 +73,6 @@ resource "aws_rds_cluster_instance" "ci" {
 }`,
     },
     {
-      // Dynamic engine_version can't be judged.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = var.pg_version
@@ -89,7 +82,6 @@ resource "aws_rds_cluster_instance" "ci" {
 }`,
     },
     {
-      // Literal string cluster_identifier is not a traversal; skipped.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
@@ -114,7 +106,6 @@ resource "aws_rds_cluster_instance" "ci" {
       ],
     },
     {
-      // Absent auto_minor_version_upgrade defaults to true.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "15.4"
@@ -127,7 +118,6 @@ resource "aws_rds_cluster_instance" "ci" {
       ],
     },
     {
-      // Every instance on; still drifts.
       code: `resource "aws_rds_cluster" "c" {
   engine         = "aurora-postgresql"
   engine_version = "16.2"

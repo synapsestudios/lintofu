@@ -11,8 +11,6 @@ export interface ResourceAddress {
 export interface ProjectIndex {
   findResource(addr: ResourceAddress): Block | undefined;
   resolveTraversal(expr: ScopeTraversalExpr): Block | undefined;
-  // Every resource block of a given type (the first resource label, e.g.
-  // `aws_rds_cluster_instance`) across the module.
   resourcesByType(type: string): readonly Block[];
 }
 
