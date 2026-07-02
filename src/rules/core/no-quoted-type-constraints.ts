@@ -26,7 +26,6 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'quotedTypeConstraint' }> = {
         'Disallow quoted type constraints in `variable` blocks; use the unquoted type keyword.',
       recommended: true,
       severity: 'error',
-      category: 'core',
     },
     messages: {
       quotedTypeConstraint:
