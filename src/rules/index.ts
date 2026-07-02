@@ -8,6 +8,7 @@ import moduleSourcePinned from './core/module-source-pinned.js';
 import noBoolAsCount from './core/no-bool-as-count.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
+import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildcard.js';
 import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
@@ -37,6 +38,7 @@ export const rules = {
   'no-splat-bracket-index': noSplatBracketIndex,
   'remote-state-outputs-prefix': remoteStateOutputsPrefix,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
+  'no-legacy-ignore-changes-wildcard': noLegacyIgnoreChangesWildcard,
   'no-legacy-count-attribute': noLegacyCountAttribute,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,

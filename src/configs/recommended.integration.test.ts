@@ -21,6 +21,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-splat-bracket-index': 'warn',
       'lintofu/remote-state-outputs-prefix': 'error',
       'lintofu/no-external-refs-in-destroy-provisioner': 'error',
+      'lintofu/no-legacy-ignore-changes-wildcard': 'error',
       'lintofu/no-legacy-count-attribute': 'error',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
