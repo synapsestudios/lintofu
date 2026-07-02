@@ -8,6 +8,7 @@ import moduleSourcePinned from './core/module-source-pinned.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
+import noSplatBracketIndex from './core/no-splat-bracket-index.js';
 import noTemplateProvider from './core/no-template-provider.js';
 import noTerraformEnvReference from './core/no-terraform-env-reference.js';
 import preferBareExpression from './core/prefer-bare-expression.js';
@@ -25,6 +26,7 @@ export const rules = {
   'no-legacy-provider-proxy': noLegacyProviderProxy,
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
+  'no-splat-bracket-index': noSplatBracketIndex,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,
