@@ -67,6 +67,7 @@ export default [
 | Rule                                                                     | Description                                                                          |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
 | [`documented-variables`](./docs/rules/documented-variables.md)           | Every `variable` block must have a non-empty `description`.                          |
+| [`no-reserved-variable-names`](./docs/rules/no-reserved-variable-names.md) | A `variable` block must not be named after an OpenTofu reserved meta-argument.       |
 | [`documented-outputs`](./docs/rules/documented-outputs.md)               | Every `output` block must have a non-empty `description`.                            |
 | [`required-providers-pinned`](./docs/rules/required-providers-pinned.md) | Every provider in `terraform.required_providers` must declare a `version`.           |
 | [`provider-source-required`](./docs/rules/provider-source-required.md)   | Every provider in `terraform.required_providers` must declare an explicit `source`.  |

@@ -6,6 +6,7 @@ describe('recommended config, derived from real rule metadata', () => {
   it('includes every current rule with the expected severity', () => {
     expect(buildRecommendedRules(rules)).toEqual({
       'lintofu/documented-variables': 'error',
+      'lintofu/no-reserved-variable-names': 'error',
       'lintofu/documented-outputs': 'error',
       'lintofu/required-providers-pinned': 'error',
       'lintofu/provider-source-required': 'error',
