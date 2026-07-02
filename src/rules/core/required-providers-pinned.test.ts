@@ -28,6 +28,16 @@ tester.run('required-providers-pinned', rule, {
     },
     { code: 'terraform {}' },
     { code: 'resource "x" "y" { bucket = "b" }' },
+    {
+      code: `terraform {
+  required_providers = {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}`,
+    },
   ],
   invalid: [
     {
@@ -55,6 +65,16 @@ tester.run('required-providers-pinned', rule, {
         { messageId: 'unpinnedProvider' },
         { messageId: 'unpinnedProvider' },
       ],
+    },
+    {
+      code: `terraform {
+  required_providers = {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}`,
+      errors: [{ messageId: 'unpinnedProvider', data: { name: 'aws' } }],
     },
   ],
 });

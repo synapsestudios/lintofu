@@ -33,7 +33,6 @@ terraform {
 
 ## Limitations
 
-- Only the block form of `required_providers` is inspected in v0.1. The attribute form (`required_providers = { ... }`) is silently ignored; support will land when the AST converter handles attribute-style required_providers cleanly.
 - Dynamic object values are not evaluated.
 
 ## Options
