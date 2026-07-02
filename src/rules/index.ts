@@ -12,6 +12,7 @@ import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
+import noSplatBracketIndex from './core/no-splat-bracket-index.js';
 import noTemplateProvider from './core/no-template-provider.js';
 import noTerraformEnvReference from './core/no-terraform-env-reference.js';
 import preferBareExpression from './core/prefer-bare-expression.js';
@@ -33,6 +34,7 @@ export const rules = {
   'no-legacy-provider-proxy': noLegacyProviderProxy,
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
+  'no-splat-bracket-index': noSplatBracketIndex,
   'remote-state-outputs-prefix': remoteStateOutputsPrefix,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
   'no-legacy-count-attribute': noLegacyCountAttribute,
