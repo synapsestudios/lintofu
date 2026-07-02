@@ -6,6 +6,7 @@ import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
+import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildcard.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noTemplateProvider from './core/no-template-provider.js';
@@ -26,6 +27,7 @@ export const rules = {
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
+  'no-legacy-ignore-changes-wildcard': noLegacyIgnoreChangesWildcard,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
