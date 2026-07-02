@@ -31,6 +31,7 @@ tester.run('no-legacy-count-attribute', rule, {
     { code: 'output "x" { value = aws_instance.example }' },
     { code: 'output "x" { value = aws_instance.example.count.foo }' },
     { code: 'output "x" { value = aws_instance.example[0].count }' },
+    { code: 'output "x" { value = [for r in aws_instance.foo : r.count] }' },
   ],
   invalid: [
     {
