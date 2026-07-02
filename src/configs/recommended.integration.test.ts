@@ -12,6 +12,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/provider-source-required': 'error',
       'lintofu/module-source-pinned': 'error',
       'lintofu/prefer-bare-expression': 'warn',
+      'lintofu/no-bool-as-count': 'error',
       'lintofu/no-legacy-provider-proxy': 'error',
       'lintofu/no-template-provider': 'error',
       'lintofu/no-terraform-env-reference': 'error',
