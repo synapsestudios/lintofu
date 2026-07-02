@@ -78,6 +78,7 @@ export default [
 | [`no-legacy-provider-proxy`](./docs/rules/no-legacy-provider-proxy.md)   | Flag empty proxy `provider` blocks; declare aliases via `configuration_aliases`.     |
 | [`no-template-provider`](./docs/rules/no-template-provider.md)           | Flag use of the archived `hashicorp/template` provider.                              |
 | [`no-terraform-env-reference`](./docs/rules/no-terraform-env-reference.md) | Flag references to `terraform.env`; use `terraform.workspace` instead. Autofixable. |
+| [`no-quoted-type-constraints`](./docs/rules/no-quoted-type-constraints.md) | Flag quoted type constraints in `variable` blocks; use the unquoted type keyword. Autofixable. |
 | [`no-splat-bracket-index`](./docs/rules/no-splat-bracket-index.md)       | Warn on a constant index applied to a splat result (`x.*.id[0]`); index the collection first. |
 | [`remote-state-outputs-prefix`](./docs/rules/remote-state-outputs-prefix.md) | Flag `data.terraform_remote_state.<name>.<attr>` references that omit the `.outputs.` prefix. Autofixable. |
 | [`no-bool-as-count`](./docs/rules/no-bool-as-count.md)                   | Flag a `count` set to a provable boolean; Terraform 0.12 removed bool-to-number coercion. Autofixable. |

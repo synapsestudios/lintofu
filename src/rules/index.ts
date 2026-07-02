@@ -12,6 +12,7 @@ import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildc
 import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
+import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noSplatBracketIndex from './core/no-splat-bracket-index.js';
 import noTemplateProvider from './core/no-template-provider.js';
@@ -35,6 +36,7 @@ export const rules = {
   'no-legacy-provider-proxy': noLegacyProviderProxy,
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
+  'no-quoted-type-constraints': noQuotedTypeConstraints,
   'no-splat-bracket-index': noSplatBracketIndex,
   'remote-state-outputs-prefix': remoteStateOutputsPrefix,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
