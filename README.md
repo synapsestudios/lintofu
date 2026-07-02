@@ -76,6 +76,7 @@ export default [
 | [`no-legacy-provider-proxy`](./docs/rules/no-legacy-provider-proxy.md)   | Flag empty proxy `provider` blocks; declare aliases via `configuration_aliases`.     |
 | [`no-template-provider`](./docs/rules/no-template-provider.md)           | Flag use of the archived `hashicorp/template` provider.                              |
 | [`no-terraform-env-reference`](./docs/rules/no-terraform-env-reference.md) | Flag references to `terraform.env`; use `terraform.workspace` instead. Autofixable. |
+| [`no-quoted-type-constraints`](./docs/rules/no-quoted-type-constraints.md) | Flag quoted type constraints in `variable` blocks; use the unquoted type keyword. Autofixable. |
 | [`no-external-refs-in-destroy-provisioner`](./docs/rules/no-external-refs-in-destroy-provisioner.md) | Flag references to anything other than `self`, `count.index`, or `each.key`/`each.value` inside `provisioner` blocks with `when = destroy`. |
 | [`no-legacy-security-group-rules`](./docs/rules/no-legacy-security-group-rules.md) | Flag legacy `aws_security_group_rule` and inline `ingress`/`egress` blocks.    |
 | [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
