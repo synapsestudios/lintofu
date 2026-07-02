@@ -29,6 +29,7 @@ A call is flagged when its function name is exactly `list`, including the zero-a
 - A bracket tuple literal such as `[80, 443]` or `[]`.
 - Any other function: `concat`, `tolist`, `flatten`, `coalescelist`, or a user name like `mylist(...)`.
 - A variable or attribute whose name merely contains the substring `list`, such as `var.list` or `local.list_of_things`.
+- A `type = list(string)` constraint inside a `variable` block. That `list(...)` is a current type constraint rather than the legacy value function, so the rule leaves it alone.
 
 ## Autofix
 

@@ -25,6 +25,7 @@ tester.run('no-legacy-list-function', rule, {
     { code: 'output "x" { value = var.list }' },
     { code: 'output "x" { value = local.list_of_things }' },
     { code: 'output "x" { value = mylist("a") }' },
+    { code: 'variable "x" { type = list(string) }' },
   ],
   invalid: [
     {
@@ -50,6 +51,19 @@ tester.run('no-legacy-list-function', rule, {
     {
       code: 'output "x" { value = concat(list("a"), list("b")) }',
       output: 'output "x" { value = concat(["a"], ["b"]) }',
+      errors: [
+        { messageId: 'legacyListFunction' },
+        { messageId: 'legacyListFunction' },
+      ],
+    },
+    {
+      code: 'output "x" { value = list(var.items...) }',
+      output: null,
+      errors: [{ messageId: 'legacyListFunction' }],
+    },
+    {
+      code: 'output "x" { value = list(list("a")) }',
+      output: 'output "x" { value = [list("a")] }',
       errors: [
         { messageId: 'legacyListFunction' },
         { messageId: 'legacyListFunction' },

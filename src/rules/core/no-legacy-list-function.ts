@@ -9,7 +9,6 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'legacyListFunction' }> = {
         'Flag the legacy `list(...)` function, removed in Terraform 0.15. Use a `[...]` tuple literal instead.',
       recommended: true,
       severity: 'error',
-      category: 'core',
     },
     messages: {
       legacyListFunction:
@@ -19,9 +18,32 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'legacyListFunction' }> = {
   },
   create(context) {
     const sourceCode = context.sourceCode;
+    // `type = list(string)` in a variable block is a current type constraint,
+    // not the legacy value function, but it parses as a FunctionCallExpr named
+    // `list`. Record each variable block's `type` expression range so the
+    // FunctionCallExpr handler can skip calls that fall within it. ESLint
+    // visits a Block before its descendant expressions, so these ranges are
+    // populated before any nested `list(...)` call is checked.
+    const typeConstraintRanges: { start: number; end: number }[] = [];
     return {
+      Block(node) {
+        if (node.kind !== 'variable') return;
+        const typeAttr = node.body.attributes.find((a) => a.name === 'type');
+        if (typeAttr) {
+          typeConstraintRanges.push({
+            start: typeAttr.expression.range.start.offset,
+            end: typeAttr.expression.range.end.offset,
+          });
+        }
+      },
       FunctionCallExpr(node) {
         if (node.name !== 'list') return;
+        const withinTypeConstraint = typeConstraintRanges.some(
+          (r) =>
+            node.range.start.offset >= r.start &&
+            node.range.end.offset <= r.end,
+        );
+        if (withinTypeConstraint) return;
         context.report({
           node,
           messageId: 'legacyListFunction',
