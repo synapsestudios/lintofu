@@ -21,7 +21,9 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'terraformEnvReference' }> = {
     return {
       ScopeTraversalExpr(node) {
         const head = traversalHead(node);
-        if (head?.[0] !== 'terraform' || head[1] !== 'env') return;
+        if (!head) return;
+        const [root, attr] = head;
+        if (root !== 'terraform' || attr !== 'env') return;
         context.report({
           node,
           messageId: 'terraformEnvReference',

@@ -4,17 +4,17 @@ Flag references to `terraform.env`. It was renamed to `terraform.workspace` when
 
 ## Why
 
-`terraform.env` reads as current code but points at a name that Terraform no longer supports. Anything relying on it silently resolves to an empty string on modern versions, so a config that looks environment-aware isn't. `terraform.workspace` is the supported spelling and means the same thing. See the [workspaces documentation](https://developer.hashicorp.com/terraform/cli/workspaces).
+`terraform.env` reads as current code but points at a name that Terraform no longer supports. Anything relying on it silently resolves to an empty string on current Terraform, so a config that reads as environment-aware produces an empty string at apply time. `terraform.workspace` is the supported spelling and carries the same value. See the [workspaces documentation](https://developer.hashicorp.com/terraform/cli/workspaces).
 
 ## What it flags
 
 ```hcl
 output "env" {
-  value = terraform.env               # ❌
+  value = terraform.env               # flagged
 }
 
 resource "aws_s3_bucket" "b" {
-  bucket = "app-${terraform.env}"      # ❌ also flagged inside interpolation
+  bucket = "app-${terraform.env}"      # flagged, including inside interpolation
 }
 ```
 

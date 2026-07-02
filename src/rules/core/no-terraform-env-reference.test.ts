@@ -33,5 +33,29 @@ tester.run('no-terraform-env-reference', rule, {
       output: 'output "x" { value = "${terraform.workspace}" }',
       errors: [{ messageId: 'terraformEnvReference' }],
     },
+    {
+      code: 'resource "aws_s3_bucket" "b" { bucket = terraform.env }',
+      output: 'resource "aws_s3_bucket" "b" { bucket = terraform.workspace }',
+      errors: [{ messageId: 'terraformEnvReference' }],
+    },
+    {
+      code: 'output "x" { value = "${terraform.env}-${terraform.env}" }',
+      output:
+        'output "x" { value = "${terraform.workspace}-${terraform.workspace}" }',
+      errors: [
+        { messageId: 'terraformEnvReference' },
+        { messageId: 'terraformEnvReference' },
+      ],
+    },
+    {
+      code: 'output "x" { value = terraform.env.foo }',
+      output: 'output "x" { value = terraform.workspace }',
+      errors: [{ messageId: 'terraformEnvReference' }],
+    },
+    {
+      code: 'output "x" { value = terraform.env[0] }',
+      output: 'output "x" { value = terraform.workspace }',
+      errors: [{ messageId: 'terraformEnvReference' }],
+    },
   ],
 });
