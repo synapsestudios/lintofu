@@ -14,6 +14,7 @@ import noTemplateProvider from './core/no-template-provider.js';
 import noTerraformEnvReference from './core/no-terraform-env-reference.js';
 import preferBareExpression from './core/prefer-bare-expression.js';
 import providerSourceRequired from './core/provider-source-required.js';
+import remoteStateOutputsPrefix from './core/remote-state-outputs-prefix.js';
 import requiredProvidersPinned from './core/required-providers-pinned.js';
 
 export const rules = {
@@ -29,6 +30,7 @@ export const rules = {
   'no-legacy-provider-proxy': noLegacyProviderProxy,
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
+  'remote-state-outputs-prefix': remoteStateOutputsPrefix,
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,

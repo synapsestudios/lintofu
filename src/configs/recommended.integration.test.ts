@@ -17,6 +17,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-legacy-provider-proxy': 'error',
       'lintofu/no-template-provider': 'error',
       'lintofu/no-terraform-env-reference': 'error',
+      'lintofu/remote-state-outputs-prefix': 'error',
       'lintofu/no-external-refs-in-destroy-provisioner': 'error',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
