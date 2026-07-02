@@ -37,7 +37,6 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'boolAsCount' }> = {
         'Flag a `count` meta-argument set to a boolean; Terraform 0.12 removed bool-to-number coercion.',
       recommended: true,
       severity: 'error',
-      category: 'core',
     },
     messages: {
       boolAsCount:
@@ -64,7 +63,7 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'boolAsCount' }> = {
             ) {
               return fixer.replaceText(expr, inner.value ? '1' : '0');
             }
-            const text = context.sourceCode.getText(expr);
+            const text = context.sourceCode.getText(inner);
             return fixer.replaceText(expr, `(${text}) ? 1 : 0`);
           },
         });
