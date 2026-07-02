@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "b" {
 
 ## What it does not flag
 
-- `terraform.workspace` — the supported form.
+- `terraform.workspace` is the supported form.
 - Any other `terraform.*` attribute (e.g. `terraform.environment`).
 - A `var.env` reference or a bare `env`, which are unrelated names.
 
