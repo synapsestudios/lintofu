@@ -73,6 +73,7 @@ export default [
 | [`provider-source-required`](./docs/rules/provider-source-required.md)   | Every provider in `terraform.required_providers` must declare an explicit `source`.  |
 | [`module-source-pinned`](./docs/rules/module-source-pinned.md)           | `module` sources must be pinned via `?ref=`, a `version` attribute, or a local path. |
 | [`prefer-bare-expression`](./docs/rules/prefer-bare-expression.md)       | Flag the redundant `"${expr}"` wrapping pattern.                                     |
+| [`no-legacy-list-function`](./docs/rules/no-legacy-list-function.md)     | Flag the legacy `list(...)` function, removed in Terraform 0.15; use `[...]`. Autofixable. |
 | [`no-legacy-provider-proxy`](./docs/rules/no-legacy-provider-proxy.md)   | Flag empty proxy `provider` blocks; declare aliases via `configuration_aliases`.     |
 | [`no-template-provider`](./docs/rules/no-template-provider.md)           | Flag use of the archived `hashicorp/template` provider.                              |
 | [`no-terraform-env-reference`](./docs/rules/no-terraform-env-reference.md) | Flag references to `terraform.env`; use `terraform.workspace` instead. Autofixable. |
