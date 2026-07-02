@@ -12,7 +12,6 @@ const rule: OpenTofuRuleDefinition<{
         'Flag the quoted `["*"]` wildcard in a `lifecycle` `ignore_changes` list, replaced by the unquoted `all` keyword in Terraform 0.15.',
       recommended: true,
       severity: 'error',
-      category: 'core',
     },
     messages: {
       legacyIgnoreChangesWildcard:

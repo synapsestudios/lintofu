@@ -27,6 +27,7 @@ tester.run('no-legacy-ignore-changes-wildcard', rule, {
     { code: resource('ignore_changes = ["*", "ami"]') },
     { code: resource('ignore_changes = ["${var.name}"]') },
     { code: resource('create_before_destroy = true') },
+    { code: resource('replace_triggered_by = ["*"]') },
     { code: 'resource "aws_instance" "x" {\n  tags = ["*"]\n}' },
   ],
   invalid: [
@@ -39,6 +40,16 @@ tester.run('no-legacy-ignore-changes-wildcard', rule, {
       code: 'resource "aws_db_instance" "d" {\n  lifecycle {\n    ignore_changes = ["*"]\n  }\n}',
       output:
         'resource "aws_db_instance" "d" {\n  lifecycle {\n    ignore_changes = all\n  }\n}',
+      errors: [{ messageId: 'legacyIgnoreChangesWildcard' }],
+    },
+    {
+      code: resource('ignore_changes = ["*",]'),
+      output: resource('ignore_changes = all'),
+      errors: [{ messageId: 'legacyIgnoreChangesWildcard' }],
+    },
+    {
+      code: resource('ignore_changes = [ "*" ]'),
+      output: resource('ignore_changes = all'),
       errors: [{ messageId: 'legacyIgnoreChangesWildcard' }],
     },
   ],
