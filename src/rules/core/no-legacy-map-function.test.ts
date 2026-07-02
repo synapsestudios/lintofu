@@ -25,6 +25,8 @@ tester.run('no-legacy-map-function', rule, {
     { code: 'output "x" { value = var.mapping }' },
     { code: 'resource "aws_s3_bucket" "b" { map = "v" }' },
     { code: 'output "x" { value = mapfunc("a", 1) }' },
+    { code: 'variable "x" { type = map(string) }' },
+    { code: 'variable "x" { type = object({ tags = map(string) }) }' },
   ],
   invalid: [
     {
@@ -53,12 +55,27 @@ tester.run('no-legacy-map-function', rule, {
       errors: [{ messageId: 'legacyMapFunction' }],
     },
     {
+      code: 'output "x" { value = map() }',
+      output: 'output "x" { value = {} }',
+      errors: [{ messageId: 'legacyMapFunction' }],
+    },
+    {
       code: 'output "x" { value = map("a", 1, "b") }',
       output: null,
       errors: [{ messageId: 'legacyMapFunction' }],
     },
     {
       code: 'output "x" { value = map(var.k, 1) }',
+      output: null,
+      errors: [{ messageId: 'legacyMapFunction' }],
+    },
+    {
+      code: 'output "x" { value = map(pairs...) }',
+      output: null,
+      errors: [{ messageId: 'legacyMapFunction' }],
+    },
+    {
+      code: 'output "x" { value = map("a", 1, "a", 2) }',
       output: null,
       errors: [{ messageId: 'legacyMapFunction' }],
     },
