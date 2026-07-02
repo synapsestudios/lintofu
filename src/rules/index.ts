@@ -5,6 +5,7 @@ import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrad
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
+import noBoolAsCount from './core/no-bool-as-count.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
@@ -26,6 +27,7 @@ export const rules = {
   'module-source-pinned': moduleSourcePinned,
   'prefer-bare-expression': preferBareExpression,
   'no-legacy-map-function': noLegacyMapFunction,
+  'no-bool-as-count': noBoolAsCount,
   'no-legacy-provider-proxy': noLegacyProviderProxy,
   'no-template-provider': noTemplateProvider,
   'no-terraform-env-reference': noTerraformEnvReference,
