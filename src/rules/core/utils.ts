@@ -144,39 +144,6 @@ export function checkDescription(block: Block): DescriptionCheck {
 // Bare-identifier keys (`version = "x"`) come through as ObjectConsKeyExpr
 // wrapping a single-step ScopeTraversalExpr. Quoted keys (`"version" = "x"`)
 // wrap a TemplateExpr instead.
-export interface RequiredProviderEntry {
-  name: string;
-  value: Expression;
-  node: Attribute | Expression;
-}
-
-export function requiredProviderEntries(
-  terraform: Block,
-): RequiredProviderEntry[] {
-  const blockForm = terraform.body.blocks.find(
-    (b) => b.kind === 'required_providers',
-  );
-  if (blockForm) {
-    return blockForm.body.attributes.map((attr) => ({
-      name: attr.name,
-      value: attr.expression,
-      node: attr,
-    }));
-  }
-  const attrForm = findAttribute(
-    terraform.body.attributes,
-    'required_providers',
-  );
-  if (attrForm?.expression.type !== 'ObjectConsExpr') return [];
-  const out: RequiredProviderEntry[] = [];
-  for (const item of attrForm.expression.items) {
-    const name = objectItemKeyName(item);
-    if (name === undefined) continue;
-    out.push({ name, value: item.valueExpr, node: item.valueExpr });
-  }
-  return out;
-}
-
 export function objectItemKeyName(item: ObjectConsItem): string | undefined {
   const inner =
     item.keyExpr.type === 'ObjectConsKeyExpr'
@@ -190,4 +157,35 @@ export function objectItemKeyName(item: ObjectConsItem): string | undefined {
     return literalStringValue(inner);
   }
   return undefined;
+}
+
+export interface RequiredProviderEntry {
+  name: string;
+  value: Expression;
+}
+
+export function requiredProviderEntries(
+  terraform: Block,
+): RequiredProviderEntry[] {
+  const blockForm = terraform.body.blocks.find(
+    (b) => b.kind === 'required_providers',
+  );
+  if (blockForm) {
+    return blockForm.body.attributes.map((attr) => ({
+      name: attr.name,
+      value: attr.expression,
+    }));
+  }
+  const attrForm = findAttribute(
+    terraform.body.attributes,
+    'required_providers',
+  );
+  if (attrForm?.expression.type !== 'ObjectConsExpr') return [];
+  const out: RequiredProviderEntry[] = [];
+  for (const item of attrForm.expression.items) {
+    const name = objectItemKeyName(item);
+    if (name === undefined) continue;
+    out.push({ name, value: item.valueExpr });
+  }
+  return out;
 }

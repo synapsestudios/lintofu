@@ -24,23 +24,21 @@ const rule: OpenTofuRuleDefinition<{
     return {
       Block(node) {
         if (node.kind !== 'terraform') return;
-        for (const { name, value, node: reportNode } of requiredProviderEntries(
-          node,
-        )) {
+        for (const { name, value } of requiredProviderEntries(node)) {
           if (value.type === 'ObjectConsExpr') {
             const hasSource = value.items.some(
               (item) => objectItemKeyName(item) === 'source',
             );
             if (!hasSource) {
               context.report({
-                node: reportNode,
+                node: value,
                 messageId: 'missingSource',
                 data: { name },
               });
             }
           } else if (value.type === 'TemplateExpr') {
             context.report({
-              node: reportNode,
+              node: value,
               messageId: 'legacyStringForm',
               data: { name },
             });

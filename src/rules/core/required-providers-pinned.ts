@@ -20,16 +20,14 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'unpinnedProvider' }> = {
     return {
       Block(node) {
         if (node.kind !== 'terraform') return;
-        for (const { name, value, node: reportNode } of requiredProviderEntries(
-          node,
-        )) {
+        for (const { name, value } of requiredProviderEntries(node)) {
           if (value.type !== 'ObjectConsExpr') continue;
           const hasVersion = value.items.some(
             (item) => objectItemKeyName(item) === 'version',
           );
           if (!hasVersion) {
             context.report({
-              node: reportNode,
+              node: value,
               messageId: 'unpinnedProvider',
               data: { name },
             });
