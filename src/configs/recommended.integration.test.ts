@@ -16,6 +16,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-template-provider': 'error',
       'lintofu/no-terraform-env-reference': 'error',
       'lintofu/no-external-refs-in-destroy-provisioner': 'error',
+      'lintofu/no-legacy-count-attribute': 'error',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
       'lintofu/no-pinned-minor-with-auto-upgrade': 'warn',
