@@ -8,6 +8,7 @@ import moduleSourcePinned from './core/module-source-pinned.js';
 import noBoolAsCount from './core/no-bool-as-count.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
+import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
@@ -26,6 +27,7 @@ export const rules = {
   'provider-source-required': providerSourceRequired,
   'module-source-pinned': moduleSourcePinned,
   'prefer-bare-expression': preferBareExpression,
+  'no-legacy-list-function': noLegacyListFunction,
   'no-legacy-map-function': noLegacyMapFunction,
   'no-bool-as-count': noBoolAsCount,
   'no-legacy-provider-proxy': noLegacyProviderProxy,
