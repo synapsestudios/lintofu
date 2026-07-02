@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.0](https://github.com/synapsestudios/lintofu/compare/v0.3.0...v0.4.0) (2026-07-02)
+
+
+### Features
+
+* add aurora cross-resource no-pinned-minor-with-auto-upgrade rule ([#78](https://github.com/synapsestudios/lintofu/issues/78)) ([7658bb6](https://github.com/synapsestudios/lintofu/commit/7658bb6b8ecaffd1054d339d60bfce26ddd891a8))
+* add no-bool-as-count rule ([#91](https://github.com/synapsestudios/lintofu/issues/91)) ([0a9bb2e](https://github.com/synapsestudios/lintofu/commit/0a9bb2e051662616becc8367aebc736349f1de4d))
+* add no-legacy-count-attribute rule ([#85](https://github.com/synapsestudios/lintofu/issues/85)) ([67ef84f](https://github.com/synapsestudios/lintofu/commit/67ef84ff1ad95f8e1d5033f8b476db489e44cc9f))
+* add no-legacy-ignore-changes-wildcard rule ([#86](https://github.com/synapsestudios/lintofu/issues/86)) ([4cebaf5](https://github.com/synapsestudios/lintofu/commit/4cebaf5dd9ed2333895275f362bc02afa3dea068))
+* add no-legacy-list-function rule ([#90](https://github.com/synapsestudios/lintofu/issues/90)) ([174c72c](https://github.com/synapsestudios/lintofu/commit/174c72cc1e76b08383b6d47f37c8cb5e9fe10317))
+* add no-legacy-map-function rule ([#92](https://github.com/synapsestudios/lintofu/issues/92)) ([c941a95](https://github.com/synapsestudios/lintofu/commit/c941a95d5676baf9a39e54eb60e014114ff4711f))
+* add no-quoted-type-constraints rule ([#87](https://github.com/synapsestudios/lintofu/issues/87)) ([3f1e973](https://github.com/synapsestudios/lintofu/commit/3f1e97313b160189c39894f322ee93efd9035be3))
+* add no-reserved-variable-names rule ([#84](https://github.com/synapsestudios/lintofu/issues/84)) ([b5c4867](https://github.com/synapsestudios/lintofu/commit/b5c4867e411efe4bf9496a8050a175631ad5dd48))
+* add no-splat-bracket-index rule ([#88](https://github.com/synapsestudios/lintofu/issues/88)) ([ceaed9a](https://github.com/synapsestudios/lintofu/commit/ceaed9ab1518730cad2138d23ea1e9a05e5c43e7))
+* add no-terraform-env-reference rule ([#83](https://github.com/synapsestudios/lintofu/issues/83)) ([7e5ead0](https://github.com/synapsestudios/lintofu/commit/7e5ead0f7360c0f99f921d2bc8751a5c3f54dc34))
+* add provider-source-required rule ([#82](https://github.com/synapsestudios/lintofu/issues/82)) ([d0203ce](https://github.com/synapsestudios/lintofu/commit/d0203ce81eabb189c7bd00c26013823573a12d3d))
+* add remote-state-outputs-prefix rule ([#89](https://github.com/synapsestudios/lintofu/issues/89)) ([766a8a9](https://github.com/synapsestudios/lintofu/commit/766a8a92aec328b433f4a505564c4eda8a4d77a1))
+
 ## [0.3.0](https://github.com/synapsestudios/lintofu/compare/v0.2.0...v0.3.0) (2026-07-01)
 
 
