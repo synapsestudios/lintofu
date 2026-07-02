@@ -8,7 +8,6 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'splatBracketIndex' }> = {
         'Flag a constant index applied to a splat result, a pre-0.12 artifact; index the resource first instead.',
       recommended: true,
       severity: 'warn',
-      category: 'core',
     },
     messages: {
       splatBracketIndex:
