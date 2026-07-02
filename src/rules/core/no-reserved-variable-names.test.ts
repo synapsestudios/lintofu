@@ -18,12 +18,10 @@ const tester = new RuleTester({
 
 tester.run('no-reserved-variable-names', rule, {
   valid: [
-    // Ordinary, non-reserved variable name.
     { code: 'variable "region" {}' },
     // Boundary near-misses: exact match only, so these are allowed.
     { code: 'variable "sources" {}' },
     { code: 'variable "for" {}' },
-    // Matching is case-sensitive, mirroring OpenTofu's exact reserved list.
     { code: 'variable "Count" {}' },
     // Reserved words are only reserved as `variable` names; other block
     // kinds may use them as labels.
@@ -31,7 +29,10 @@ tester.run('no-reserved-variable-names', rule, {
     { code: 'resource "aws_instance" "count" {}' },
   ],
   invalid: [
-    { code: 'variable "source" {}', errors: [{ messageId: 'reservedName' }] },
+    {
+      code: 'variable "source" {}',
+      errors: [{ messageId: 'reservedName', data: { name: 'source' } }],
+    },
     { code: 'variable "version" {}', errors: [{ messageId: 'reservedName' }] },
     {
       code: 'variable "providers" {}',
@@ -48,5 +49,13 @@ tester.run('no-reserved-variable-names', rule, {
       errors: [{ messageId: 'reservedName' }],
     },
     { code: 'variable "locals" {}', errors: [{ messageId: 'reservedName' }] },
+    {
+      // Each reserved block is reported independently.
+      code: 'variable "count" {}\nvariable "source" {}',
+      errors: [
+        { messageId: 'reservedName', data: { name: 'count' } },
+        { messageId: 'reservedName', data: { name: 'source' } },
+      ],
+    },
   ],
 });
