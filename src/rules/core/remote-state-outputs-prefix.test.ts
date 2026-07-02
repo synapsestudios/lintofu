@@ -23,6 +23,7 @@ tester.run('remote-state-outputs-prefix', rule, {
       code: 'output "x" { value = data.terraform_remote_state.network.outputs.subnets[0] }',
     },
     { code: 'output "x" { value = data.terraform_remote_state.network }' },
+    { code: 'output "x" { value = data.terraform_remote_state.network[0] }' },
     { code: 'output "x" { value = data.aws_ami.ubuntu.id }' },
     { code: 'output "x" { value = terraform_remote_state.network.vpc_id }' },
     { code: 'output "x" { value = var.terraform_remote_state }' },

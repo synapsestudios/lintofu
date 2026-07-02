@@ -11,7 +11,6 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'missingOutputsPrefix' }> = {
         'Flag a `data.terraform_remote_state` reference that omits the required `.outputs.` prefix, required since Terraform 0.12.',
       recommended: true,
       severity: 'error',
-      category: 'core',
     },
     messages: {
       missingOutputsPrefix:
