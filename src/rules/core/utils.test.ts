@@ -1,8 +1,9 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { initialize, parse } from '../../parser/index.js';
-import type { Expression } from '../../parser/types.js';
+import type { Block, Expression } from '../../parser/types.js';
 import {
   collectTraversals,
+  requiredProviderEntries,
   traversalHead,
   traversalText,
   trimNumericVersion,
@@ -17,6 +18,13 @@ async function exprOf(code: string): Promise<Expression> {
   const expr = result.ast.blocks[0]?.body.attributes[0]?.expression;
   if (!expr) throw new Error('no expression parsed');
   return expr;
+}
+
+async function terraformOf(code: string): Promise<Block> {
+  const result = await parse(code);
+  const block = result.ast.blocks[0];
+  if (!block) throw new Error('no terraform block parsed');
+  return block;
 }
 
 describe('trimNumericVersion', () => {
@@ -55,6 +63,53 @@ describe('traversalHead', () => {
 function names(expr: Expression): string[] {
   return collectTraversals(expr).map(traversalText);
 }
+
+describe('requiredProviderEntries', () => {
+  it('reads entries from the block form', async () => {
+    const tf = await terraformOf(`terraform {
+  required_providers {
+    aws = { source = "hashicorp/aws" }
+    azurerm = "~> 2.0"
+  }
+}`);
+    const entries = requiredProviderEntries(tf);
+    expect(entries.map((e) => e.name)).toEqual(['aws', 'azurerm']);
+    expect(entries.map((e) => e.value.type)).toEqual([
+      'ObjectConsExpr',
+      'TemplateExpr',
+    ]);
+  });
+
+  it('reads entries from the attribute form', async () => {
+    const tf = await terraformOf(`terraform {
+  required_providers = {
+    aws = { source = "hashicorp/aws" }
+    azurerm = "~> 2.0"
+  }
+}`);
+    const entries = requiredProviderEntries(tf);
+    expect(entries.map((e) => e.name)).toEqual(['aws', 'azurerm']);
+    expect(entries.map((e) => e.value.type)).toEqual([
+      'ObjectConsExpr',
+      'TemplateExpr',
+    ]);
+  });
+
+  it('skips attribute-form entries whose key is not a static name', async () => {
+    const tf = await terraformOf(`terraform {
+  required_providers = {
+    (local.key) = { source = "hashicorp/aws" }
+  }
+}`);
+    expect(requiredProviderEntries(tf)).toEqual([]);
+  });
+
+  it('returns no entries when there is no required_providers', async () => {
+    expect(requiredProviderEntries(await terraformOf('terraform {}'))).toEqual(
+      [],
+    );
+  });
+});
 
 describe('collectTraversals', () => {
   it('skips bareword object keys but collects value references', async () => {

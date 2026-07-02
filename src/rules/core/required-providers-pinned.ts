@@ -1,5 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import { objectItemKeyName } from './utils.js';
+import { objectItemKeyName, requiredProviderEntries } from './utils.js';
 
 const rule: OpenTofuRuleDefinition<{ MessageIds: 'unpinnedProvider' }> = {
   meta: {
@@ -20,21 +20,16 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'unpinnedProvider' }> = {
     return {
       Block(node) {
         if (node.kind !== 'terraform') return;
-        const requiredProviders = node.body.blocks.find(
-          (b) => b.kind === 'required_providers',
-        );
-        if (!requiredProviders) return;
-        for (const attr of requiredProviders.body.attributes) {
-          if (attr.expression.type !== 'ObjectConsExpr') continue;
-          const obj = attr.expression;
-          const hasVersion = obj.items.some(
+        for (const { name, value } of requiredProviderEntries(node)) {
+          if (value.type !== 'ObjectConsExpr') continue;
+          const hasVersion = value.items.some(
             (item) => objectItemKeyName(item) === 'version',
           );
           if (!hasVersion) {
             context.report({
-              node: attr,
+              node: value,
               messageId: 'unpinnedProvider',
-              data: { name: attr.name },
+              data: { name },
             });
           }
         }

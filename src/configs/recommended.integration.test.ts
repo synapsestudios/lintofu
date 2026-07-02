@@ -8,6 +8,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/documented-variables': 'error',
       'lintofu/documented-outputs': 'error',
       'lintofu/required-providers-pinned': 'error',
+      'lintofu/provider-source-required': 'error',
       'lintofu/module-source-pinned': 'error',
       'lintofu/prefer-bare-expression': 'warn',
       'lintofu/no-legacy-provider-proxy': 'error',

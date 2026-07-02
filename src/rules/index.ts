@@ -9,12 +9,14 @@ import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destr
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noTemplateProvider from './core/no-template-provider.js';
 import preferBareExpression from './core/prefer-bare-expression.js';
+import providerSourceRequired from './core/provider-source-required.js';
 import requiredProvidersPinned from './core/required-providers-pinned.js';
 
 export const rules = {
   'documented-variables': documentedVariables,
   'documented-outputs': documentedOutputs,
   'required-providers-pinned': requiredProvidersPinned,
+  'provider-source-required': providerSourceRequired,
   'module-source-pinned': moduleSourcePinned,
   'prefer-bare-expression': preferBareExpression,
   'no-legacy-provider-proxy': noLegacyProviderProxy,

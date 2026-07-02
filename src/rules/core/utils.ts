@@ -158,3 +158,34 @@ export function objectItemKeyName(item: ObjectConsItem): string | undefined {
   }
   return undefined;
 }
+
+export interface RequiredProviderEntry {
+  name: string;
+  value: Expression;
+}
+
+export function requiredProviderEntries(
+  terraform: Block,
+): RequiredProviderEntry[] {
+  const blockForm = terraform.body.blocks.find(
+    (b) => b.kind === 'required_providers',
+  );
+  if (blockForm) {
+    return blockForm.body.attributes.map((attr) => ({
+      name: attr.name,
+      value: attr.expression,
+    }));
+  }
+  const attrForm = findAttribute(
+    terraform.body.attributes,
+    'required_providers',
+  );
+  if (attrForm?.expression.type !== 'ObjectConsExpr') return [];
+  const out: RequiredProviderEntry[] = [];
+  for (const item of attrForm.expression.items) {
+    const name = objectItemKeyName(item);
+    if (name === undefined) continue;
+    out.push({ name, value: item.valueExpr });
+  }
+  return out;
+}
