@@ -73,13 +73,17 @@ export default [
 | [`provider-source-required`](./docs/rules/provider-source-required.md)   | Every provider in `terraform.required_providers` must declare an explicit `source`.  |
 | [`module-source-pinned`](./docs/rules/module-source-pinned.md)           | `module` sources must be pinned via `?ref=`, a `version` attribute, or a local path. |
 | [`prefer-bare-expression`](./docs/rules/prefer-bare-expression.md)       | Flag the redundant `"${expr}"` wrapping pattern.                                     |
+| [`no-legacy-list-function`](./docs/rules/no-legacy-list-function.md)     | Flag the legacy `list(...)` function, removed in Terraform 0.15; use `[...]`. Autofixable. |
 | [`no-legacy-map-function`](./docs/rules/no-legacy-map-function.md)       | Flag the legacy `map(...)` function, removed in Terraform 0.15; use a `{ key = value }` object literal. Autofixable. |
 | [`no-legacy-provider-proxy`](./docs/rules/no-legacy-provider-proxy.md)   | Flag empty proxy `provider` blocks; declare aliases via `configuration_aliases`.     |
 | [`no-template-provider`](./docs/rules/no-template-provider.md)           | Flag use of the archived `hashicorp/template` provider.                              |
 | [`no-terraform-env-reference`](./docs/rules/no-terraform-env-reference.md) | Flag references to `terraform.env`; use `terraform.workspace` instead. Autofixable. |
+| [`no-splat-bracket-index`](./docs/rules/no-splat-bracket-index.md)       | Warn on a constant index applied to a splat result (`x.*.id[0]`); index the collection first. |
 | [`remote-state-outputs-prefix`](./docs/rules/remote-state-outputs-prefix.md) | Flag `data.terraform_remote_state.<name>.<attr>` references that omit the `.outputs.` prefix. Autofixable. |
+| [`no-bool-as-count`](./docs/rules/no-bool-as-count.md)                   | Flag a `count` set to a provable boolean; Terraform 0.12 removed bool-to-number coercion. Autofixable. |
 | [`no-external-refs-in-destroy-provisioner`](./docs/rules/no-external-refs-in-destroy-provisioner.md) | Flag references to anything other than `self`, `count.index`, or `each.key`/`each.value` inside `provisioner` blocks with `when = destroy`. |
 | [`no-legacy-ignore-changes-wildcard`](./docs/rules/no-legacy-ignore-changes-wildcard.md) | Flag the quoted `["*"]` wildcard in a `lifecycle` `ignore_changes` list; use the unquoted `all` keyword instead. Autofixable. |
+| [`no-legacy-count-attribute`](./docs/rules/no-legacy-count-attribute.md) | Flag references to a resource's legacy `.count` attribute, removed in Terraform 0.12; use `length(...)`. Autofixable. |
 | [`no-legacy-security-group-rules`](./docs/rules/no-legacy-security-group-rules.md) | Flag legacy `aws_security_group_rule` and inline `ingress`/`egress` blocks.    |
 | [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
 | [`no-pinned-minor-with-auto-upgrade`](./docs/rules/no-pinned-minor-with-auto-upgrade.md) | Warn when `engine_version` is pinned deeper than an enabled `auto_minor_version_upgrade` holds stable (drift), per engine. |
