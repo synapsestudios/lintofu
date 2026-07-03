@@ -12,6 +12,7 @@ import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildc
 import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
+import noQuotedDependsOn from './core/no-quoted-depends-on.js';
 import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noSplatBracketIndex from './core/no-splat-bracket-index.js';
@@ -47,4 +48,5 @@ export const rules = {
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
+  'no-quoted-depends-on': noQuotedDependsOn,
 };
