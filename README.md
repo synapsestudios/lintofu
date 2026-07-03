@@ -89,6 +89,7 @@ export default [
 | [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
 | [`no-pinned-minor-with-auto-upgrade`](./docs/rules/no-pinned-minor-with-auto-upgrade.md) | Warn when `engine_version` is pinned deeper than an enabled `auto_minor_version_upgrade` holds stable (drift), per engine. |
 | [`no-aurora-pinned-minor-with-auto-upgrade`](./docs/rules/no-aurora-pinned-minor-with-auto-upgrade.md) | Warn when an Aurora PostgreSQL cluster pins `engine_version` deeper than auto minor upgrade across its instances holds stable (drift). |
+| [`no-legacy-dot-index`](./docs/rules/no-legacy-dot-index.md) | Flag legacy dot index (`list.0`) and attribute splat (`a.*.b`); use `list[0]` and `a[*].b`. Autofixable. |
 
 ## Parser services
 
