@@ -6,6 +6,7 @@ import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
 import noBoolAsCount from './core/no-bool-as-count.js';
+import noEmptyListEquality from './core/no-empty-list-equality.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
 import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildcard.js';
@@ -47,4 +48,5 @@ export const rules = {
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
+  'no-empty-list-equality': noEmptyListEquality,
 };
