@@ -14,6 +14,7 @@ import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyLookup from './core/no-legacy-lookup.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
+import noQuotedDependsOn from './core/no-quoted-depends-on.js';
 import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noSplatBracketIndex from './core/no-splat-bracket-index.js';
@@ -51,4 +52,5 @@ export const rules = {
     noAuroraPinnedMinorWithAutoUpgrade,
   'no-legacy-dot-index': noLegacyDotIndex,
   'no-legacy-lookup': noLegacyLookup,
+  'no-quoted-depends-on': noQuotedDependsOn,
 };
