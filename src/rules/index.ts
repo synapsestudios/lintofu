@@ -6,6 +6,7 @@ import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
 import noBoolAsCount from './core/no-bool-as-count.js';
+import noEmptyListEquality from './core/no-empty-list-equality.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
 import noLegacyDotIndex from './core/no-legacy-dot-index.js';
@@ -57,4 +58,5 @@ export const rules = {
   'no-quoted-depends-on': noQuotedDependsOn,
   'no-quoted-provider-reference': noQuotedProviderReference,
   'no-quoted-ignore-changes': noQuotedIgnoreChanges,
+  'no-empty-list-equality': noEmptyListEquality,
 };

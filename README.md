@@ -94,6 +94,7 @@ export default [
 | [`no-quoted-depends-on`](./docs/rules/no-quoted-depends-on.md) | Flag quoted references in `depends_on`; use bare references. Autofixable. |
 | [`no-quoted-provider-reference`](./docs/rules/no-quoted-provider-reference.md) | Flag quoted `provider` arguments and quoted keys/values in module `providers` maps; use bare traversals. Autofixable. |
 | [`no-quoted-ignore-changes`](./docs/rules/no-quoted-ignore-changes.md) | Flag quoted references in `lifecycle` `ignore_changes`; use bare attribute references. Autofixable. |
+| [`no-empty-list-equality`](./docs/rules/no-empty-list-equality.md) | Flag `==`/`!=` against an empty tuple `[]`, which never matches a list, set, or map; use `length(expr) == 0`. Autofixable. |
 
 ## Parser services
 
