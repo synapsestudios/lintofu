@@ -11,6 +11,7 @@ import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
 import noLegacyDotIndex from './core/no-legacy-dot-index.js';
 import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildcard.js';
 import noLegacyListFunction from './core/no-legacy-list-function.js';
+import noLegacyLookup from './core/no-legacy-lookup.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
@@ -49,4 +50,5 @@ export const rules = {
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
   'no-legacy-dot-index': noLegacyDotIndex,
+  'no-legacy-lookup': noLegacyLookup,
 };
