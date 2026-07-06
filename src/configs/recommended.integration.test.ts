@@ -31,6 +31,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-legacy-dot-index': 'warn',
       'lintofu/no-legacy-lookup': 'warn',
       'lintofu/no-quoted-depends-on': 'warn',
+      'lintofu/no-quoted-provider-reference': 'warn',
     });
   });
 });

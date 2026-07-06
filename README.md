@@ -92,6 +92,7 @@ export default [
 | [`no-legacy-dot-index`](./docs/rules/no-legacy-dot-index.md) | Flag legacy dot index (`list.0`) and attribute splat (`a.*.b`); use `list[0]` and `a[*].b`. Autofixable. |
 | [`no-legacy-lookup`](./docs/rules/no-legacy-lookup.md) | Flag two-argument `lookup()`, deprecated since Terraform 0.7; use index syntax `var.tags["Name"]`. Autofixable. |
 | [`no-quoted-depends-on`](./docs/rules/no-quoted-depends-on.md) | Flag quoted references in `depends_on`; use bare references. Autofixable. |
+| [`no-quoted-provider-reference`](./docs/rules/no-quoted-provider-reference.md) | Flag quoted `provider` arguments and quoted keys/values in module `providers` maps; use bare traversals. Autofixable. |
 
 ## Parser services
 
