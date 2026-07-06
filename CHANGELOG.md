@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/synapsestudios/lintofu/compare/v0.4.0...v0.5.0) (2026-07-06)
+
+
+### Features
+
+* add no-empty-list-equality rule ([#121](https://github.com/synapsestudios/lintofu/issues/121)) ([2875ae2](https://github.com/synapsestudios/lintofu/commit/2875ae2ad88ee61bc6a4001a123d9ebbc08c3b43))
+* add no-legacy-dot-index rule ([#117](https://github.com/synapsestudios/lintofu/issues/117)) ([c2d3cb9](https://github.com/synapsestudios/lintofu/commit/c2d3cb98cc4a7661458eb3c9de3405db603c5d22))
+* add no-legacy-lookup rule ([#116](https://github.com/synapsestudios/lintofu/issues/116)) ([0cd0059](https://github.com/synapsestudios/lintofu/commit/0cd0059d9b1ce76600b02c6aafe6223627b0f163))
+* add no-quoted-depends-on rule ([#118](https://github.com/synapsestudios/lintofu/issues/118)) ([008e35c](https://github.com/synapsestudios/lintofu/commit/008e35c010dbe5324ca8dd8a3d9ec7b6b56d2784))
+* add no-quoted-ignore-changes rule ([#120](https://github.com/synapsestudios/lintofu/issues/120)) ([1294f23](https://github.com/synapsestudios/lintofu/commit/1294f23668a6e2dc70ebb41f9451e6361063c1f9))
+* add no-quoted-provider-reference rule ([#119](https://github.com/synapsestudios/lintofu/issues/119)) ([ad4d551](https://github.com/synapsestudios/lintofu/commit/ad4d551d69fa041907681425d6347019b9edc2cb))
+
 ## [0.4.0](https://github.com/synapsestudios/lintofu/compare/v0.3.0...v0.4.0) (2026-07-02)
 
 
