@@ -89,6 +89,7 @@ export default [
 | [`no-mixed-security-group-rule-forms`](./docs/rules/no-mixed-security-group-rule-forms.md) | Warn when a standalone SG rule targets an `aws_security_group` with inline blocks (drift). |
 | [`no-pinned-minor-with-auto-upgrade`](./docs/rules/no-pinned-minor-with-auto-upgrade.md) | Warn when `engine_version` is pinned deeper than an enabled `auto_minor_version_upgrade` holds stable (drift), per engine. |
 | [`no-aurora-pinned-minor-with-auto-upgrade`](./docs/rules/no-aurora-pinned-minor-with-auto-upgrade.md) | Warn when an Aurora PostgreSQL cluster pins `engine_version` deeper than auto minor upgrade across its instances holds stable (drift). |
+| [`no-legacy-lookup`](./docs/rules/no-legacy-lookup.md) | Flag two-argument `lookup()`, deprecated since Terraform 0.7; use index syntax `var.tags["Name"]`. Autofixable. |
 
 ## Parser services
 
