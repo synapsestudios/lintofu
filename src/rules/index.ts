@@ -9,10 +9,15 @@ import noBoolAsCount from './core/no-bool-as-count.js';
 import noEmptyListEquality from './core/no-empty-list-equality.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
+import noLegacyDotIndex from './core/no-legacy-dot-index.js';
 import noLegacyIgnoreChangesWildcard from './core/no-legacy-ignore-changes-wildcard.js';
 import noLegacyListFunction from './core/no-legacy-list-function.js';
+import noLegacyLookup from './core/no-legacy-lookup.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
+import noQuotedDependsOn from './core/no-quoted-depends-on.js';
+import noQuotedIgnoreChanges from './core/no-quoted-ignore-changes.js';
+import noQuotedProviderReference from './core/no-quoted-provider-reference.js';
 import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noSplatBracketIndex from './core/no-splat-bracket-index.js';
@@ -48,5 +53,10 @@ export const rules = {
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
+  'no-legacy-dot-index': noLegacyDotIndex,
+  'no-legacy-lookup': noLegacyLookup,
+  'no-quoted-depends-on': noQuotedDependsOn,
+  'no-quoted-provider-reference': noQuotedProviderReference,
+  'no-quoted-ignore-changes': noQuotedIgnoreChanges,
   'no-empty-list-equality': noEmptyListEquality,
 };
