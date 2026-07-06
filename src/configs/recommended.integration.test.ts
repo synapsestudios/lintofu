@@ -28,6 +28,10 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
       'lintofu/no-pinned-minor-with-auto-upgrade': 'warn',
       'lintofu/no-aurora-pinned-minor-with-auto-upgrade': 'warn',
+      'lintofu/no-legacy-dot-index': 'warn',
+      'lintofu/no-legacy-lookup': 'warn',
+      'lintofu/no-quoted-depends-on': 'warn',
+      'lintofu/no-quoted-provider-reference': 'warn',
       'lintofu/no-quoted-ignore-changes': 'warn',
     });
   });
