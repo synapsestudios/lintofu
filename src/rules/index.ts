@@ -15,6 +15,7 @@ import noLegacyLookup from './core/no-legacy-lookup.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
 import noQuotedDependsOn from './core/no-quoted-depends-on.js';
+import noQuotedIgnoreChanges from './core/no-quoted-ignore-changes.js';
 import noQuotedProviderReference from './core/no-quoted-provider-reference.js';
 import noQuotedTypeConstraints from './core/no-quoted-type-constraints.js';
 import noReservedVariableNames from './core/no-reserved-variable-names.js';
@@ -55,4 +56,5 @@ export const rules = {
   'no-legacy-lookup': noLegacyLookup,
   'no-quoted-depends-on': noQuotedDependsOn,
   'no-quoted-provider-reference': noQuotedProviderReference,
+  'no-quoted-ignore-changes': noQuotedIgnoreChanges,
 };
