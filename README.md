@@ -96,6 +96,10 @@ export default [
 | [`no-quoted-ignore-changes`](./docs/rules/no-quoted-ignore-changes.md) | Flag quoted references in `lifecycle` `ignore_changes`; use bare attribute references. Autofixable. |
 | [`no-empty-list-equality`](./docs/rules/no-empty-list-equality.md) | Flag `==`/`!=` against an empty tuple `[]`, which never matches a list, set, or map; use `length(expr) == 0`. Autofixable. |
 
+## Requesting a rule
+
+To suggest a new rule, open a [rule request](https://github.com/synapsestudios/lintofu/issues/new?template=rule-request.yml). The form asks for a snippet the rule should flag, the compliant form, a category, a suggested severity, whether an autofix seems possible, and any references. A maintainer turns the request into a rule issue from there.
+
 ## Parser services
 
 Rules have access to a lazily-built, cross-file index via `context.sourceCode.parserServices.projectIndex`:
