@@ -1,0 +1,61 @@
+name: Rule request
+description: Suggest a new lint rule for lintofu
+title: "[rule request]: "
+labels: [rule-request]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a rule. Fill in what you can. A maintainer converts this into the internal rule format, so plain descriptions are fine.
+  - type: textarea
+    id: bad-example
+    attributes:
+      label: What should the rule flag?
+      description: Describe the pattern, and paste a small piece of Terraform that should be flagged.
+      render: hcl
+    validations:
+      required: true
+  - type: textarea
+    id: good-example
+    attributes:
+      label: What does the compliant form look like?
+      description: Paste the corrected version of the snippet above.
+      render: hcl
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - core
+        - aws
+        - a new provider
+    validations:
+      required: true
+  - type: input
+    id: provider-name
+    attributes:
+      label: Provider name
+      description: Only if you picked "a new provider" above.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      options:
+        - error
+        - warn
+        - not sure
+  - type: dropdown
+    id: autofix
+    attributes:
+      label: Does an autofix seem possible?
+      options:
+        - "yes"
+        - "no"
+        - not sure
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Upstream provider docs, deprecation notices, or a tflint equivalent.
