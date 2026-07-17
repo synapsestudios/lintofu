@@ -1,4 +1,5 @@
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
+import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
@@ -53,6 +54,7 @@ export const rules = {
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
+  'no-iam-policy-attachment': noIamPolicyAttachment,
   'no-legacy-dot-index': noLegacyDotIndex,
   'no-legacy-lookup': noLegacyLookup,
   'no-quoted-depends-on': noQuotedDependsOn,
