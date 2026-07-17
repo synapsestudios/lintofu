@@ -33,6 +33,7 @@ import preferBareExpression from './core/prefer-bare-expression.js';
 import providerSourceRequired from './core/provider-source-required.js';
 import remoteStateOutputsPrefix from './core/remote-state-outputs-prefix.js';
 import requiredProvidersPinned from './core/required-providers-pinned.js';
+import requiredVersionDeclared from './core/required-version-declared.js';
 import typedVariables from './core/typed-variables.js';
 
 export const rules = {
@@ -73,4 +74,5 @@ export const rules = {
   'typed-variables': typedVariables,
   'no-eip-vpc-attribute': noEipVpcAttribute,
   'no-instance-cpu-count-attributes': noInstanceCpuCountAttributes,
+  'required-version-declared': requiredVersionDeclared,
 };
