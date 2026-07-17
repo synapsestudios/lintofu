@@ -96,6 +96,7 @@ export default [
 | [`no-quoted-provider-reference`](./docs/rules/no-quoted-provider-reference.md) | Flag quoted `provider` arguments and quoted keys/values in module `providers` maps; use bare traversals. Autofixable. |
 | [`no-quoted-ignore-changes`](./docs/rules/no-quoted-ignore-changes.md) | Flag quoted references in `lifecycle` `ignore_changes`; use bare attribute references. Autofixable. |
 | [`no-empty-list-equality`](./docs/rules/no-empty-list-equality.md) | Flag `==`/`!=` against an empty tuple `[]`, which never matches a list, set, or map; use `length(expr) == 0`. Autofixable. |
+| [`no-winrm-connection`](./docs/rules/no-winrm-connection.md) | Warn on `connection` blocks with `type = "winrm"`, deprecated in OpenTofu 1.12 and slated for removal in 1.13; use `type = "ssh"`. |
 
 ## Requesting a rule
 

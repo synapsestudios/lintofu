@@ -24,6 +24,7 @@ import noReservedVariableNames from './core/no-reserved-variable-names.js';
 import noSplatBracketIndex from './core/no-splat-bracket-index.js';
 import noTemplateProvider from './core/no-template-provider.js';
 import noTerraformEnvReference from './core/no-terraform-env-reference.js';
+import noWinrmConnection from './core/no-winrm-connection.js';
 import preferBareExpression from './core/prefer-bare-expression.js';
 import providerSourceRequired from './core/provider-source-required.js';
 import remoteStateOutputsPrefix from './core/remote-state-outputs-prefix.js';
@@ -61,4 +62,5 @@ export const rules = {
   'no-quoted-provider-reference': noQuotedProviderReference,
   'no-quoted-ignore-changes': noQuotedIgnoreChanges,
   'no-empty-list-equality': noEmptyListEquality,
+  'no-winrm-connection': noWinrmConnection,
 };

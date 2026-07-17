@@ -35,6 +35,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-quoted-provider-reference': 'warn',
       'lintofu/no-quoted-ignore-changes': 'warn',
       'lintofu/no-empty-list-equality': 'error',
+      'lintofu/no-winrm-connection': 'warn',
     });
   });
 });
