@@ -97,6 +97,7 @@ export default [
 | [`no-quoted-ignore-changes`](./docs/rules/no-quoted-ignore-changes.md) | Flag quoted references in `lifecycle` `ignore_changes`; use bare attribute references. Autofixable. |
 | [`no-empty-list-equality`](./docs/rules/no-empty-list-equality.md) | Flag `==`/`!=` against an empty tuple `[]`, which never matches a list, set, or map; use `length(expr) == 0`. Autofixable. |
 | [`no-winrm-connection`](./docs/rules/no-winrm-connection.md) | Warn on `connection` blocks with `type = "winrm"`, deprecated in OpenTofu 1.12 and slated for removal in 1.13; use `type = "ssh"`. |
+| [`typed-variables`](./docs/rules/typed-variables.md) | Every `variable` block must declare a `type`; an explicit `type = any` is an accepted opt-out. |
 
 ## Requesting a rule
 

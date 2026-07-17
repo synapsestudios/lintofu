@@ -29,6 +29,7 @@ import preferBareExpression from './core/prefer-bare-expression.js';
 import providerSourceRequired from './core/provider-source-required.js';
 import remoteStateOutputsPrefix from './core/remote-state-outputs-prefix.js';
 import requiredProvidersPinned from './core/required-providers-pinned.js';
+import typedVariables from './core/typed-variables.js';
 
 export const rules = {
   'documented-variables': documentedVariables,
@@ -63,4 +64,5 @@ export const rules = {
   'no-quoted-ignore-changes': noQuotedIgnoreChanges,
   'no-empty-list-equality': noEmptyListEquality,
   'no-winrm-connection': noWinrmConnection,
+  'typed-variables': typedVariables,
 };
