@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.6.0](https://github.com/synapsestudios/lintofu/compare/v0.5.0...v0.6.0) (2026-07-17)
+
+
+### Features
+
+* add no-eip-vpc-attribute rule ([#143](https://github.com/synapsestudios/lintofu/issues/143)) ([103c80c](https://github.com/synapsestudios/lintofu/commit/103c80c4082f496a13ee39a4ba7a55e793009488))
+* add no-iam-policy-attachment rule ([#137](https://github.com/synapsestudios/lintofu/issues/137)) ([0e4be64](https://github.com/synapsestudios/lintofu/commit/0e4be64c65a35da1d131847a93508397311ec4c9))
+* add no-iam-role-inline-policies rule ([#141](https://github.com/synapsestudios/lintofu/issues/141)) ([bfe7263](https://github.com/synapsestudios/lintofu/commit/bfe7263608ddecd8e4d2b1a33cdab4d85a21188d)), closes [#106](https://github.com/synapsestudios/lintofu/issues/106)
+* add no-instance-cpu-count-attributes rule ([#144](https://github.com/synapsestudios/lintofu/issues/144)) ([eefe696](https://github.com/synapsestudios/lintofu/commit/eefe696d24d3d4899ff255be30e735ede55ab7e4))
+* add no-s3-bucket-inline-config rule ([#142](https://github.com/synapsestudios/lintofu/issues/142)) ([3070f2d](https://github.com/synapsestudios/lintofu/commit/3070f2df88ced530ca2f6a5da81e3ba23e3b203a))
+* add no-winrm-connection rule ([#139](https://github.com/synapsestudios/lintofu/issues/139)) ([439d223](https://github.com/synapsestudios/lintofu/commit/439d223374545515bf185e0483af4fa65a298dae))
+* add required-version-declared rule ([#140](https://github.com/synapsestudios/lintofu/issues/140)) ([5cdebb8](https://github.com/synapsestudios/lintofu/commit/5cdebb87b5411d34f06bdc7c2e9f1e0cb61d9b84))
+* add rule request issue form ([#134](https://github.com/synapsestudios/lintofu/issues/134)) ([7e3e840](https://github.com/synapsestudios/lintofu/commit/7e3e840ec5bd59a79fd9f11e0da8cf35abeee40a))
+* add typed-variables rule ([#138](https://github.com/synapsestudios/lintofu/issues/138)) ([043f7cd](https://github.com/synapsestudios/lintofu/commit/043f7cddefef76a3b151da734d04a386bd138077))
+
 ## [0.5.0](https://github.com/synapsestudios/lintofu/compare/v0.4.0...v0.5.0) (2026-07-06)
 
 
