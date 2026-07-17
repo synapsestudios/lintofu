@@ -13,6 +13,7 @@ describe('aws/recommended config, derived from real rule metadata', () => {
       'lintofu/no-aurora-pinned-minor-with-auto-upgrade': 'warn',
       'lintofu/no-eip-vpc-attribute': 'error',
       'lintofu/no-instance-cpu-count-attributes': 'error',
+      'lintofu/no-s3-bucket-inline-config': 'warn',
     });
   });
 });

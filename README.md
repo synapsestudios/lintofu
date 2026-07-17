@@ -90,6 +90,7 @@ export default [
 | [`no-pinned-minor-with-auto-upgrade`](./docs/rules/no-pinned-minor-with-auto-upgrade.md) | Warn when `engine_version` is pinned deeper than an enabled `auto_minor_version_upgrade` holds stable (drift), per engine. |
 | [`no-aurora-pinned-minor-with-auto-upgrade`](./docs/rules/no-aurora-pinned-minor-with-auto-upgrade.md) | Warn when an Aurora PostgreSQL cluster pins `engine_version` deeper than auto minor upgrade across its instances holds stable (drift). |
 | [`no-iam-policy-attachment`](./docs/rules/no-iam-policy-attachment.md) | Warn on `aws_iam_policy_attachment`, which manages a policy's attachments exclusively account-wide; use the per-principal `*_policy_attachment` or `*_policy_attachments_exclusive` resources. |
+| [`no-s3-bucket-inline-config`](./docs/rules/no-s3-bucket-inline-config.md) | Warn on deprecated inline config on `aws_s3_bucket` (acl, policy, versioning, logging, ...); use the standalone `aws_s3_bucket_*` resources. |
 | [`no-legacy-dot-index`](./docs/rules/no-legacy-dot-index.md) | Flag legacy dot index (`list.0`) and attribute splat (`a.*.b`); use `list[0]` and `a[*].b`. Autofixable. |
 | [`no-legacy-lookup`](./docs/rules/no-legacy-lookup.md) | Flag two-argument `lookup()`, deprecated since Terraform 0.7; use index syntax `var.tags["Name"]`. Autofixable. |
 | [`no-quoted-depends-on`](./docs/rules/no-quoted-depends-on.md) | Flag quoted references in `depends_on`; use bare references. Autofixable. |
