@@ -24,6 +24,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-external-refs-in-destroy-provisioner': 'error',
       'lintofu/no-legacy-ignore-changes-wildcard': 'error',
       'lintofu/no-legacy-count-attribute': 'error',
+      'lintofu/no-iam-role-inline-policies': 'warn',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-iam-policy-attachment': 'warn',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
