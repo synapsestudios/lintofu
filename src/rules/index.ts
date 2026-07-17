@@ -6,6 +6,7 @@ import noInstanceCpuCountAttributes from './aws/no-instance-cpu-count-attributes
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
+import noS3BucketInlineConfig from './aws/no-s3-bucket-inline-config.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
@@ -61,6 +62,7 @@ export const rules = {
   'no-aurora-pinned-minor-with-auto-upgrade':
     noAuroraPinnedMinorWithAutoUpgrade,
   'no-iam-policy-attachment': noIamPolicyAttachment,
+  'no-s3-bucket-inline-config': noS3BucketInlineConfig,
   'no-legacy-dot-index': noLegacyDotIndex,
   'no-legacy-lookup': noLegacyLookup,
   'no-quoted-depends-on': noQuotedDependsOn,
