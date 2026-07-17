@@ -38,6 +38,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-empty-list-equality': 'error',
       'lintofu/no-winrm-connection': 'warn',
       'lintofu/typed-variables': 'error',
+      'lintofu/no-eip-vpc-attribute': 'error',
     });
   });
 });

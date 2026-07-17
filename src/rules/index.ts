@@ -1,4 +1,5 @@
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
+import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
 import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
 import noIamRoleInlinePolicies from './aws/no-iam-role-inline-policies.js';
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
@@ -67,4 +68,5 @@ export const rules = {
   'no-empty-list-equality': noEmptyListEquality,
   'no-winrm-connection': noWinrmConnection,
   'typed-variables': typedVariables,
+  'no-eip-vpc-attribute': noEipVpcAttribute,
 };
