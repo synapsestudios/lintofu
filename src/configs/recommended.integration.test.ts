@@ -39,6 +39,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-winrm-connection': 'warn',
       'lintofu/typed-variables': 'error',
       'lintofu/no-eip-vpc-attribute': 'error',
+      'lintofu/no-instance-cpu-count-attributes': 'error',
     });
   });
 });

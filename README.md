@@ -100,6 +100,7 @@ export default [
 | [`typed-variables`](./docs/rules/typed-variables.md) | Every `variable` block must declare a `type`; an explicit `type = any` is an accepted opt-out. |
 | [`no-iam-role-inline-policies`](./docs/rules/no-iam-role-inline-policies.md) | Warn on deprecated `inline_policy` blocks (including `dynamic`) and `managed_policy_arns` on `aws_iam_role`; prefer standalone policy/attachment resources. |
 | [`no-eip-vpc-attribute`](./docs/rules/no-eip-vpc-attribute.md) | Flag the `vpc` argument on `aws_eip`, removed in AWS provider v6; use `domain = "vpc"`. Autofixable. |
+| [`no-instance-cpu-count-attributes`](./docs/rules/no-instance-cpu-count-attributes.md) | Flag `cpu_core_count`/`cpu_threads_per_core` on `aws_instance`, removed in AWS provider v6; use a `cpu_options` block. Autofixable. |
 
 ## Requesting a rule
 
