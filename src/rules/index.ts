@@ -1,5 +1,6 @@
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
+import noIamRoleInlinePolicies from './aws/no-iam-role-inline-policies.js';
 import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js';
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
@@ -51,6 +52,7 @@ export const rules = {
   'no-external-refs-in-destroy-provisioner': noExternalRefsInDestroyProvisioner,
   'no-legacy-ignore-changes-wildcard': noLegacyIgnoreChangesWildcard,
   'no-legacy-count-attribute': noLegacyCountAttribute,
+  'no-iam-role-inline-policies': noIamRoleInlinePolicies,
   'no-legacy-security-group-rules': noLegacySecurityGroupRules,
   'no-mixed-security-group-rule-forms': noMixedSecurityGroupRuleForms,
   'no-pinned-minor-with-auto-upgrade': noPinnedMinorWithAutoUpgrade,

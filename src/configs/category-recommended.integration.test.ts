@@ -5,6 +5,7 @@ import { buildCategoryRecommendedRules } from './category-recommended.js';
 describe('aws/recommended config, derived from real rule metadata', () => {
   it('includes every current aws rule with the expected severity', () => {
     expect(buildCategoryRecommendedRules(rules, 'aws')).toEqual({
+      'lintofu/no-iam-role-inline-policies': 'warn',
       'lintofu/no-legacy-security-group-rules': 'error',
       'lintofu/no-iam-policy-attachment': 'warn',
       'lintofu/no-mixed-security-group-rule-forms': 'warn',
