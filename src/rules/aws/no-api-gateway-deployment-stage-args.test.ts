@@ -26,11 +26,21 @@ tester.run('no-api-gateway-deployment-stage-args', rule, {
   invalid: [
     {
       code: 'resource "aws_api_gateway_deployment" "this" {\n  rest_api_id = aws_api_gateway_rest_api.this.id\n  stage_name  = "prod"\n}',
-      errors: [{ messageId: 'deploymentStageArg' }],
+      errors: [
+        { messageId: 'deploymentStageArg', data: { name: 'stage_name' } },
+      ],
     },
     {
       code: 'resource "aws_api_gateway_deployment" "this" {\n  rest_api_id = aws_api_gateway_rest_api.this.id\n  canary_settings {\n    percent_traffic = 10\n  }\n}',
-      errors: [{ messageId: 'deploymentStageArg' }],
+      errors: [
+        { messageId: 'deploymentStageArg', data: { name: 'canary_settings' } },
+      ],
+    },
+    {
+      code: 'resource "aws_api_gateway_deployment" "this" {\n  rest_api_id     = aws_api_gateway_rest_api.this.id\n  canary_settings = {\n    percent_traffic = 10\n  }\n}',
+      errors: [
+        { messageId: 'deploymentStageArg', data: { name: 'canary_settings' } },
+      ],
     },
     {
       code: 'resource "aws_api_gateway_deployment" "this" {\n  rest_api_id       = aws_api_gateway_rest_api.this.id\n  stage_name        = "prod"\n  stage_description = "prod stage"\n}',
