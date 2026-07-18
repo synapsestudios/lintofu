@@ -1,3 +1,4 @@
+import acmCertificateCreateBeforeDestroyRequired from './aws/acm-certificate-create-before-destroy-required.js';
 import noApiGatewayDeploymentStageArgs from './aws/no-api-gateway-deployment-stage-args.js';
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
@@ -91,4 +92,6 @@ export const rules = {
   'no-s3-bucket-object': noS3BucketObject,
   'no-hardcoded-provider-credentials': noHardcodedProviderCredentials,
   'no-deprecated-lambda-runtime': noDeprecatedLambdaRuntime,
+  'acm-certificate-create-before-destroy-required':
+    acmCertificateCreateBeforeDestroyRequired,
 };

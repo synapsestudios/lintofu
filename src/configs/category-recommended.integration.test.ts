@@ -20,6 +20,7 @@ describe('aws/recommended config, derived from real rule metadata', () => {
       'lintofu/no-s3-bucket-object': 'warn',
       'lintofu/no-hardcoded-provider-credentials': 'error',
       'lintofu/no-deprecated-lambda-runtime': 'warn',
+      'lintofu/acm-certificate-create-before-destroy-required': 'warn',
     });
   });
 });

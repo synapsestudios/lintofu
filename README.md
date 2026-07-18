@@ -111,6 +111,7 @@ export default [
 | [`no-s3-bucket-object`](./docs/rules/no-s3-bucket-object.md) | Flag the deprecated `aws_s3_bucket_object` resource and the `aws_s3_bucket_object`/`aws_s3_bucket_objects` data sources; use `aws_s3_object`/`aws_s3_objects`. |
 | [`no-hardcoded-provider-credentials`](./docs/rules/no-hardcoded-provider-credentials.md) | Flag literal `access_key`, `secret_key`, or `token` values in `provider "aws"` and s3 `backend` blocks. |
 | [`no-deprecated-lambda-runtime`](./docs/rules/no-deprecated-lambda-runtime.md) | Flag AWS-deprecated Lambda `runtime` values on `aws_lambda_function` and `compatible_runtimes` elements on `aws_lambda_layer_version`. |
+| [`acm-certificate-create-before-destroy-required`](./docs/rules/acm-certificate-create-before-destroy-required.md) | Warn when an `aws_acm_certificate` omits `lifecycle { create_before_destroy = true }`, which hangs replacement of an in-use certificate. |
 
 ## Requesting a rule
 
