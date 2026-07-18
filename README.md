@@ -109,6 +109,7 @@ export default [
 | [`no-eks-addon-resolve-conflicts`](./docs/rules/no-eks-addon-resolve-conflicts.md) | Flag `resolve_conflicts` on `aws_eks_addon`, removed in AWS provider v6; use `resolve_conflicts_on_create` and `resolve_conflicts_on_update`. |
 | [`no-api-gateway-deployment-stage-args`](./docs/rules/no-api-gateway-deployment-stage-args.md) | Flag `stage_name`, `stage_description`, and `canary_settings` on `aws_api_gateway_deployment`, removed in AWS provider v6; manage the stage with a separate `aws_api_gateway_stage`. |
 | [`no-s3-bucket-object`](./docs/rules/no-s3-bucket-object.md) | Flag the deprecated `aws_s3_bucket_object` resource and the `aws_s3_bucket_object`/`aws_s3_bucket_objects` data sources; use `aws_s3_object`/`aws_s3_objects`. |
+| [`no-hardcoded-provider-credentials`](./docs/rules/no-hardcoded-provider-credentials.md) | Flag literal `access_key`, `secret_key`, or `token` values in `provider "aws"` and s3 `backend` blocks. |
 
 ## Requesting a rule
 
