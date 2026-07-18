@@ -15,6 +15,7 @@ describe('aws/recommended config, derived from real rule metadata', () => {
       'lintofu/no-instance-cpu-count-attributes': 'error',
       'lintofu/no-s3-bucket-inline-config': 'warn',
       'lintofu/no-db-instance-name-attribute': 'error',
+      'lintofu/no-eks-addon-resolve-conflicts': 'error',
     });
   });
 });

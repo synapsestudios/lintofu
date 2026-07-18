@@ -106,6 +106,7 @@ export default [
 | [`no-duplicate-map-keys`](./docs/rules/no-duplicate-map-keys.md) | Flag a repeated statically-known key in an object literal; HCL keeps only the last entry and silently discards the earlier ones. |
 | [`no-provider-version-constraint`](./docs/rules/no-provider-version-constraint.md) | Flag a `version` argument inside a `provider` block; declare the constraint in `terraform.required_providers` instead. |
 | [`no-db-instance-name-attribute`](./docs/rules/no-db-instance-name-attribute.md) | Flag the top-level `name` argument on `aws_db_instance`, removed in AWS provider v5; use `db_name`. Autofixable. |
+| [`no-eks-addon-resolve-conflicts`](./docs/rules/no-eks-addon-resolve-conflicts.md) | Flag `resolve_conflicts` on `aws_eks_addon`, removed in AWS provider v6; use `resolve_conflicts_on_create` and `resolve_conflicts_on_update`. |
 
 ## Requesting a rule
 
