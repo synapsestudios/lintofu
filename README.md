@@ -38,11 +38,11 @@ Requires Node ^20.19, ^22.13, or >=24 and ESLint ^9 || ^10.
 
 Providers: latest major plus one prior (AWS provider v6 and v5 today); older majors are best effort. Rules that only apply from a given provider major declare it in `meta.docs.appliesTo`. Full policy in [ADR 0005](./docs/adr/0005-version-support-policy.md).
 
-The parser wraps HashiCorp's `hcl/v2`, the syntax that shipped with Terraform 0.12. That sets a hard floor: Terraform 0.12 and newer parse, Terraform 0.11 and older (HCL1) do not. OpenTofu forked from Terraform 1.5, so every OpenTofu release is above the floor.
+The parser wraps HashiCorp's `hcl/v2`, which parses HCL2, the syntax that shipped with Terraform 0.12. That sets a hard floor: Terraform 0.12 and newer parse, Terraform 0.11 and older (HCL1) do not. OpenTofu forked from Terraform 1.5, so every OpenTofu release is above the floor.
 
-Above the floor, [ADR 0005](./docs/adr/0005-version-support-policy.md) defines the per-generation status:
+Above the floor, the same ADR defines the per-generation status:
 
-<!-- support-matrix:start -->
+<!-- lintofu:support-matrix:start -->
 
 | Tool      | Versions       | Status      |
 | --------- | -------------- | ----------- |
@@ -51,9 +51,9 @@ Above the floor, [ADR 0005](./docs/adr/0005-version-support-policy.md) defines t
 | Terraform | 0.12 – 0.15    | best effort |
 | Terraform | 0.11 and older | unsupported |
 
-<!-- support-matrix:end -->
+<!-- lintofu:support-matrix:end -->
 
-- **supported**: generations we write and check rule advice against, per the policy in ADR 0005.
+- **supported**: generations the rules are written for; advice is kept valid for them as part of normal maintenance.
 - **best effort**: configurations parse and lint. Many rules exist specifically to flag upgrade hazards in these generations (legacy `list(...)`/`map(...)`, quoted type constraints, and friends), but we fix issues as they're reported rather than checking proactively.
 - **unsupported**: HCL1 syntax. The parser rejects these files.
 
