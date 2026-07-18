@@ -1,4 +1,5 @@
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
+import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
 import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
 import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
 import noIamRoleInlinePolicies from './aws/no-iam-role-inline-policies.js';
@@ -79,4 +80,5 @@ export const rules = {
   'required-version-declared': requiredVersionDeclared,
   'no-duplicate-map-keys': noDuplicateMapKeys,
   'no-provider-version-constraint': noProviderVersionConstraint,
+  'no-db-instance-name-attribute': noDbInstanceNameAttribute,
 };
