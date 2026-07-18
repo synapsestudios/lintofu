@@ -41,11 +41,10 @@ describe("renderTestedVersions", () => {
 		expect(renderTestedVersions(once, versions)).toBe(once);
 	});
 
-	it("returns input unchanged when the section is already current", () => {
-		const versions = { aws: ["6.42.0"] };
-		const current = renderTestedVersions(readme, versions);
-		const again = renderTestedVersions(current, versions);
-		expect(again).toBe(current);
+	it("renders no version lines for an empty versions map", () => {
+		const out = renderTestedVersions(readme, {});
+		expect(out).toContain("## Tested provider versions");
+		expect(out).not.toMatch(/^- /m);
 	});
 
 	it("throws when the start marker is missing", () => {
