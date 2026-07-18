@@ -48,6 +48,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-eks-addon-resolve-conflicts': 'error',
       'lintofu/no-api-gateway-deployment-stage-args': 'error',
       'lintofu/no-s3-bucket-object': 'warn',
+      'lintofu/no-hardcoded-provider-credentials': 'error',
     });
   });
 });

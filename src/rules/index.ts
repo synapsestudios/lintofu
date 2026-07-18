@@ -3,6 +3,7 @@ import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-wit
 import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
 import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
 import noEksAddonResolveConflicts from './aws/no-eks-addon-resolve-conflicts.js';
+import noHardcodedProviderCredentials from './aws/no-hardcoded-provider-credentials.js';
 import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
 import noIamRoleInlinePolicies from './aws/no-iam-role-inline-policies.js';
 import noInstanceCpuCountAttributes from './aws/no-instance-cpu-count-attributes.js';
@@ -87,4 +88,5 @@ export const rules = {
   'no-eks-addon-resolve-conflicts': noEksAddonResolveConflicts,
   'no-api-gateway-deployment-stage-args': noApiGatewayDeploymentStageArgs,
   'no-s3-bucket-object': noS3BucketObject,
+  'no-hardcoded-provider-credentials': noHardcodedProviderCredentials,
 };
