@@ -1,6 +1,7 @@
 import noApiGatewayDeploymentStageArgs from './aws/no-api-gateway-deployment-stage-args.js';
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
+import noDeprecatedLambdaRuntime from './aws/no-deprecated-lambda-runtime.js';
 import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
 import noEksAddonResolveConflicts from './aws/no-eks-addon-resolve-conflicts.js';
 import noHardcodedProviderCredentials from './aws/no-hardcoded-provider-credentials.js';
@@ -89,4 +90,5 @@ export const rules = {
   'no-api-gateway-deployment-stage-args': noApiGatewayDeploymentStageArgs,
   'no-s3-bucket-object': noS3BucketObject,
   'no-hardcoded-provider-credentials': noHardcodedProviderCredentials,
+  'no-deprecated-lambda-runtime': noDeprecatedLambdaRuntime,
 };
