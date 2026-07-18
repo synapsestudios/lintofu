@@ -1,6 +1,7 @@
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
 import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
+import noEksAddonResolveConflicts from './aws/no-eks-addon-resolve-conflicts.js';
 import noIamPolicyAttachment from './aws/no-iam-policy-attachment.js';
 import noIamRoleInlinePolicies from './aws/no-iam-role-inline-policies.js';
 import noInstanceCpuCountAttributes from './aws/no-instance-cpu-count-attributes.js';
@@ -81,4 +82,5 @@ export const rules = {
   'no-duplicate-map-keys': noDuplicateMapKeys,
   'no-provider-version-constraint': noProviderVersionConstraint,
   'no-db-instance-name-attribute': noDbInstanceNameAttribute,
+  'no-eks-addon-resolve-conflicts': noEksAddonResolveConflicts,
 };
