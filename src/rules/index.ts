@@ -10,6 +10,7 @@ import noLegacySecurityGroupRules from './aws/no-legacy-security-group-rules.js'
 import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-forms.js';
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
 import noS3BucketInlineConfig from './aws/no-s3-bucket-inline-config.js';
+import noS3BucketObject from './aws/no-s3-bucket-object.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
@@ -85,4 +86,5 @@ export const rules = {
   'no-db-instance-name-attribute': noDbInstanceNameAttribute,
   'no-eks-addon-resolve-conflicts': noEksAddonResolveConflicts,
   'no-api-gateway-deployment-stage-args': noApiGatewayDeploymentStageArgs,
+  'no-s3-bucket-object': noS3BucketObject,
 };

@@ -108,6 +108,7 @@ export default [
 | [`no-db-instance-name-attribute`](./docs/rules/no-db-instance-name-attribute.md) | Flag the top-level `name` argument on `aws_db_instance`, removed in AWS provider v5; use `db_name`. Autofixable. |
 | [`no-eks-addon-resolve-conflicts`](./docs/rules/no-eks-addon-resolve-conflicts.md) | Flag `resolve_conflicts` on `aws_eks_addon`, removed in AWS provider v6; use `resolve_conflicts_on_create` and `resolve_conflicts_on_update`. |
 | [`no-api-gateway-deployment-stage-args`](./docs/rules/no-api-gateway-deployment-stage-args.md) | Flag `stage_name`, `stage_description`, and `canary_settings` on `aws_api_gateway_deployment`, removed in AWS provider v6; manage the stage with a separate `aws_api_gateway_stage`. |
+| [`no-s3-bucket-object`](./docs/rules/no-s3-bucket-object.md) | Flag the deprecated `aws_s3_bucket_object` resource and the `aws_s3_bucket_object`/`aws_s3_bucket_objects` data sources; use `aws_s3_object`/`aws_s3_objects`. |
 
 ## Requesting a rule
 
