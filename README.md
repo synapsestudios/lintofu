@@ -110,6 +110,7 @@ export default [
 | [`no-api-gateway-deployment-stage-args`](./docs/rules/no-api-gateway-deployment-stage-args.md) | Flag `stage_name`, `stage_description`, and `canary_settings` on `aws_api_gateway_deployment`, removed in AWS provider v6; manage the stage with a separate `aws_api_gateway_stage`. |
 | [`no-s3-bucket-object`](./docs/rules/no-s3-bucket-object.md) | Flag the deprecated `aws_s3_bucket_object` resource and the `aws_s3_bucket_object`/`aws_s3_bucket_objects` data sources; use `aws_s3_object`/`aws_s3_objects`. |
 | [`no-hardcoded-provider-credentials`](./docs/rules/no-hardcoded-provider-credentials.md) | Flag literal `access_key`, `secret_key`, or `token` values in `provider "aws"` and s3 `backend` blocks. |
+| [`no-deprecated-lambda-runtime`](./docs/rules/no-deprecated-lambda-runtime.md) | Flag AWS-deprecated Lambda `runtime` values on `aws_lambda_function` and `compatible_runtimes` elements on `aws_lambda_layer_version`. |
 
 ## Requesting a rule
 
