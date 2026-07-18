@@ -11,6 +11,7 @@ import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
 import noBoolAsCount from './core/no-bool-as-count.js';
+import noDuplicateMapKeys from './core/no-duplicate-map-keys.js';
 import noEmptyListEquality from './core/no-empty-list-equality.js';
 import noExternalRefsInDestroyProvisioner from './core/no-external-refs-in-destroy-provisioner.js';
 import noLegacyCountAttribute from './core/no-legacy-count-attribute.js';
@@ -75,4 +76,5 @@ export const rules = {
   'no-eip-vpc-attribute': noEipVpcAttribute,
   'no-instance-cpu-count-attributes': noInstanceCpuCountAttributes,
   'required-version-declared': requiredVersionDeclared,
+  'no-duplicate-map-keys': noDuplicateMapKeys,
 };

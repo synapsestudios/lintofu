@@ -42,6 +42,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-eip-vpc-attribute': 'error',
       'lintofu/no-instance-cpu-count-attributes': 'error',
       'lintofu/required-version-declared': 'warn',
+      'lintofu/no-duplicate-map-keys': 'error',
     });
   });
 });
