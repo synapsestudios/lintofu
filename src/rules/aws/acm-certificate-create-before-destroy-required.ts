@@ -26,22 +26,19 @@ const rule: OpenTofuRuleDefinition<{
         if (node.labels[0] !== 'aws_acm_certificate') return;
 
         const lifecycle = node.body.blocks.find((b) => b.kind === 'lifecycle');
-
-        if (lifecycle) {
-          const preventDestroy = findAttribute(
-            lifecycle.body.attributes,
-            'prevent_destroy',
-          );
-          if (
-            preventDestroy?.expression.type === 'LiteralValueExpr' &&
-            preventDestroy.expression.value === true
-          ) {
-            return;
-          }
-        }
-
         if (!lifecycle) {
           context.report({ node, messageId: 'missingCreateBeforeDestroy' });
+          return;
+        }
+
+        const preventDestroy = findAttribute(
+          lifecycle.body.attributes,
+          'prevent_destroy',
+        );
+        if (
+          preventDestroy?.expression.type === 'LiteralValueExpr' &&
+          preventDestroy.expression.value === true
+        ) {
           return;
         }
 
