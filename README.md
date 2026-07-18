@@ -47,7 +47,7 @@ Above the floor, [ADR 0005](./docs/adr/0005-version-support-policy.md) defines t
 | Tool      | Versions       | Status      |
 | --------- | -------------- | ----------- |
 | OpenTofu  | 1.6 and newer  | supported   |
-| Terraform | 1.0 – 1.15     | supported   |
+| Terraform | 1.0 and newer  | supported   |
 | Terraform | 0.12 – 0.15    | best effort |
 | Terraform | 0.11 and older | unsupported |
 
