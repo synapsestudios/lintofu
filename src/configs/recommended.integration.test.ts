@@ -44,6 +44,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/required-version-declared': 'warn',
       'lintofu/no-duplicate-map-keys': 'error',
       'lintofu/no-provider-version-constraint': 'warn',
+      'lintofu/no-db-instance-name-attribute': 'error',
     });
   });
 });

@@ -105,6 +105,7 @@ export default [
 | [`required-version-declared`](./docs/rules/required-version-declared.md) | Warn when a `terraform` block declares `required_providers` but no `terraform` block in the file sets `required_version`. |
 | [`no-duplicate-map-keys`](./docs/rules/no-duplicate-map-keys.md) | Flag a repeated statically-known key in an object literal; HCL keeps only the last entry and silently discards the earlier ones. |
 | [`no-provider-version-constraint`](./docs/rules/no-provider-version-constraint.md) | Flag a `version` argument inside a `provider` block; declare the constraint in `terraform.required_providers` instead. |
+| [`no-db-instance-name-attribute`](./docs/rules/no-db-instance-name-attribute.md) | Flag the top-level `name` argument on `aws_db_instance`, removed in AWS provider v5; use `db_name`. Autofixable. |
 
 ## Requesting a rule
 
