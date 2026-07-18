@@ -46,6 +46,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-provider-version-constraint': 'warn',
       'lintofu/no-db-instance-name-attribute': 'error',
       'lintofu/no-eks-addon-resolve-conflicts': 'error',
+      'lintofu/no-api-gateway-deployment-stage-args': 'error',
     });
   });
 });
