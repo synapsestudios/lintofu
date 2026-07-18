@@ -103,6 +103,7 @@ export default [
 | [`no-eip-vpc-attribute`](./docs/rules/no-eip-vpc-attribute.md) | Flag the `vpc` argument on `aws_eip`, removed in AWS provider v6; use `domain = "vpc"`. Autofixable. |
 | [`no-instance-cpu-count-attributes`](./docs/rules/no-instance-cpu-count-attributes.md) | Flag `cpu_core_count`/`cpu_threads_per_core` on `aws_instance`, removed in AWS provider v6; use a `cpu_options` block. Autofixable. |
 | [`required-version-declared`](./docs/rules/required-version-declared.md) | Warn when a `terraform` block declares `required_providers` but no `terraform` block in the file sets `required_version`. |
+| [`no-duplicate-map-keys`](./docs/rules/no-duplicate-map-keys.md) | Flag a repeated statically-known key in an object literal; HCL keeps only the last entry and silently discards the earlier ones. |
 
 ## Requesting a rule
 
