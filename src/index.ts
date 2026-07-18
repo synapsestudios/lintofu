@@ -10,22 +10,42 @@ import { rules } from './rules/index.js';
 // uses dynamic import which awaits TLA, so consumers don't see the boot.
 await initialize();
 
+/**
+ * the lintofu eslint plugin: `meta`, the `lintofu/opentofu` language,
+ * every bundled rule, and the generated `recommended` and
+ * `aws/recommended` configs.
+ */
 const plugin = {
+  /** plugin name and version eslint reports. */
   meta: {
     name: 'lintofu',
     version: '0.0.0',
   },
+  /**
+   * the opentofu/terraform hcl language implementation; select it with
+   * `language: 'lintofu/opentofu'`.
+   */
   languages: {
     opentofu: new OpenTofuLanguage(),
   },
+  /** every bundled rule, keyed by rule name. */
   rules,
   configs: {
+    /**
+     * every rule with `recommended: true`, at its declared severity
+     * (error when the rule omits one). preconfigured for `.tf` and
+     * `.tofu` files.
+     */
     recommended: {
       plugins: {} as Record<string, Plugin>,
       files: ['**/*.tf', '**/*.tofu'],
       language: 'lintofu/opentofu',
       rules: buildRecommendedRules(rules),
     },
+    /**
+     * the recommended rules whose category is `aws`. same file coverage
+     * as `recommended`.
+     */
     'aws/recommended': {
       plugins: {} as Record<string, Plugin>,
       files: ['**/*.tf', '**/*.tofu'],

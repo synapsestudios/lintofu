@@ -54,7 +54,9 @@ function parseDisableDirective(
   return { type, value: parsed.value, justification: parsed.justification };
 }
 
+/** what a rule gets from `context.sourceCode.parserServices`. */
 export interface TofuParserServices {
+  /** index over the linted file's module directory. see {@link ProjectIndex}. */
   projectIndex: ProjectIndex;
 }
 
@@ -64,9 +66,14 @@ const EMPTY_INDEX: ProjectIndex = {
   resourcesByType: () => [],
 };
 
-// No index signature: it would break structural compatibility with the
-// concrete node interfaces (Block, Attribute, ...). Generic walkers cast
-// to Record<string, unknown> locally instead.
+/**
+ * base shape every ast node satisfies: a `type` discriminator plus a source
+ * {@link Range}. no index signature on purpose: it would break structural
+ * compatibility with the concrete node interfaces (Block, Attribute, ...);
+ * generic walkers cast to `Record<string, unknown>` locally instead. not a
+ * root export: rules meet it as the node parameter type in
+ * OpenTofuRuleDefinition.
+ */
 export interface TofuNode {
   type: string;
   range: Range;
@@ -79,11 +86,22 @@ interface TofuSourceCodeOptions {
   ConfigNode: Comment;
 }
 
+/** the source code object rules receive as `context.sourceCode`. */
 export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions> {
   readonly #moduleDir: string | undefined;
+
+  /**
+   * every comment in the file, in source order. comments are not ast nodes
+   * and never appear in {@link OpenTofuSourceCode.traverse}; see
+   * {@link Comment}.
+   */
   readonly comments: Comment[];
   #cachedServices: TofuParserServices | undefined;
 
+  /**
+   * builds a source code object from the parse output: raw text, ast,
+   * comments, and the module directory the file lives in.
+   */
   constructor({
     text,
     ast,
@@ -100,6 +118,11 @@ export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions
     this.#moduleDir = moduleDir;
   }
 
+  /**
+   * builds eslint disable directives from the file's comments. an
+   * `eslint-disable-line` comment spanning multiple lines is reported as a
+   * file problem instead of becoming a directive.
+   */
   getDisableDirectives(): {
     directives: Directive[];
     problems: FileProblem[];
@@ -130,10 +153,21 @@ export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions
     return { directives, problems };
   }
 
+  /**
+   * the comments that parse as disable/enable directives; what
+   * `noInlineConfig` reports.
+   */
   getInlineConfigNodes(): Comment[] {
     return this.comments.filter((c) => parseDisableDirective(c) !== undefined);
   }
 
+  /**
+   * services exposed to rules, built lazily and cached per file. when the
+   * file has no physical path (stdin, virtual files) there is no module
+   * directory, so rules get an empty index: `findResource` and
+   * `resolveTraversal` always return `undefined`, `resourcesByType` always
+   * returns `[]`.
+   */
   get parserServices(): TofuParserServices {
     if (this.#cachedServices) return this.#cachedServices;
     const projectIndex = this.#moduleDir
@@ -143,6 +177,10 @@ export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions
     return this.#cachedServices;
   }
 
+  /**
+   * maps a node's {@link Range} to an eslint SourceLocation (1-indexed
+   * line/column).
+   */
   override getLoc(node: TofuNode): SourceLocation {
     return {
       start: { line: node.range.start.line, column: node.range.start.column },
@@ -150,10 +188,16 @@ export class OpenTofuSourceCode extends TextSourceCodeBase<TofuSourceCodeOptions
     };
   }
 
+  /** maps a node's {@link Range} to eslint's `[start, end]` byte offsets. */
   override getRange(node: TofuNode): SourceRange {
     return [node.range.start.offset, node.range.end.offset];
   }
 
+  /**
+   * yields enter/exit steps for every visitable node. ObjectConsItem pairs
+   * have no `type` field and are descended out-of-band: the item itself is
+   * never yielded, its `keyExpr` and `valueExpr` are.
+   */
   override *traverse(): Generator<TraversalStep> {
     yield* visitNode(this.ast);
   }
