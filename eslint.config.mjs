@@ -1,8 +1,10 @@
 // @ts-check
 import eslint from '@eslint/js';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
+import jsdocPlugin from 'eslint-plugin-jsdoc';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import securityPlugin from 'eslint-plugin-security';
+import tsdocPlugin from 'eslint-plugin-tsdoc';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -80,6 +82,35 @@ export default tseslint.config(
                 'core rules must not import provider utilities; move a provider-agnostic helper to core/utils.ts instead',
             },
           ],
+        },
+      ],
+    },
+  },
+
+  {
+    files: [
+      'src/index.ts',
+      'src/types.ts',
+      'src/language.ts',
+      'src/rules/types.ts',
+      'src/parser/types.ts',
+      'src/source-code.ts',
+      'src/project-index.ts',
+    ],
+    plugins: { jsdoc: jsdocPlugin, tsdoc: tsdocPlugin },
+    rules: {
+      'tsdoc/syntax': 'error',
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          publicOnly: true,
+          require: {
+            ClassDeclaration: true,
+            FunctionDeclaration: true,
+            MethodDefinition: true,
+          },
+          contexts: ['TSInterfaceDeclaration', 'TSTypeAliasDeclaration'],
+          exemptEmptyConstructors: true,
         },
       ],
     },
