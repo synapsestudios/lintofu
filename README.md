@@ -104,6 +104,7 @@ export default [
 | [`no-instance-cpu-count-attributes`](./docs/rules/no-instance-cpu-count-attributes.md) | Flag `cpu_core_count`/`cpu_threads_per_core` on `aws_instance`, removed in AWS provider v6; use a `cpu_options` block. Autofixable. |
 | [`required-version-declared`](./docs/rules/required-version-declared.md) | Warn when a `terraform` block declares `required_providers` but no `terraform` block in the file sets `required_version`. |
 | [`no-duplicate-map-keys`](./docs/rules/no-duplicate-map-keys.md) | Flag a repeated statically-known key in an object literal; HCL keeps only the last entry and silently discards the earlier ones. |
+| [`no-provider-version-constraint`](./docs/rules/no-provider-version-constraint.md) | Flag a `version` argument inside a `provider` block; declare the constraint in `terraform.required_providers` instead. |
 
 ## Requesting a rule
 

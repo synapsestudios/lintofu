@@ -21,6 +21,7 @@ import noLegacyListFunction from './core/no-legacy-list-function.js';
 import noLegacyLookup from './core/no-legacy-lookup.js';
 import noLegacyMapFunction from './core/no-legacy-map-function.js';
 import noLegacyProviderProxy from './core/no-legacy-provider-proxy.js';
+import noProviderVersionConstraint from './core/no-provider-version-constraint.js';
 import noQuotedDependsOn from './core/no-quoted-depends-on.js';
 import noQuotedIgnoreChanges from './core/no-quoted-ignore-changes.js';
 import noQuotedProviderReference from './core/no-quoted-provider-reference.js';
@@ -77,4 +78,5 @@ export const rules = {
   'no-instance-cpu-count-attributes': noInstanceCpuCountAttributes,
   'required-version-declared': requiredVersionDeclared,
   'no-duplicate-map-keys': noDuplicateMapKeys,
+  'no-provider-version-constraint': noProviderVersionConstraint,
 };
