@@ -24,9 +24,10 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'deprecatedS3BucketObject' }> =
           if (type === undefined) return;
 
           let replacement: string | undefined;
-          if (node.kind === 'resource' && type === 'aws_s3_bucket_object') {
-            replacement = 'aws_s3_object';
-          } else if (node.kind === 'data' && type === 'aws_s3_bucket_object') {
+          if (
+            type === 'aws_s3_bucket_object' &&
+            (node.kind === 'resource' || node.kind === 'data')
+          ) {
             replacement = 'aws_s3_object';
           } else if (node.kind === 'data' && type === 'aws_s3_bucket_objects') {
             replacement = 'aws_s3_objects';
