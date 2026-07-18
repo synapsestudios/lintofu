@@ -59,6 +59,16 @@ Above the floor, the same ADR defines the per-generation status:
 
 These statuses are policy commitments, not CI results: no workflow runs real OpenTofu or Terraform binaries yet. This table is maintained by hand and will be replaced by generated output once the version test harness exists.
 
+<!-- lintofu:tested-versions:start -->
+
+## Tested provider versions
+
+Provider-specific rules are validated against these versions. [`provider-versions.json`](./provider-versions.json) is the source of truth; edit it and run `npm run docs:versions` to update this section. CI fails if the two drift.
+
+- aws provider v6.42.0
+
+<!-- lintofu:tested-versions:end -->
+
 ## Usage
 
 ```js

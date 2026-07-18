@@ -39,6 +39,8 @@
     "lint:ci": "eslint \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
+    "docs:versions": "node scripts/render-tested-versions.mjs",
+    "docs:versions:check": "node scripts/render-tested-versions.mjs --check",
     "clean": "rm -rf dist",
     "prepare": "lefthook install || true",
     "prepublishOnly": "npm run build"
