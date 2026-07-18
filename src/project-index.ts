@@ -3,14 +3,37 @@ import { join } from 'node:path';
 import { parseSync } from './parser/index.js';
 import type { Block, ScopeTraversalExpr } from './parser/types.js';
 
+/**
+ * Address of a block: `kind` (`resource`) plus `labels` as written in source
+ * (`['aws_instance', 'web']`).
+ */
 export interface ResourceAddress {
   kind: string;
   labels: string[];
 }
 
+/**
+ * Index over every `.tf`/`.tofu` file in the directory of the linted file
+ * (the opentofu module boundary; no recursion into subdirectories). Rebuilt
+ * when the directory fingerprint changes; the fingerprint is the sorted file
+ * paths plus each file's mtime, so it invalidates on file modification and on
+ * file add/remove.
+ */
 export interface ProjectIndex {
+  /** The block at the given address, or `undefined` on a miss. */
   findResource(addr: ResourceAddress): Block | undefined;
+  /**
+   * Resolves a traversal shaped root + attr (`aws_instance.web`) to its
+   * resource block; steps past the second are ignored. Anything else
+   * (shorter, an index step in the second position, non-resource roots: kind
+   * is always `resource`, so anything not addressing a resource misses)
+   * returns `undefined`.
+   */
   resolveTraversal(expr: ScopeTraversalExpr): Block | undefined;
+  /**
+   * Every `resource` block of the given type across the module; empty array
+   * on a miss.
+   */
   resourcesByType(type: string): readonly Block[];
 }
 
@@ -21,6 +44,11 @@ interface CachedIndex {
 
 const cache = new Map<string, CachedIndex>();
 
+/**
+ * Builds or returns the cached {@link ProjectIndex} for a module directory.
+ * The cache is per directory, keyed on the fingerprint described on
+ * {@link ProjectIndex} (sorted file paths plus mtimes).
+ */
 export function getProjectIndex(moduleDir: string): ProjectIndex {
   const files = listModuleFiles(moduleDir);
   const fingerprint = fingerprintFiles(files);
