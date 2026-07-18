@@ -1,3 +1,4 @@
+import noApiGatewayDeploymentStageArgs from './aws/no-api-gateway-deployment-stage-args.js';
 import noAuroraPinnedMinorWithAutoUpgrade from './aws/no-aurora-pinned-minor-with-auto-upgrade.js';
 import noDbInstanceNameAttribute from './aws/no-db-instance-name-attribute.js';
 import noEipVpcAttribute from './aws/no-eip-vpc-attribute.js';
@@ -83,4 +84,5 @@ export const rules = {
   'no-provider-version-constraint': noProviderVersionConstraint,
   'no-db-instance-name-attribute': noDbInstanceNameAttribute,
   'no-eks-addon-resolve-conflicts': noEksAddonResolveConflicts,
+  'no-api-gateway-deployment-stage-args': noApiGatewayDeploymentStageArgs,
 };
