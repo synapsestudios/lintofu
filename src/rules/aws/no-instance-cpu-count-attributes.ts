@@ -57,6 +57,7 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'cpuCountAttribute' }> = {
       recommended: true,
       severity: 'error',
       category: 'aws',
+      appliesTo: { aws: '>=6.0.0' },
     },
     messages: {
       cpuCountAttribute:

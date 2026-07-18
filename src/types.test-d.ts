@@ -60,6 +60,7 @@ const _ruleWithDefaultDocs: OpenTofuRuleDefinition<{ MessageIds: 'x' }> = {
       recommended: false,
       severity: 'warn',
       category: 'aws',
+      appliesTo: { aws: '>=6.0.0' },
     },
     messages: { x: 'm' },
     schema: [],

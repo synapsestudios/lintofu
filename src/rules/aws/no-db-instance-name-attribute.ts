@@ -11,6 +11,7 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'dbInstanceName' }> = {
       recommended: true,
       severity: 'error',
       category: 'aws',
+      appliesTo: { aws: '>=5.0.0' },
     },
     messages: {
       dbInstanceName:

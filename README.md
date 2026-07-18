@@ -34,6 +34,10 @@ The package lives in GitHub Packages, so consumers need an `.npmrc` that maps th
 
 Requires Node ^20.19, ^22.13, or >=24 and ESLint ^9 || ^10.
 
+## Supported versions
+
+Providers: latest major plus one prior (AWS provider v6 and v5 today); older majors are best effort. OpenTofu: all releases. Terraform: 1.x, with 0.12 to 0.15 best effort (HCL2 is the parser floor). Rules that only apply from a given provider major declare it in `meta.docs.appliesTo`. Full policy in [ADR 0005](./docs/adr/0005-version-support-policy.md).
+
 ## Usage
 
 ```js

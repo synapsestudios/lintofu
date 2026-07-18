@@ -22,4 +22,5 @@ export interface LintofuRuleDocs {
    * today).
    */
   category?: string;
+  appliesTo?: Record<string, string>;
 }
