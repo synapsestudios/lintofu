@@ -24,6 +24,11 @@ tester.run('no-duplicate-map-keys', rule, {
     {
       code: 'locals {\n  m = { "${local.k}-${local.v}" = 1, "${local.k}-${local.v}" = 2 }\n}',
     },
+    // Function-call and conditional keys are computed, so a collision cannot be proven here.
+    { code: 'locals {\n  m = { (lower("A")) = 1, (lower("A")) = 2 }\n}' },
+    {
+      code: 'locals {\n  m = { (local.c ? "a" : "b") = 1, (local.c ? "a" : "b") = 2 }\n}',
+    },
     // Same name at different nesting levels are independent scopes.
     { code: 'locals {\n  x = { a = { a = 1 }, b = 2 }\n}' },
   ],
