@@ -13,6 +13,10 @@ pre-commit:
       glob: "src/**/*.ts"
       run: npm run format:check
 
+    tested-versions-check:
+      glob: "{README.md,provider-versions.json}"
+      run: npm run docs:versions:check
+
     go-fmt-check:
       root: parser-go/
       glob: "*.go"
