@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.7.0](https://github.com/synapsestudios/lintofu/compare/v0.6.0...v0.7.0) (2026-07-19)
+
+
+### Features
+
+* add acm-certificate-create-before-destroy-required rule ([#153](https://github.com/synapsestudios/lintofu/issues/153)) ([17499f9](https://github.com/synapsestudios/lintofu/commit/17499f9e4f3c5ab173b679957a56605e8a76e10d))
+* add no-api-gateway-deployment-stage-args rule ([#149](https://github.com/synapsestudios/lintofu/issues/149)) ([e65919e](https://github.com/synapsestudios/lintofu/commit/e65919e59e0d55794080f57709d91823ddc71b81))
+* add no-db-instance-name-attribute rule ([#147](https://github.com/synapsestudios/lintofu/issues/147)) ([73fca90](https://github.com/synapsestudios/lintofu/commit/73fca90c6f64ad1495922f7881403a71946d6077))
+* add no-deprecated-lambda-runtime rule ([#152](https://github.com/synapsestudios/lintofu/issues/152)) ([0b41089](https://github.com/synapsestudios/lintofu/commit/0b4108963b2b2fe08e67dce884fbcb4dde836158))
+* add no-duplicate-map-keys rule ([#145](https://github.com/synapsestudios/lintofu/issues/145)) ([61287e6](https://github.com/synapsestudios/lintofu/commit/61287e6425fd442d8a83565e0a1732c77eb4c2eb))
+* add no-eks-addon-resolve-conflicts rule ([#148](https://github.com/synapsestudios/lintofu/issues/148)) ([9d092d0](https://github.com/synapsestudios/lintofu/commit/9d092d04bd28e85555588bc98cc0be04c9892320))
+* add no-hardcoded-provider-credentials rule ([#151](https://github.com/synapsestudios/lintofu/issues/151)) ([d85cec7](https://github.com/synapsestudios/lintofu/commit/d85cec78000ab8df3b7702eda21a6c7b8f7a7d91))
+* add no-provider-version-constraint rule ([#146](https://github.com/synapsestudios/lintofu/issues/146)) ([d258961](https://github.com/synapsestudios/lintofu/commit/d258961cf5cb54f06afe87a28d4852bd3de8f07e))
+* add no-s3-bucket-object rule ([#150](https://github.com/synapsestudios/lintofu/issues/150)) ([350be5f](https://github.com/synapsestudios/lintofu/commit/350be5fd43caebbee2b7511b3b5ca130e7aadbdc))
+* add version support policy adr and appliesTo rule metadata ([#157](https://github.com/synapsestudios/lintofu/issues/157)) ([1e9d30c](https://github.com/synapsestudios/lintofu/commit/1e9d30c82c3bfb2fb0de99ae05f43ec5855f8197))
+
 ## [0.6.0](https://github.com/synapsestudios/lintofu/compare/v0.5.0...v0.6.0) (2026-07-17)
 
 
