@@ -28,6 +28,7 @@ const rule: OpenTofuRuleDefinition<{ MessageIds: 'eipVpcAttribute' }> = {
       recommended: true,
       severity: 'error',
       category: 'aws',
+      appliesTo: { aws: '>=6.0.0' },
     },
     messages: {
       eipVpcAttribute:
