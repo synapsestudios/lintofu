@@ -120,23 +120,28 @@ To suggest a new rule, open a [rule request](https://github.com/synapsestudios/l
 ## Parser services
 
 Rules can reach a lazily-built, cross-file index through
-`context.sourceCode.parserServices.projectIndex`. See
-[Parser services](https://synapsestudios.github.io/lintofu/developer-guide/parser-services)
-in the developer guide.
+`context.sourceCode.parserServices.projectIndex`. The `ProjectIndex` interface
+and its module-directory scope are documented in the developer guide:
+[on the site](https://synapsestudios.github.io/lintofu/developer-guide/parser-services)
+or [`docs/developer-guide/parser-services.md`](./docs/developer-guide/parser-services.md)
+in this repository.
 
 ## Writing your own rule
 
 `lintofu` re-exports the rule-authoring types it uses internally, so a custom
-rule type-checks without reaching into private modules. See
-[Writing your own rule](https://synapsestudios.github.io/lintofu/developer-guide/writing-a-rule)
-in the developer guide.
+rule type-checks without reaching into private modules. The worked example is in
+the developer guide:
+[on the site](https://synapsestudios.github.io/lintofu/developer-guide/writing-a-rule)
+or [`docs/developer-guide/writing-a-rule.md`](./docs/developer-guide/writing-a-rule.md)
+in this repository.
 
 ## Architecture
 
 The parser is Go: `github.com/hashicorp/hcl/v2/hclsyntax` compiled to
-WebAssembly. See
-[Architecture](https://synapsestudios.github.io/lintofu/developer-guide/architecture)
-in the developer guide.
+WebAssembly. The full picture is in the developer guide:
+[on the site](https://synapsestudios.github.io/lintofu/developer-guide/architecture)
+or [`docs/developer-guide/architecture.md`](./docs/developer-guide/architecture.md)
+in this repository.
 
 ## Known limitations
 

@@ -27,9 +27,9 @@ features:
 
 ## Where to go next
 
-- **[User guide](/user-guide/getting-started)** — install `lintofu`, wire it into `eslint.config.js`, and pick a config tier.
-- **[Rules](/rules/)** — every shipped rule with its description, severity, category, recommended flag, and whether it autofixes. Generated from rule metadata.
-- **[Developer guide](/developer-guide/architecture)** — how the parser is built, what parser services rules can reach for, and how to write a rule of your own.
+- **[User guide](./user-guide/getting-started.md)**: install `lintofu`, wire it into `eslint.config.js`, and pick a config tier.
+- **[Rules](./rules/index.md)**: every shipped rule with its description, severity, category, recommended flag, and whether it autofixes. Generated from rule metadata.
+- **[Developer guide](./developer-guide/architecture.md)**: how the parser is built, what parser services rules can reach for, and how to write a rule of your own.
 
 Pre-1.0. The API and the rule set may still change. See
 [ADR 0001](https://github.com/synapsestudios/lintofu/blob/main/docs/adr/0001-syscall-js-experimental.md)

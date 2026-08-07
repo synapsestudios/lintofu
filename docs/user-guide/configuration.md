@@ -24,7 +24,7 @@ export default [lintofu.configs.recommended];
 ```
 
 A rule's severity comes from its own `meta.docs.severity` and defaults to
-`error` when the rule does not declare one. The [rule index](/rules/) shows the
+`error` when the rule does not declare one. The [rule index](../rules/index.md) shows the
 severity each rule carries.
 
 ### AWS rules only
@@ -139,7 +139,7 @@ export default [
 
 ## Provider version constraints
 
-Some rules only make sense from a given provider major onward — a rule about an
+Some rules only make sense from a given provider major onward. A rule about an
 argument removed in AWS provider v6 is noise on a v5 configuration. Those rules
 declare the constraint in their metadata as `meta.docs.appliesTo`, and the rule's
 own page records it.
@@ -151,8 +151,8 @@ turn it off with a severity override. The policy behind this is
 
 ## Requesting a rule
 
-To suggest a new rule, open a
+Open a
 [rule request](https://github.com/synapsestudios/lintofu/issues/new?template=rule-request.yml).
-The form asks for a snippet the rule should flag, the compliant form, a
-category, a suggested severity, whether an autofix seems possible, and any
-references.
+What the form asks for is described under
+[Requesting a rule](https://github.com/synapsestudios/lintofu/blob/main/README.md#requesting-a-rule)
+in the readme.
