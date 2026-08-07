@@ -37,12 +37,15 @@
     "typecheck": "tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint \"src/**/*.ts\" \"scripts/**/*.ts\" --fix",
     "lint:ci": "eslint \"src/**/*.ts\" \"scripts/**/*.ts\"",
-    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.{mjs,ts}\" \"vitest.config.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.{mjs,ts}\" \"vitest.config.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.{mjs,ts}\" \"vitest.config.ts\" \"docs/.vitepress/**/*.mts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.{mjs,ts}\" \"vitest.config.ts\" \"docs/.vitepress/**/*.mts\"",
     "docs:versions": "node scripts/render-tested-versions.mjs",
     "docs:versions:check": "node scripts/render-tested-versions.mjs --check",
     "docs:rules": "tsx scripts/render-rule-index.ts",
     "docs:rules:check": "tsx scripts/render-rule-index.ts --check",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "clean": "rm -rf dist",
     "prepare": "lefthook install || true",
     "prepublishOnly": "npm run build"
@@ -71,6 +74,7 @@
     "tsx": "^4.23.11",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.66.0",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.10"
   },
   "keywords": [
