@@ -12,9 +12,7 @@ function isHashicorpTemplateSource(source: string): boolean {
 
 const rule: OpenTofuRuleDefinition<{
   MessageIds:
-    | 'useTemplatefile'
-    | 'useCloudinitProvider'
-    | 'archivedTemplateProvider';
+    'useTemplatefile' | 'useCloudinitProvider' | 'archivedTemplateProvider';
 }> = {
   meta: {
     type: 'problem',
