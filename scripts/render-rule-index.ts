@@ -1,3 +1,7 @@
+import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { rules } from '../src/rules/index.js';
 import type { LintofuRuleDocs } from '../src/rules/types.js';
 
 const CORE_CATEGORY = 'core';
@@ -16,6 +20,8 @@ const DOCS_RULES_DIR_ROUTE = 'rules';
 const RULE_INDEX_PAGE = 'index';
 
 const RULE_INDEX_SIDEBAR_TEXT = 'All rules';
+
+const MARKDOWN_EXTENSION = '.md';
 
 const TABLE_COLUMNS = [
   'Rule',
@@ -181,4 +187,57 @@ function compareCategories(a: string, b: string): number {
   if (a === CORE_CATEGORY) return -1;
   if (b === CORE_CATEGORY) return 1;
   return a.localeCompare(b);
+}
+
+async function readRuleDocsPages(pagesDir: string): Promise<RuleDocsPage[]> {
+  const files = (await readdir(pagesDir)).filter((file) =>
+    file.endsWith(MARKDOWN_EXTENSION),
+  );
+  return Promise.all(
+    files.map(async (file) => ({
+      name: file.slice(0, -MARKDOWN_EXTENSION.length),
+      firstLine:
+        (await readFile(join(pagesDir, file), 'utf8')).split('\n')[0] ?? '',
+    })),
+  );
+}
+
+const entryPoint = process.argv[1];
+const isMain =
+  entryPoint !== undefined &&
+  import.meta.url === pathToFileURL(entryPoint).href;
+
+if (isMain) {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const pagesDir = join(root, DOCS_RULES_DIR);
+  const pages = await readRuleDocsPages(pagesDir);
+  const problems = [
+    ...findRuleDocsParityProblems(
+      Object.keys(rules),
+      pages.map((page) => page.name),
+    ),
+    ...findRuleDocsHeadingProblems(
+      pages.filter((page) => page.name !== RULE_INDEX_PAGE),
+    ),
+  ];
+  if (problems.length > 0) {
+    for (const problem of problems) {
+      console.error(problem);
+    }
+    process.exit(1);
+  }
+
+  const indexPath = join(pagesDir, `${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION}`);
+  const current = await readFile(indexPath, 'utf8').catch(() => '');
+  const rendered = renderRuleIndex(toRuleIndexEntries(rules));
+  if (process.argv.includes('--check')) {
+    if (rendered !== current) {
+      console.error(
+        `${DOCS_RULES_DIR}/${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION} is stale. run: npm run docs:rules`,
+      );
+      process.exit(1);
+    }
+  } else if (rendered !== current) {
+    await writeFile(indexPath, rendered);
+  }
 }

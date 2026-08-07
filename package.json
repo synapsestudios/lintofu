@@ -41,6 +41,8 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.{mjs,ts}\" \"vitest.config.ts\"",
     "docs:versions": "node scripts/render-tested-versions.mjs",
     "docs:versions:check": "node scripts/render-tested-versions.mjs --check",
+    "docs:rules": "tsx scripts/render-rule-index.ts",
+    "docs:rules:check": "tsx scripts/render-rule-index.ts --check",
     "clean": "rm -rf dist",
     "prepare": "lefthook install || true",
     "prepublishOnly": "npm run build"
