@@ -13,6 +13,9 @@ const CHECK_MARK = '✔';
 
 const DOCS_RULES_DIR = 'docs/rules';
 
+/** The wasm-free rule barrel this script reads metadata from. */
+const RULE_BARREL = 'src/rules/index.ts';
+
 /** `docs/` is the vitepress source root, so rule pages route under `/rules`. */
 const DOCS_RULES_DIR_ROUTE = 'rules';
 
@@ -23,14 +26,35 @@ const RULE_INDEX_SIDEBAR_TEXT = 'All rules';
 
 const MARKDOWN_EXTENSION = '.md';
 
-const TABLE_COLUMNS = [
-  'Rule',
-  'Description',
-  'Severity',
-  'Category',
-  'Recommended',
-  'Fixable',
+interface RuleIndexColumn {
+  header: string;
+  cell: (entry: RuleIndexEntry) => string;
+}
+
+/**
+ * The single declaration of the index table. The header row, the separator
+ * row, and every rule row are all derived from this, so a column cannot be
+ * added or reordered in one place and forgotten in another.
+ */
+const TABLE_COLUMNS: readonly RuleIndexColumn[] = [
+  {
+    header: 'Rule',
+    cell: (entry) =>
+      `[\`${entry.name}\`](./${entry.name}${MARKDOWN_EXTENSION})`,
+  },
+  {
+    header: 'Description',
+    cell: (entry) => escapeTableCell(entry.description),
+  },
+  { header: 'Severity', cell: (entry) => entry.severity },
+  { header: 'Category', cell: (entry) => entry.category },
+  { header: 'Recommended', cell: (entry) => flag(entry.recommended) },
+  { header: 'Fixable', cell: (entry) => flag(entry.fixable) },
 ];
+
+function flag(on: boolean): string {
+  return on ? CHECK_MARK : '';
+}
 
 export interface RuleIndexEntry {
   name: string;
@@ -106,8 +130,8 @@ export function renderRuleIndex(entries: readonly RuleIndexEntry[]): string {
     [
       `## ${group.category}`,
       '',
-      `| ${TABLE_COLUMNS.join(' | ')} |`,
-      `| ${TABLE_COLUMNS.map(() => '---').join(' | ')} |`,
+      renderRow(TABLE_COLUMNS.map((column) => column.header)),
+      renderRow(TABLE_COLUMNS.map(() => '---')),
       ...group.entries.map(renderRuleRow),
       '',
     ].join('\n'),
@@ -116,14 +140,10 @@ export function renderRuleIndex(entries: readonly RuleIndexEntry[]): string {
 }
 
 function renderRuleRow(entry: RuleIndexEntry): string {
-  const cells = [
-    `[\`${entry.name}\`](./${entry.name}.md)`,
-    escapeTableCell(entry.description),
-    entry.severity,
-    entry.category,
-    entry.recommended ? CHECK_MARK : '',
-    entry.fixable ? CHECK_MARK : '',
-  ];
+  return renderRow(TABLE_COLUMNS.map((column) => column.cell(entry)));
+}
+
+function renderRow(cells: readonly string[]): string {
   return `| ${cells.join(' | ')} |`;
 }
 
@@ -141,15 +161,26 @@ export function findRuleDocsParityProblems(
     .filter((name) => !pages.has(name))
     .map(
       (name) =>
-        `rule "${name}" has no docs page. expected ${DOCS_RULES_DIR}/${name}.md`,
+        `rule "${name}" has no docs page. expected ${DOCS_RULES_DIR}/${name}${MARKDOWN_EXTENSION}`,
     );
   const orphanPages = docsPageNames
     .filter((page) => page !== RULE_INDEX_PAGE && !names.has(page))
     .map(
       (page) =>
-        `${DOCS_RULES_DIR}/${page}.md has no matching rule in src/rules/index.ts`,
+        `${DOCS_RULES_DIR}/${page}${MARKDOWN_EXTENSION} has no matching rule in ${RULE_BARREL}`,
     );
   return [...missingPages, ...orphanPages];
+}
+
+export function findRuleDescriptionProblems(
+  entries: readonly RuleIndexEntry[],
+): string[] {
+  return entries
+    .filter((entry) => entry.description.trim() === '')
+    .map(
+      (entry) =>
+        `rule "${entry.name}" has an empty meta.docs.description. every rule in ${RULE_BARREL} must describe what it enforces`,
+    );
 }
 
 export function buildRuleSidebar(
@@ -171,11 +202,33 @@ export function findRuleDocsHeadingProblems(
   pages: readonly RuleDocsPage[],
 ): string[] {
   return pages
-    .filter((page) => page.firstLine !== `# ${page.name}`)
+    .filter(
+      (page) =>
+        page.name !== RULE_INDEX_PAGE && page.firstLine !== `# ${page.name}`,
+    )
     .map(
       (page) =>
-        `${DOCS_RULES_DIR}/${page.name}.md opens with "${page.firstLine}", expected "# ${page.name}"`,
+        `${DOCS_RULES_DIR}/${page.name}${MARKDOWN_EXTENSION} opens with "${page.firstLine}", expected "# ${page.name}"`,
     );
+}
+
+/**
+ * Every invariant the generated index depends on, in one pass: a rule with no
+ * docs page, a docs page with no rule, a page heading that disagrees with its
+ * filename, and a rule with no description.
+ */
+export function findRuleIndexProblems(
+  entries: readonly RuleIndexEntry[],
+  pages: readonly RuleDocsPage[],
+): string[] {
+  return [
+    ...findRuleDocsParityProblems(
+      entries.map((entry) => entry.name),
+      pages.map((page) => page.name),
+    ),
+    ...findRuleDocsHeadingProblems(pages),
+    ...findRuleDescriptionProblems(entries),
+  ];
 }
 
 function compareCategories(a: string, b: string): number {
@@ -198,42 +251,61 @@ async function readRuleDocsPages(pagesDir: string): Promise<RuleDocsPage[]> {
   );
 }
 
+function isFileNotFound(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === 'ENOENT';
+}
+
+/** The index as it sits on disk, or `undefined` when it does not exist yet. */
+async function readIndexIfPresent(path: string): Promise<string | undefined> {
+  try {
+    return await readFile(path, 'utf8');
+  } catch (error) {
+    if (isFileNotFound(error)) return undefined;
+    throw error;
+  }
+}
+
+/**
+ * Validation and generation are deliberately independent. A parity problem
+ * must not stop the write: `npm run docs:rules` is the fix the stale-index
+ * message and the generated header both point at, so it has to regenerate in
+ * exactly the situation that sends someone there. Problems still fail the run.
+ */
+async function main(): Promise<number> {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const pagesDir = join(root, DOCS_RULES_DIR);
+  const indexPath = join(pagesDir, `${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION}`);
+  const checkMode = process.argv.includes('--check');
+
+  const entries = toRuleIndexEntries(rules);
+  const pages = await readRuleDocsPages(pagesDir);
+
+  const problems = findRuleIndexProblems(entries, pages);
+  for (const problem of problems) {
+    console.error(problem);
+  }
+  const failed = problems.length > 0;
+
+  const rendered = renderRuleIndex(entries);
+  const current = await readIndexIfPresent(indexPath);
+  if (rendered === current) return failed ? 1 : 0;
+
+  if (checkMode) {
+    console.error(
+      `${DOCS_RULES_DIR}/${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION} is stale. run: npm run docs:rules`,
+    );
+    return 1;
+  }
+
+  await writeFile(indexPath, rendered);
+  return failed ? 1 : 0;
+}
+
 const entryPoint = process.argv[1];
 const isMain =
   entryPoint !== undefined &&
   import.meta.url === pathToFileURL(entryPoint).href;
 
 if (isMain) {
-  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const pagesDir = join(root, DOCS_RULES_DIR);
-  const pages = await readRuleDocsPages(pagesDir);
-  const problems = [
-    ...findRuleDocsParityProblems(
-      Object.keys(rules),
-      pages.map((page) => page.name),
-    ),
-    ...findRuleDocsHeadingProblems(
-      pages.filter((page) => page.name !== RULE_INDEX_PAGE),
-    ),
-  ];
-  if (problems.length > 0) {
-    for (const problem of problems) {
-      console.error(problem);
-    }
-    process.exit(1);
-  }
-
-  const indexPath = join(pagesDir, `${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION}`);
-  const current = await readFile(indexPath, 'utf8').catch(() => '');
-  const rendered = renderRuleIndex(toRuleIndexEntries(rules));
-  if (process.argv.includes('--check')) {
-    if (rendered !== current) {
-      console.error(
-        `${DOCS_RULES_DIR}/${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION} is stale. run: npm run docs:rules`,
-      );
-      process.exit(1);
-    }
-  } else if (rendered !== current) {
-    await writeFile(indexPath, rendered);
-  }
+  process.exit(await main());
 }
