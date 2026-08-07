@@ -17,6 +17,10 @@ pre-commit:
       glob: "{README.md,provider-versions.json}"
       run: npm run docs:versions:check
 
+    docs-rules-check:
+      glob: "{src/rules/**/*.ts,docs/rules/*.md}"
+      run: npm run docs:rules:check
+
     go-fmt-check:
       root: parser-go/
       glob: "*.go"

@@ -14,3 +14,7 @@ jobs:
   go_fast_checks:
     name: Go Fast Checks
     uses: ./.github/workflows/go_fast_checks.yml
+
+  docs_checks:
+    name: Docs Checks
+    uses: ./.github/workflows/docs_checks.yml
