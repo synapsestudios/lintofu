@@ -2,7 +2,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { rules } from '../src/rules/index.js';
-import type { LintofuRuleDocs } from '../src/rules/types.js';
+import { resolveRuleSeverity, type RuleWithDocs } from '../src/rules/types.js';
 
 const CORE_CATEGORY = 'core';
 
@@ -31,10 +31,6 @@ const TABLE_COLUMNS = [
   'Recommended',
   'Fixable',
 ];
-
-interface RuleWithDocs {
-  meta?: { docs?: LintofuRuleDocs; fixable?: 'code' | 'whitespace' };
-}
 
 export interface RuleIndexEntry {
   name: string;
@@ -68,15 +64,15 @@ export interface RuleSidebarGroup {
 export type RuleSidebarEntry = RuleSidebarLink | RuleSidebarGroup;
 
 export function toRuleIndexEntries(
-  rules: Record<string, RuleWithDocs>,
+  ruleMap: Record<string, RuleWithDocs>,
 ): RuleIndexEntry[] {
   const entries: RuleIndexEntry[] = [];
-  for (const [name, rule] of Object.entries(rules)) {
+  for (const [name, rule] of Object.entries(ruleMap)) {
     const docs = rule.meta?.docs;
     entries.push({
       name,
       description: docs?.description ?? '',
-      severity: docs?.severity ?? 'error',
+      severity: resolveRuleSeverity(docs),
       category: docs?.category ?? CORE_CATEGORY,
       recommended: docs?.recommended === true,
       fixable: rule.meta?.fixable !== undefined,
