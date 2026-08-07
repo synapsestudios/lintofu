@@ -42,7 +42,11 @@ jobs:
       - name: Build Docs Site
         run: npm run docs:build
 
+      # Gated on the same condition as the deploy job. The build above always
+      # runs so main stays verified, but nothing consumes this artifact while
+      # the repository is private, so producing it would just burn storage.
       - name: Upload Pages Artifact
+        if: github.event.repository.visibility == 'public'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: docs/.vitepress/dist

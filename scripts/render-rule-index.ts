@@ -265,12 +265,51 @@ async function readIndexIfPresent(path: string): Promise<string | undefined> {
   }
 }
 
+export interface IndexOutcomeInput {
+  rendered: string;
+  /** The index on disk, or `undefined` when it does not exist yet. */
+  current: string | undefined;
+  checkMode: boolean;
+  hasProblems: boolean;
+}
+
+export interface IndexOutcome {
+  write: boolean;
+  reportStale: boolean;
+  exitCode: 0 | 1;
+}
+
 /**
+ * Whether to write the index and what to exit with. Pure, so the rule that
+ * matters here is testable without touching the filesystem.
+ *
  * Validation and generation are deliberately independent. A parity problem
  * must not stop the write: `npm run docs:rules` is the fix the stale-index
  * message and the generated header both point at, so it has to regenerate in
- * exactly the situation that sends someone there. Problems still fail the run.
+ * exactly the situation that sends someone there. Problems still fail the run,
+ * and `--check` never writes.
  */
+export function decideIndexOutcome({
+  rendered,
+  current,
+  checkMode,
+  hasProblems,
+}: IndexOutcomeInput): IndexOutcome {
+  const stale = rendered !== current;
+  if (checkMode) {
+    return {
+      write: false,
+      reportStale: stale,
+      exitCode: stale || hasProblems ? 1 : 0,
+    };
+  }
+  return {
+    write: stale,
+    reportStale: false,
+    exitCode: hasProblems ? 1 : 0,
+  };
+}
+
 async function main(): Promise<number> {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const pagesDir = join(root, DOCS_RULES_DIR);
@@ -284,21 +323,24 @@ async function main(): Promise<number> {
   for (const problem of problems) {
     console.error(problem);
   }
-  const failed = problems.length > 0;
 
   const rendered = renderRuleIndex(entries);
-  const current = await readIndexIfPresent(indexPath);
-  if (rendered === current) return failed ? 1 : 0;
+  const outcome = decideIndexOutcome({
+    rendered,
+    current: await readIndexIfPresent(indexPath),
+    checkMode,
+    hasProblems: problems.length > 0,
+  });
 
-  if (checkMode) {
+  if (outcome.reportStale) {
     console.error(
       `${DOCS_RULES_DIR}/${RULE_INDEX_PAGE}${MARKDOWN_EXTENSION} is stale. run: npm run docs:rules`,
     );
-    return 1;
   }
-
-  await writeFile(indexPath, rendered);
-  return failed ? 1 : 0;
+  if (outcome.write) {
+    await writeFile(indexPath, rendered);
+  }
+  return outcome.exitCode;
 }
 
 const entryPoint = process.argv[1];

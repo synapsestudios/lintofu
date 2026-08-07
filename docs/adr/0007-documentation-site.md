@@ -44,20 +44,43 @@ so any link that breaks fails the build.
 category, recommended flag, and whether it autofixes. `npm run docs:rules`
 writes it; `npm run docs:rules:check` fails when it is stale.
 
-This extends ADR 0002's position from configuration to documentation. Severity
-in the index applies the same `docs.severity ?? 'error'` default both config
-builders apply, so the index cannot disagree with the severities the shipped
-configs assign.
+This extends ADR 0002's position from configuration to documentation.
 
-The same script enforces three invariants, each with its own message:
+Severity has a single owner: `resolveRuleSeverity` in `src/rules/types.ts`,
+which supplies the `'error'` default a rule omitting `meta.docs.severity`
+documents. Both generated config tiers and the generated rule index resolve
+severity through it, so the documented severity cannot disagree with the
+severity the shipped configs assign. That is an enforced invariant rather than a
+claim: the default exists in exactly one place, and a test asserts the index and
+`buildRecommendedRules` agree across the whole barrel. Writing the default out
+independently in each reader, which is what this replaced, made the invariant
+true only by coincidence.
+
+The same script enforces four invariants, each with its own message:
 
 - a rule with no docs page
 - a docs page with no matching rule
 - a page whose first-line heading disagrees with its filename
+- a rule with an empty `meta.docs.description`
 
-They run in both write mode and `--check` mode, because generating an index that
-links to a page that does not exist produces a dead link that fails the site
-build later, further from the cause.
+The description check has no sensible default to fall back on, unlike severity
+and category. A rule with no description renders a blank table cell while every
+gate stays green, which fails the "lists every rule with its description"
+requirement silently.
+
+All four run in both write mode and `--check` mode, because generating an index
+that links to a page that does not exist produces a dead link that fails the
+site build later, further from the cause.
+
+**Validation does not block generation.** A failing invariant reports on stderr
+and fails the run, but write mode still regenerates `docs/rules/index.md`.
+`npm run docs:rules` is the fix that both the stale-index message and the
+generated file's own header point at, so it has to work in exactly the situation
+that sends someone to it. An early exit on the first problem meant the
+documented fix silently did nothing whenever a rule was missing its docs page.
+`--check` never writes, and no path returns success while a problem exists; the
+decision is a pure function, `decideIndexOutcome`, so both halves of that rule
+are tested rather than asserted here.
 
 The fixable column is included even though the issue's acceptance list does not
 name it. The deleted README table carried hand-written "autofixable"
@@ -114,8 +137,10 @@ unnecessary: its job is to enable Pages and export a computed base path, and
 
 **Accepted:**
 
-- A rule that ships without a docs page fails CI, which it did not before.
+- A rule that ships without a docs page, or without a description, fails CI.
+  Neither did before.
 - The rule index cannot drift from rule metadata; the README table could and did.
+- The `'error'` severity default has one owner instead of one copy per reader.
 - The README shrinks to what an npm consumer needs and links out for the rest.
 - Adding a rule with its docs page puts it on the site with no hand edits.
 

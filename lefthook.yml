@@ -1,16 +1,21 @@
 pre-commit:
   parallel: true
   commands:
+    # lefthook's `**` needs at least one intervening directory, so a file
+    # sitting directly in scripts/ or docs/.vitepress/ needs its own pattern
+    # alongside the recursive one.
     typescript-typecheck:
-      glob: "src/**/*.ts"
+      glob: "{src/**/*.ts,scripts/*.ts,scripts/**/*.ts}"
       run: npm run typecheck
 
     typescript-lint:
-      glob: "src/**/*.ts"
+      glob: "{src/**/*.ts,scripts/*.ts,scripts/**/*.ts}"
       run: npm run lint:ci
 
+    # Wider than the other two: format:check also covers the vitepress config
+    # and the .mjs scripts, which typecheck and lint do not.
     typescript-format:
-      glob: "src/**/*.ts"
+      glob: "{src/**/*.ts,scripts/*.{mjs,ts},scripts/**/*.{mjs,ts},vitest.config.ts,docs/.vitepress/*.mts,docs/.vitepress/**/*.mts}"
       run: npm run format:check
 
     tested-versions-check:

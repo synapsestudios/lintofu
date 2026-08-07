@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { buildRecommendedRules } from '../src/configs/recommended.js';
-import { rules } from '../src/rules/index.js';
 import {
   buildRuleSidebar,
+  decideIndexOutcome,
   findRuleDescriptionProblems,
   findRuleDocsHeadingProblems,
   findRuleDocsParityProblems,
@@ -442,32 +441,94 @@ describe('findRuleDescriptionProblems', () => {
   });
 });
 
-describe('the shipped rule barrel', () => {
-  const entries = toRuleIndexEntries(rules);
+describe('decideIndexOutcome', () => {
+  const FRESH = { rendered: 'same', current: 'same' };
+  const STALE = { rendered: 'new', current: 'old' };
 
-  it('produces an entry for every rule', () => {
-    expect(entries).toHaveLength(Object.keys(rules).length);
-    expect(entries.length).toBeGreaterThan(0);
+  describe('write mode', () => {
+    it('writes a stale index and succeeds when there are no problems', () => {
+      expect(
+        decideIndexOutcome({ ...STALE, checkMode: false, hasProblems: false }),
+      ).toEqual({ write: true, reportStale: false, exitCode: 0 });
+    });
+
+    it('writes nothing and succeeds when the index is already fresh', () => {
+      expect(
+        decideIndexOutcome({ ...FRESH, checkMode: false, hasProblems: false }),
+      ).toEqual({ write: false, reportStale: false, exitCode: 0 });
+    });
+
+    // The regression `65dd8ba` fixed: the documented fix for a stale index
+    // has to regenerate in exactly the situation that sends you to it.
+    it('still writes a stale index when a problem is present, and fails', () => {
+      expect(
+        decideIndexOutcome({ ...STALE, checkMode: false, hasProblems: true }),
+      ).toEqual({ write: true, reportStale: false, exitCode: 1 });
+    });
+
+    it('fails on a problem even when the index is already fresh', () => {
+      expect(
+        decideIndexOutcome({ ...FRESH, checkMode: false, hasProblems: true }),
+      ).toEqual({ write: false, reportStale: false, exitCode: 1 });
+    });
+
+    it('writes a missing index, treating absent as stale', () => {
+      expect(
+        decideIndexOutcome({
+          rendered: 'new',
+          current: undefined,
+          checkMode: false,
+          hasProblems: false,
+        }),
+      ).toEqual({ write: true, reportStale: false, exitCode: 0 });
+    });
   });
 
-  it('gives every rule a non-empty description', () => {
-    expect(findRuleDescriptionProblems(entries)).toEqual([]);
+  describe('check mode', () => {
+    it('never writes, whatever the inputs', () => {
+      const inputs = [FRESH, STALE].flatMap((files) =>
+        [true, false].map((hasProblems) => ({
+          ...files,
+          checkMode: true,
+          hasProblems,
+        })),
+      );
+
+      expect(inputs.map((input) => decideIndexOutcome(input).write)).toEqual([
+        false,
+        false,
+        false,
+        false,
+      ]);
+    });
+
+    it('reports and fails on a stale index', () => {
+      expect(
+        decideIndexOutcome({ ...STALE, checkMode: true, hasProblems: false }),
+      ).toEqual({ write: false, reportStale: true, exitCode: 1 });
+    });
+
+    it('succeeds on a fresh index with no problems', () => {
+      expect(
+        decideIndexOutcome({ ...FRESH, checkMode: true, hasProblems: false }),
+      ).toEqual({ write: false, reportStale: false, exitCode: 0 });
+    });
+
+    it('fails on a problem even when the index is fresh', () => {
+      expect(
+        decideIndexOutcome({ ...FRESH, checkMode: true, hasProblems: true }),
+      ).toEqual({ write: false, reportStale: false, exitCode: 1 });
+    });
   });
 
-  it('gives every rule a severity of error or warn', () => {
-    const severities = new Set(entries.map((each) => each.severity));
+  it('never returns 0 while a problem is present', () => {
+    const outcomes = [FRESH, STALE].flatMap((files) =>
+      [true, false].map((checkMode) =>
+        decideIndexOutcome({ ...files, checkMode, hasProblems: true }),
+      ),
+    );
 
-    expect([...severities].sort()).toEqual(['error', 'warn']);
-  });
-
-  it('agrees with the severity the recommended config assigns', () => {
-    const configured = buildRecommendedRules(rules);
-
-    const disagreements = entries
-      .filter((each) => configured[`lintofu/${each.name}`] !== undefined)
-      .filter((each) => configured[`lintofu/${each.name}`] !== each.severity);
-
-    expect(disagreements).toEqual([]);
+    expect(outcomes.map((outcome) => outcome.exitCode)).toEqual([1, 1, 1, 1]);
   });
 });
 
