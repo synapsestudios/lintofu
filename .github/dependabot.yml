@@ -1,6 +1,38 @@
 version: 2
 updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: America/Phoenix
+    groups:
+      dev-dependencies:
+        applies-to: version-updates
+        dependency-type: development
+      dev-dependencies-security:
+        applies-to: security-updates
+        dependency-type: development
+
+  - package-ecosystem: gomod
+    directory: /parser-go
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: America/Phoenix
+    groups:
+      go-modules:
+        applies-to: version-updates
+        patterns:
+          - "*"
+      go-modules-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
+      time: "03:00"
+      timezone: America/Phoenix
