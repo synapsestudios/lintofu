@@ -28,6 +28,12 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # Two pull requests each adding a rule are green in isolation and leave
+      # the index stale once both land, so this has to run on main and not
+      # only on pull requests.
+      - name: Check Rule Index
+        run: npm run docs:rules:check
+
       # No actions/configure-pages step here. It calls the Pages API and fails
       # while Pages is not yet enabled on the repository, which would make
       # every push to main red for as long as the deploy gate below exists to

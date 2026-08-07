@@ -18,7 +18,7 @@ pre-commit:
       run: npm run docs:versions:check
 
     docs-rules-check:
-      glob: "{src/rules/**/*.ts,docs/rules/*.md}"
+      glob: "{src/rules/**/*.ts,docs/rules/*.md,scripts/render-rule-index.ts}"
       run: npm run docs:rules:check
 
     go-fmt-check:
