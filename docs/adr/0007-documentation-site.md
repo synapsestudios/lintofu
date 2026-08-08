@@ -109,29 +109,31 @@ markdown table and the sidebar, so the two cannot drift into different orders.
 Rules with no `category` default to `core`, matching the `src/rules/core/`
 directory and the config-tier vocabulary.
 
-### The deploy workflow is gated on repository visibility
+### The site deploys from a private repository, and is publicly visible
 
 `.github/workflows/docs.yml` runs on push to `main` with two jobs. `build`
-always runs and verifies the site still builds. `deploy` carries
-`if: github.event.repository.visibility == 'public'`.
+verifies the site still builds, enables Pages, and uploads the artifact.
+`deploy` publishes it. Neither is conditional.
 
 GitHub Pages published from a private repository on the team plan produces a
 **publicly visible** site. Access-controlled Pages requires Enterprise Cloud,
-which the organization does not have, so the site cannot go live until the
-repository is public.
+which the organization does not have. The documentation being world-readable
+while the source repository stays private is an accepted consequence, decided
+deliberately rather than inherited: the docs describe rules whose content is
+intended to be public under #124 anyway, and waiting for the repository to flip
+would leave the site dark for no benefit.
 
-The gate is a condition rather than a follow-up pull request because a condition
-is self-activating: the deploy happens on the first push to `main` after the
-repository goes public, with nobody needing to remember. Meanwhile `main` stays
-green, which a workflow that failed on every push until an unrelated issue
-closed would not.
+An earlier revision gated both the artifact upload and the `deploy` job on
+`if: github.event.repository.visibility == 'public'`, so the site would
+self-activate once #128 and #129 landed. That gate is gone. It existed only to
+avoid publishing early, and publishing early is now the intent.
 
-`actions/configure-pages` is deliberately absent from the `build` job. It calls
-the Pages API and fails while Pages is not yet enabled on the repository, which
-is the current state, so putting it in the always-running job would produce
-exactly the red `main` the visibility gate exists to avoid. It is also
-unnecessary: its job is to enable Pages and export a computed base path, and
-`base` is hardcoded to `/lintofu/` in the VitePress config.
+`actions/configure-pages` runs with `enablement: true`, which turns Pages on if
+it is off. This is what lets the workflow deploy without an out-of-band change
+to repository settings, and it is the only reason the step is present: the base
+path it exports is unused, because `base` is hardcoded to `/lintofu/` in the
+VitePress config. `pages: write` is scoped to the `build` job for the same
+reason rather than raised to the top level.
 
 ## Consequences
 
@@ -153,9 +155,12 @@ unnecessary: its job is to enable Pages and export a computed base path, and
 - Regenerating the index rewrites close to all 46 descriptions, replacing
   hand-reworded table prose with `meta.docs.description` verbatim. A large diff,
   and the point of the change.
-- The site URL 404s until the repository is public. The README carries both the
-  site link and the in-repo `./docs/rules/index.md` path so it stays useful in
-  the interim.
+- The site is publicly readable while the repository is private. Anything added
+  under `docs/` is published on the next push to `main`, so it is not a place
+  for anything the repository's privacy is protecting.
+- The README carries both the site link and the in-repo `./docs/rules/index.md`
+  path. Kept after the site went live, because the in-repo path is what resolves
+  when reading the README from the npm tarball.
 - The user guide and the README overlap on install and usage. They are kept as
   different documents: the README is the quickstart, the user guide is the full
   configuration reference.

@@ -7,7 +7,7 @@ An ESLint plugin for linting [OpenTofu](https://opentofu.org) configurations.
 
 Pre-1.0. API and rule set may change. Published to GitHub Packages under the `@synapsestudios` scope while it's being tested internally; a move to the public npm registry will follow.
 
-**Documentation:** [synapsestudios.github.io/lintofu](https://synapsestudios.github.io/lintofu/) covers the user guide, the developer guide, and the full rule index. The site publishes once this repository is public; until then the same pages are in [`docs/`](./docs).
+**Documentation:** [synapsestudios.github.io/lintofu](https://synapsestudios.github.io/lintofu/) covers the user guide, the developer guide, and the full rule index. The same pages are in [`docs/`](./docs), which is what resolves when reading this file from the npm tarball.
 
 ## What it is
 
