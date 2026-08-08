@@ -112,8 +112,8 @@ directory and the config-tier vocabulary.
 ### The site deploys from a private repository, and is publicly visible
 
 `.github/workflows/docs.yml` runs on push to `main` with two jobs. `build`
-verifies the site still builds, enables Pages, and uploads the artifact.
-`deploy` publishes it. Neither is conditional.
+verifies the site still builds and uploads the artifact; `deploy` publishes it.
+Neither is conditional.
 
 GitHub Pages published from a private repository on the team plan produces a
 **publicly visible** site. Access-controlled Pages requires Enterprise Cloud,
@@ -122,18 +122,6 @@ while the source repository stays private is an accepted consequence, decided
 deliberately rather than inherited: the docs describe rules whose content is
 intended to be public under #124 anyway, and waiting for the repository to flip
 would leave the site dark for no benefit.
-
-An earlier revision gated both the artifact upload and the `deploy` job on
-`if: github.event.repository.visibility == 'public'`, so the site would
-self-activate once #128 and #129 landed. That gate is gone. It existed only to
-avoid publishing early, and publishing early is now the intent.
-
-`actions/configure-pages` runs with `enablement: true`, which turns Pages on if
-it is off. This is what lets the workflow deploy without an out-of-band change
-to repository settings, and it is the only reason the step is present: the base
-path it exports is unused, because `base` is hardcoded to `/lintofu/` in the
-VitePress config. `pages: write` is scoped to the `build` job for the same
-reason rather than raised to the top level.
 
 ## Consequences
 
