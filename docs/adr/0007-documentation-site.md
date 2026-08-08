@@ -112,8 +112,8 @@ directory and the config-tier vocabulary.
 ### The site deploys from a private repository, and is publicly visible
 
 `.github/workflows/docs.yml` runs on push to `main` with two jobs. `build`
-verifies the site still builds, enables Pages, and uploads the artifact.
-`deploy` publishes it. Neither is conditional.
+verifies the site still builds and uploads the artifact; `deploy` publishes it.
+Neither is conditional.
 
 GitHub Pages published from a private repository on the team plan produces a
 **publicly visible** site. Access-controlled Pages requires Enterprise Cloud,
@@ -122,25 +122,6 @@ while the source repository stays private is an accepted consequence, decided
 deliberately rather than inherited: the docs describe rules whose content is
 intended to be public under #124 anyway, and waiting for the repository to flip
 would leave the site dark for no benefit.
-
-An earlier revision gated both the artifact upload and the `deploy` job on
-`if: github.event.repository.visibility == 'public'`, so the site would
-self-activate once #128 and #129 landed. That gate is gone. It existed only to
-avoid publishing early, and publishing early is now the intent.
-
-`actions/configure-pages` is absent from the workflow. Its two jobs are enabling
-Pages and exporting a computed base path. Neither is wanted here: `base` is
-hardcoded to `/lintofu/` in the VitePress config, and enabling Pages turned out
-to be something the workflow cannot do. `enablement: true` was tried first, on
-the theory that keeping the change self-contained in a pull request was worth a
-step; it fails with `Resource not accessible by integration`, because creating a
-Pages site needs repository admin and `GITHUB_TOKEN` does not have it even when
-granted `pages: write`.
-
-Pages was therefore enabled once, out of band, with `build_type: workflow`. That
-is a one-time repository setting, not a recurring cost, and it is the reason the
-`build` job needs no `pages: write` and the workflow carries no Pages API call
-at all. `deploy-pages` in the `deploy` job is sufficient on its own.
 
 ## Consequences
 
