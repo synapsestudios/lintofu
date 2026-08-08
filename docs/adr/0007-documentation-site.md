@@ -128,12 +128,19 @@ An earlier revision gated both the artifact upload and the `deploy` job on
 self-activate once #128 and #129 landed. That gate is gone. It existed only to
 avoid publishing early, and publishing early is now the intent.
 
-`actions/configure-pages` runs with `enablement: true`, which turns Pages on if
-it is off. This is what lets the workflow deploy without an out-of-band change
-to repository settings, and it is the only reason the step is present: the base
-path it exports is unused, because `base` is hardcoded to `/lintofu/` in the
-VitePress config. `pages: write` is scoped to the `build` job for the same
-reason rather than raised to the top level.
+`actions/configure-pages` is absent from the workflow. Its two jobs are enabling
+Pages and exporting a computed base path. Neither is wanted here: `base` is
+hardcoded to `/lintofu/` in the VitePress config, and enabling Pages turned out
+to be something the workflow cannot do. `enablement: true` was tried first, on
+the theory that keeping the change self-contained in a pull request was worth a
+step; it fails with `Resource not accessible by integration`, because creating a
+Pages site needs repository admin and `GITHUB_TOKEN` does not have it even when
+granted `pages: write`.
+
+Pages was therefore enabled once, out of band, with `build_type: workflow`. That
+is a one-time repository setting, not a recurring cost, and it is the reason the
+`build` job needs no `pages: write` and the workflow carries no Pages API call
+at all. `deploy-pages` in the `deploy` job is sufficient on its own.
 
 ## Consequences
 

@@ -15,11 +15,6 @@ jobs:
   build:
     name: Build Site
     runs-on: ubuntu-latest
-    # `pages: write` is needed only by the Configure Pages step's `enablement`
-    # input. Scoped to this job rather than raised to the top level.
-    permissions:
-      contents: read
-      pages: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -42,15 +37,11 @@ jobs:
       - name: Build Docs Site
         run: npm run docs:build
 
-      # `enablement: true` turns Pages on if it is off, so the deploy needs no
-      # out-of-band repository settings change. `base` is hardcoded in
-      # docs/.vitepress/config.mts, so the base path this exports is unused;
-      # enablement is the only reason the step is here.
-      - name: Configure Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
-        with:
-          enablement: true
-
+      # No actions/configure-pages step. Its two jobs are enabling Pages and
+      # exporting a computed base path. Enabling it needs repository admin,
+      # which GITHUB_TOKEN does not have even with `pages: write`, and `base`
+      # is hardcoded in docs/.vitepress/config.mts. Pages is already enabled
+      # with the "GitHub Actions" source, so deploy-pages needs nothing else.
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
