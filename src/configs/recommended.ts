@@ -1,8 +1,4 @@
-import type { LintofuRuleDocs } from '../rules/types.js';
-
-interface RuleWithDocs {
-  meta?: { docs?: LintofuRuleDocs };
-}
+import { resolveRuleSeverity, type RuleWithDocs } from '../rules/types.js';
 
 export function buildRecommendedRules(
   rules: Record<string, RuleWithDocs>,
@@ -11,7 +7,7 @@ export function buildRecommendedRules(
   for (const [name, rule] of Object.entries(rules)) {
     const docs = rule.meta?.docs;
     if (docs?.recommended === true) {
-      out[`lintofu/${name}`] = docs.severity ?? 'error';
+      out[`lintofu/${name}`] = resolveRuleSeverity(docs);
     }
   }
   return out;

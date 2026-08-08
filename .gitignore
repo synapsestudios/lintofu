@@ -7,5 +7,10 @@ coverage/
 # and committed. lintofu-parser.wasm is produced by scripts/build-wasm.sh.
 src/parser/lintofu-parser.wasm
 
+# vitepress build output and cache. docs/rules/index.md is generated but
+# committed; everything under docs/.vitepress/ below is not.
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
 *.log
 .DS_Store

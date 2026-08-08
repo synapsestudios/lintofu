@@ -1,0 +1,71 @@
+name: Docs Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Two pull requests each adding a rule are green in isolation and leave
+      # the index stale once both land, so this has to run on main and not
+      # only on pull requests.
+      - name: Check Rule Index
+        run: npm run docs:rules:check
+
+      # No actions/configure-pages step here. It calls the Pages API and fails
+      # while Pages is not yet enabled on the repository, which would make
+      # every push to main red for as long as the deploy gate below exists to
+      # prevent. `base` is hardcoded in docs/.vitepress/config.mts, so the base
+      # path it would compute is not needed either.
+      - name: Build Docs Site
+        run: npm run docs:build
+
+      # Gated on the same condition as the deploy job. The build above always
+      # runs so main stays verified, but nothing consumes this artifact while
+      # the repository is private, so producing it would just burn storage.
+      - name: Upload Pages Artifact
+        if: github.event.repository.visibility == 'public'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/.vitepress/dist
+
+  # Self-activating: the repository is private today, and GitHub Pages on a
+  # private repository publishes a publicly visible site. This deploys itself
+  # the first time main is pushed after the repository goes public (#128/#129).
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
