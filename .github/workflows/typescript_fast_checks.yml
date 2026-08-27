@@ -41,24 +41,26 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # Ahead of the group: build and pretest both write this file.
       - name: Build Parser WASM
         if: steps.wasm-cache.outputs.cache-hit != 'true'
         run: npm run build:wasm
 
-      - name: Check Formatting
-        run: npm run format:check
+      - parallel:
+          - name: Check Formatting
+            run: npm run format:check
 
-      - name: Check Tested Versions
-        run: npm run docs:versions:check
+          - name: Check Tested Versions
+            run: npm run docs:versions:check
 
-      - name: Check Linting
-        run: npm run lint:ci
+          - name: Check Linting
+            run: npm run lint:ci
 
-      - name: Check Types
-        run: npm run typecheck
+          - name: Check Types
+            run: npm run typecheck
 
-      - name: Build
-        run: npm run build:js && npm run build:assets
+          - name: Build
+            run: npm run build:js && npm run build:assets
 
-      - name: Run Unit Tests
-        run: npm run test:ci
+          - name: Run Unit Tests
+            run: npm run test:ci
