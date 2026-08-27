@@ -23,8 +23,6 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      # go.mod pins only the go minor, so a patch bump can hide behind a hit.
-      # Bump the v1 prefix to force a rebuild.
       - name: Cache Parser WASM
         id: wasm-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
