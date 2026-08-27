@@ -60,22 +60,22 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-eslint-plugin": "^7.6.1",
+    "eslint-plugin-eslint-plugin": "^7.6.2",
     "eslint-plugin-jsdoc": "^63.3.3",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-security": "^4.0.1",
     "eslint-plugin-tsdoc": "^0.5.2",
-    "globals": "^17.9.0",
+    "globals": "^17.11.0",
     "lefthook": "^2.1.10",
     "prettier": "^3.9.6",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "tsx": "^4.23.11",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0",
+    "typescript-eslint": "^8.67.0",
     "vitepress": "^1.6.4",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "keywords": [
     "eslint",
