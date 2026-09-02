@@ -51,6 +51,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/no-hardcoded-provider-credentials': 'error',
       'lintofu/no-deprecated-lambda-runtime': 'warn',
       'lintofu/acm-certificate-create-before-destroy-required': 'warn',
+      'lintofu/access-rule-country-block-requires-enterprise': 'error',
     });
   });
 });

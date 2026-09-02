@@ -57,3 +57,9 @@
 | [`no-pinned-minor-with-auto-upgrade`](./no-pinned-minor-with-auto-upgrade.md) | Flag AWS engine resources that pin `engine_version` deeper than an enabled `auto_minor_version_upgrade` will hold stable, which drifts on every plan. | warn | aws | ✔ |  |
 | [`no-s3-bucket-inline-config`](./no-s3-bucket-inline-config.md) | Flag deprecated inline configuration on `aws_s3_bucket`; use the dedicated standalone `aws_s3_bucket_*` resources instead. | warn | aws | ✔ |  |
 | [`no-s3-bucket-object`](./no-s3-bucket-object.md) | Flag the deprecated `aws_s3_bucket_object` resource and data source and the `aws_s3_bucket_objects` data source; use `aws_s3_object` and `aws_s3_objects` instead. | warn | aws | ✔ |  |
+
+## cloudflare
+
+| Rule | Description | Severity | Category | Recommended | Fixable |
+| --- | --- | --- | --- | --- | --- |
+| [`access-rule-country-block-requires-enterprise`](./access-rule-country-block-requires-enterprise.md) | Flag a `cloudflare_access_rule` that blocks by country while `settings.lintofu.cloudflare.plan` is below Enterprise, the only plan Cloudflare allows it on. | error | cloudflare | ✔ |  |

@@ -1,3 +1,4 @@
+import type { SettingsConfig } from '@eslint/core';
 import type {
   Attribute,
   Block,
@@ -188,4 +189,16 @@ export function requiredProviderEntries(
     out.push({ name, value: item.valueExpr });
   }
   return out;
+}
+
+export function objectSetting(value: unknown): Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+export function lintofuSettings(
+  settings: SettingsConfig,
+): Record<string, unknown> {
+  return objectSetting(settings.lintofu);
 }

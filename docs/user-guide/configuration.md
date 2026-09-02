@@ -2,15 +2,16 @@
 
 ## Config tiers
 
-`lintofu` ships two ready-made configs. Both are **generated from rule
+`lintofu` ships three ready-made configs. All are **generated from rule
 metadata** rather than hand-maintained, so a rule cannot drift out of the tier
 it declares
 ([ADR 0002](https://github.com/synapsestudios/lintofu/blob/main/docs/adr/0002-config-tiers-from-rule-metadata.md)).
 
-| Config                          | Contents                                                                          |
-| ------------------------------- | --------------------------------------------------------------------------------- |
-| `lintofu.configs.recommended`   | Every rule whose metadata sets `recommended: true`, at its declared severity.      |
-| `lintofu.configs['aws/recommended']` | The subset of those whose `category` is `aws`.                               |
+| Config                                      | Contents                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------- |
+| `lintofu.configs.recommended`               | Every rule whose metadata sets `recommended: true`, at its declared severity. |
+| `lintofu.configs['aws/recommended']`        | The subset of those whose `category` is `aws`.                                |
+| `lintofu.configs['cloudflare/recommended']` | The subset of those whose `category` is `cloudflare`.                         |
 
 Each config is a complete flat-config object. It carries its own
 `files: ['**/*.tf', '**/*.tofu']`, its own `language: 'lintofu/opentofu'`, and
@@ -27,17 +28,20 @@ A rule's severity comes from its own `meta.docs.severity` and defaults to
 `error` when the rule does not declare one. The [rule index](../rules/index.md) shows the
 severity each rule carries.
 
-### AWS rules only
+### One provider only
 
-If your configuration is AWS-only and you would rather not pull in rules for
-providers you do not use, take the narrower tier instead. It covers the same
-files:
+If your configuration uses a single provider and you would rather not pull in
+rules for providers you do not use, take the narrower tier instead. It covers
+the same files:
 
 ```js
 import lintofu from '@synapsestudios/lintofu';
 
 export default [lintofu.configs['aws/recommended']];
 ```
+
+`lintofu.configs['cloudflare/recommended']` works the same way. The Cloudflare
+rules also read a plan setting, covered under [Cloudflare](#cloudflare) below.
 
 ## Wiring it up by hand
 
@@ -74,7 +78,8 @@ the usual cause of "no rules ran":
 ## Tuning individual rules
 
 No `lintofu` rule takes options today; every rule's `meta.schema` is empty. That
-leaves severity as the tuning knob.
+leaves severity as the tuning knob, plus the shared settings a provider ruleset
+reads (see [Cloudflare](#cloudflare)).
 
 Start from a tier and adjust on top of it. Later entries win, so a second
 config object overrides what the tier set:
@@ -125,6 +130,46 @@ variable "internal_toggle" {
   type = bool
 }
 ```
+
+## Cloudflare
+
+Some Cloudflare features are gated by the account's plan, and the Cloudflare
+provider does not check entitlements at plan time. A configuration that uses a
+paywalled feature plans clean and fails at apply. The `cloudflare` rules report
+those cases during linting, once they know which plan the account is on.
+
+Declare the plan in ESLint shared settings under `lintofu.cloudflare.plan`:
+
+```js
+import lintofu from '@synapsestudios/lintofu';
+
+export default [
+  lintofu.configs['cloudflare/recommended'],
+  {
+    files: ['**/*.tf', '**/*.tofu'],
+    settings: { lintofu: { cloudflare: { plan: 'pro' } } },
+  },
+];
+```
+
+Accepted values are `free`, `pro`, `business`, and `enterprise`.
+
+The plan is a shared setting rather than a rule option because it describes the
+account. Every plan-gated rule reads the same value, so you declare it once.
+
+Two behaviors follow from the setting:
+
+- **No plan set.** Rules that depend on the plan report nothing. The tier is
+  otherwise silent until you add the setting, so a `cloudflare/recommended`
+  config with no `settings.lintofu.cloudflare.plan` is a common reason for
+  "the rule never fires".
+- **Any other value.** Each plan-gated rule reports one error at the top of
+  every linted file naming the unrecognized value, and skips its own check for
+  that file, since it cannot judge entitlement on a plan it does not know.
+
+Rules that read the plan today:
+
+- [`access-rule-country-block-requires-enterprise`](../rules/access-rule-country-block-requires-enterprise.md)
 
 ## Ignoring files
 

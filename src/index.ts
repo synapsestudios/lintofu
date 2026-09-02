@@ -10,10 +10,39 @@ import { rules } from './rules/index.js';
 // uses dynamic import which awaits TLA, so consumers don't see the boot.
 await initialize();
 
+const TOFU_FILES = ['**/*.tf', '**/*.tofu'];
+
+const PROVIDER_CATEGORIES = ['aws', 'cloudflare'] as const;
+
+type ProviderCategory = (typeof PROVIDER_CATEGORIES)[number];
+
+interface TierConfig {
+  plugins: Record<string, Plugin>;
+  files: string[];
+  language: string;
+  rules: Record<string, 'error' | 'warn'>;
+}
+
+function tierConfig(tierRules: Record<string, 'error' | 'warn'>): TierConfig {
+  return {
+    plugins: {},
+    files: TOFU_FILES,
+    language: 'lintofu/opentofu',
+    rules: tierRules,
+  };
+}
+
+const providerConfigs = Object.fromEntries(
+  PROVIDER_CATEGORIES.map((category) => [
+    `${category}/recommended`,
+    tierConfig(buildCategoryRecommendedRules(rules, category)),
+  ]),
+) as Record<`${ProviderCategory}/recommended`, TierConfig>;
+
 /**
  * the lintofu eslint plugin: `meta`, the `lintofu/opentofu` language,
  * every bundled rule, and the generated `recommended` and
- * `aws/recommended` configs.
+ * `<provider>/recommended` configs.
  */
 const plugin = {
   /** plugin name and version eslint reports. */
@@ -36,27 +65,19 @@ const plugin = {
      * (error when the rule omits one). preconfigured for `.tf` and
      * `.tofu` files.
      */
-    recommended: {
-      plugins: {} as Record<string, Plugin>,
-      files: ['**/*.tf', '**/*.tofu'],
-      language: 'lintofu/opentofu',
-      rules: buildRecommendedRules(rules),
-    },
+    recommended: tierConfig(buildRecommendedRules(rules)),
     /**
-     * the recommended rules whose category is `aws`. same file coverage
-     * as `recommended`.
+     * one `<provider>/recommended` config per provider category, holding
+     * the recommended rules of that category. same file coverage as
+     * `recommended`.
      */
-    'aws/recommended': {
-      plugins: {} as Record<string, Plugin>,
-      files: ['**/*.tf', '**/*.tofu'],
-      language: 'lintofu/opentofu',
-      rules: buildCategoryRecommendedRules(rules, 'aws'),
-    },
+    ...providerConfigs,
   },
 };
 
-plugin.configs.recommended.plugins = { lintofu: plugin };
-plugin.configs['aws/recommended'].plugins = { lintofu: plugin };
+for (const config of Object.values(plugin.configs)) {
+  config.plugins = { lintofu: plugin };
+}
 
 export default plugin;
 export { OpenTofuLanguage } from './language.js';
