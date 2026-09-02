@@ -14,6 +14,7 @@ import noMixedSecurityGroupRuleForms from './aws/no-mixed-security-group-rule-fo
 import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrade.js';
 import noS3BucketInlineConfig from './aws/no-s3-bucket-inline-config.js';
 import noS3BucketObject from './aws/no-s3-bucket-object.js';
+import accessRuleCountryBlockRequiresEnterprise from './cloudflare/access-rule-country-block-requires-enterprise.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
@@ -94,4 +95,6 @@ export const rules = {
   'no-deprecated-lambda-runtime': noDeprecatedLambdaRuntime,
   'acm-certificate-create-before-destroy-required':
     acmCertificateCreateBeforeDestroyRequired,
+  'access-rule-country-block-requires-enterprise':
+    accessRuleCountryBlockRequiresEnterprise,
 };

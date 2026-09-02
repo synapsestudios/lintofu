@@ -24,3 +24,11 @@ describe('aws/recommended config, derived from real rule metadata', () => {
     });
   });
 });
+
+describe('cloudflare/recommended config, derived from real rule metadata', () => {
+  it('includes every current cloudflare rule with the expected severity', () => {
+    expect(buildCategoryRecommendedRules(rules, 'cloudflare')).toEqual({
+      'lintofu/access-rule-country-block-requires-enterprise': 'error',
+    });
+  });
+});
