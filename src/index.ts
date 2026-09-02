@@ -12,12 +12,10 @@ await initialize();
 
 const TOFU_FILES = ['**/*.tf', '**/*.tofu'];
 
-/** provider categories that get a generated `<category>/recommended` config. */
 const PROVIDER_CATEGORIES = ['aws', 'cloudflare'] as const;
 
 type ProviderCategory = (typeof PROVIDER_CATEGORIES)[number];
 
-/** one generated config tier, preconfigured for `.tf` and `.tofu` files. */
 interface TierConfig {
   plugins: Record<string, Plugin>;
   files: string[];
