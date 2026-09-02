@@ -77,9 +77,56 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ['**/rules/aws/**', '../aws/*', '../aws/**'],
+              group: [
+                '**/rules/aws/**',
+                '../aws/*',
+                '../aws/**',
+                '**/rules/cloudflare/**',
+                '../cloudflare/*',
+                '../cloudflare/**',
+              ],
               message:
                 'core rules must not import provider utilities; move a provider-agnostic helper to core/utils.ts instead',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  {
+    files: ['src/rules/aws/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '**/rules/cloudflare/**',
+                '../cloudflare/*',
+                '../cloudflare/**',
+              ],
+              message:
+                'a provider module must not import another provider; move a shared helper to core/utils.ts instead',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  {
+    files: ['src/rules/cloudflare/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/rules/aws/**', '../aws/*', '../aws/**'],
+              message:
+                'a provider module must not import another provider; move a shared helper to core/utils.ts instead',
             },
           ],
         },
