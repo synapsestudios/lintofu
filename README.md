@@ -68,6 +68,7 @@ These statuses are policy commitments, not CI results: no workflow runs real Ope
 Provider-specific rules are validated against these versions. [`provider-versions.json`](./provider-versions.json) is the source of truth; edit it and run `npm run docs:versions` to update this section. CI fails if the two drift.
 
 - aws provider v6.42.0
+- cloudflare provider v5.24.0
 
 <!-- lintofu:tested-versions:end -->
 

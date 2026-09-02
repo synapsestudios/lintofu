@@ -19,7 +19,7 @@ export default [
 ];
 ```
 
-When no plan is set the rule reports nothing, because it cannot know whether the account is entitled. The [configuration guide](../user-guide/configuration.md#cloudflare) covers the setting in full.
+When no plan is set the rule reports nothing, because it cannot know whether the account is entitled. A value outside the accepted four reports one error at the top of each linted file naming the value, and the country-block check is skipped for that file. The [configuration guide](../user-guide/configuration.md#cloudflare) covers the setting in full.
 
 ## What it flags
 
