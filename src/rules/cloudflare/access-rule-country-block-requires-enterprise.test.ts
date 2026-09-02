@@ -94,6 +94,28 @@ tester.run('access-rule-country-block-requires-enterprise', rule, {
     reportsOn('pro'),
     reportsOn('free'),
     {
+      code: 'locals {}',
+      settings: onPlan('buisness'),
+      errors: [
+        {
+          messageId: 'invalidPlan',
+          data: { value: 'buisness' },
+          line: 1,
+          column: 1,
+        },
+      ],
+    },
+    {
+      code: countryBlock,
+      settings: onPlan('buisness'),
+      errors: [{ messageId: 'invalidPlan', data: { value: 'buisness' } }],
+    },
+    {
+      code: 'locals {}\n\nlocals {}',
+      settings: onPlan(3),
+      errors: [{ messageId: 'invalidPlan', data: { value: '3' }, line: 1 }],
+    },
+    {
       code: `${accessRule('"block"', '"country"')}\n\n${countryBlock}`,
       settings: onPlan('pro'),
       errors: [

@@ -8,7 +8,7 @@ const v6RemovalRules = [
   'no-api-gateway-deployment-stage-args',
 ] as const;
 
-const knownAppliesToKeys = ['aws', 'opentofu', 'terraform'];
+const knownAppliesToKeys = ['aws', 'cloudflare', 'opentofu', 'terraform'];
 
 describe('appliesTo rule metadata', () => {
   it('declares appliesTo on aws v6 removal rules', () => {
@@ -23,6 +23,13 @@ describe('appliesTo rule metadata', () => {
     expect(
       rules['no-db-instance-name-attribute'].meta?.docs?.appliesTo,
     ).toEqual({ aws: '>=5.0.0' });
+  });
+
+  it('declares appliesTo on the cloudflare v5 attribute-form rule', () => {
+    expect(
+      rules['access-rule-country-block-requires-enterprise'].meta?.docs
+        ?.appliesTo,
+    ).toEqual({ cloudflare: '>=5.0.0' });
   });
 
   it('keeps appliesTo entries in the adr 0005 vocabulary', () => {

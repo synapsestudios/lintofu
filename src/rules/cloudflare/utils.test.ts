@@ -27,6 +27,30 @@ describe('readCloudflarePlan', () => {
   it('is unset when the lintofu namespace is not an object', () => {
     expect(readCloudflarePlan({ lintofu: 'pro' })).toEqual({ state: 'unset' });
   });
+
+  it('is invalid when the plan is a string outside the accepted values', () => {
+    expect(
+      readCloudflarePlan({ lintofu: { cloudflare: { plan: 'buisness' } } }),
+    ).toEqual({ state: 'invalid', value: 'buisness' });
+  });
+
+  it('is invalid when the plan is an empty string', () => {
+    expect(
+      readCloudflarePlan({ lintofu: { cloudflare: { plan: '' } } }),
+    ).toEqual({ state: 'invalid', value: '' });
+  });
+
+  it('is invalid when the plan is not a string, reporting its text form', () => {
+    expect(
+      readCloudflarePlan({ lintofu: { cloudflare: { plan: 3 } } }),
+    ).toEqual({ state: 'invalid', value: '3' });
+  });
+
+  it('is invalid when the plan is null', () => {
+    expect(
+      readCloudflarePlan({ lintofu: { cloudflare: { plan: null } } }),
+    ).toEqual({ state: 'invalid', value: 'null' });
+  });
 });
 
 describe('entitlesCountryBlock', () => {

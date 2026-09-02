@@ -29,7 +29,7 @@ function blocksByCountry(block: Block): boolean {
 }
 
 const rule: OpenTofuRuleDefinition<{
-  MessageIds: 'countryBlockRequiresEnterprise';
+  MessageIds: 'countryBlockRequiresEnterprise' | 'invalidPlan';
 }> = {
   meta: {
     type: 'problem',
@@ -39,16 +39,31 @@ const rule: OpenTofuRuleDefinition<{
       recommended: true,
       severity: 'error',
       category: 'cloudflare',
+      appliesTo: { cloudflare: '>=5.0.0' },
     },
     messages: {
       countryBlockRequiresEnterprise:
         'Blocking by country in a Cloudflare IP Access rule requires the Enterprise plan. The configured plan is "{{plan}}", so this resource fails at apply.',
+      invalidPlan:
+        'Unrecognized Cloudflare plan "{{value}}" in `settings.lintofu.cloudflare.plan`. Accepted values are `free`, `pro`, `business`, and `enterprise`.',
     },
     schema: [],
   },
   create(context) {
     const setting = readCloudflarePlan(context.settings);
-    if (setting.state !== 'valid' || entitlesCountryBlock(setting.plan)) {
+    if (setting.state === 'invalid') {
+      return {
+        Body(node) {
+          if (node !== context.sourceCode.ast) return;
+          context.report({
+            node,
+            messageId: 'invalidPlan',
+            data: { value: setting.value },
+          });
+        },
+      };
+    }
+    if (setting.state === 'unset' || entitlesCountryBlock(setting.plan)) {
       return {};
     }
     return {
