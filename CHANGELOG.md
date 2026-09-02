@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/synapsestudios/lintofu/compare/v0.7.0...v0.8.0) (2026-09-02)
+
+
+### Features
+
+* add the cloudflare ruleset with a country block plan check ([#204](https://github.com/synapsestudios/lintofu/issues/204)) ([3b48579](https://github.com/synapsestudios/lintofu/commit/3b48579232b2d5512e1559499661b9093fb21632))
+
 ## [0.7.0](https://github.com/synapsestudios/lintofu/compare/v0.6.0...v0.7.0) (2026-07-19)
 
 
