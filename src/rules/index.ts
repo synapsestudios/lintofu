@@ -15,6 +15,7 @@ import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrad
 import noS3BucketInlineConfig from './aws/no-s3-bucket-inline-config.js';
 import noS3BucketObject from './aws/no-s3-bucket-object.js';
 import accessRuleCountryBlockRequiresEnterprise from './cloudflare/access-rule-country-block-requires-enterprise.js';
+import rulesetRequiresManagedByDescription from './cloudflare/ruleset-requires-managed-by-description.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
 import moduleSourcePinned from './core/module-source-pinned.js';
@@ -97,4 +98,6 @@ export const rules = {
     acmCertificateCreateBeforeDestroyRequired,
   'access-rule-country-block-requires-enterprise':
     accessRuleCountryBlockRequiresEnterprise,
+  'ruleset-requires-managed-by-description':
+    rulesetRequiresManagedByDescription,
 };

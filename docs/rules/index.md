@@ -63,3 +63,4 @@
 | Rule | Description | Severity | Category | Recommended | Fixable |
 | --- | --- | --- | --- | --- | --- |
 | [`access-rule-country-block-requires-enterprise`](./access-rule-country-block-requires-enterprise.md) | Flag a `cloudflare_access_rule` that blocks by country while `settings.lintofu.cloudflare.plan` is below Enterprise, the only plan Cloudflare allows it on. | error | cloudflare | ✔ |  |
+| [`ruleset-requires-managed-by-description`](./ruleset-requires-managed-by-description.md) | Require a `cloudflare_ruleset` to set its top-level `description` to the configured marker, so the ruleset shows it is managed by Terraform. | warn | cloudflare | ✔ |  |
