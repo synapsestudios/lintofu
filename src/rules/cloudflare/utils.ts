@@ -44,3 +44,7 @@ export function readCloudflarePlan(settings: SettingsConfig): PlanSetting {
 export function entitlesCountryBlock(plan: CloudflarePlan): boolean {
   return plan === 'enterprise';
 }
+
+export function entitlesDnsRecordTags(plan: CloudflarePlan): boolean {
+  return plan !== 'free';
+}

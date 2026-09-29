@@ -53,6 +53,7 @@ describe('recommended config, derived from real rule metadata', () => {
       'lintofu/acm-certificate-create-before-destroy-required': 'warn',
       'lintofu/access-rule-country-block-requires-enterprise': 'error',
       'lintofu/ruleset-requires-managed-by-description': 'warn',
+      'lintofu/dns-record-requires-managed-by-annotation': 'warn',
     });
   });
 });

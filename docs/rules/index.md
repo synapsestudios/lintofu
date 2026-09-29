@@ -63,4 +63,5 @@
 | Rule | Description | Severity | Category | Recommended | Fixable |
 | --- | --- | --- | --- | --- | --- |
 | [`access-rule-country-block-requires-enterprise`](./access-rule-country-block-requires-enterprise.md) | Flag a `cloudflare_access_rule` that blocks by country while `settings.lintofu.cloudflare.plan` is below Enterprise, the only plan Cloudflare allows it on. | error | cloudflare | ✔ |  |
+| [`dns-record-requires-managed-by-annotation`](./dns-record-requires-managed-by-annotation.md) | Require a `cloudflare_dns_record` to carry the configured `comment`, plus the configured tag when `settings.lintofu.cloudflare.plan` is Pro or higher, so the record shows it is managed by Terraform. | warn | cloudflare | ✔ |  |
 | [`ruleset-requires-managed-by-description`](./ruleset-requires-managed-by-description.md) | Require a `cloudflare_ruleset` to set its top-level `description` to the configured marker, so the ruleset shows it is managed by Terraform. | warn | cloudflare | ✔ |  |

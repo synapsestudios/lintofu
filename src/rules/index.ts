@@ -15,6 +15,7 @@ import noPinnedMinorWithAutoUpgrade from './aws/no-pinned-minor-with-auto-upgrad
 import noS3BucketInlineConfig from './aws/no-s3-bucket-inline-config.js';
 import noS3BucketObject from './aws/no-s3-bucket-object.js';
 import accessRuleCountryBlockRequiresEnterprise from './cloudflare/access-rule-country-block-requires-enterprise.js';
+import dnsRecordRequiresManagedByAnnotation from './cloudflare/dns-record-requires-managed-by-annotation.js';
 import rulesetRequiresManagedByDescription from './cloudflare/ruleset-requires-managed-by-description.js';
 import documentedOutputs from './core/documented-outputs.js';
 import documentedVariables from './core/documented-variables.js';
@@ -100,4 +101,6 @@ export const rules = {
     accessRuleCountryBlockRequiresEnterprise,
   'ruleset-requires-managed-by-description':
     rulesetRequiresManagedByDescription,
+  'dns-record-requires-managed-by-annotation':
+    dnsRecordRequiresManagedByAnnotation,
 };

@@ -3,6 +3,7 @@ import { initialize, parse } from '../../parser/index.js';
 import type { Block, Expression } from '../../parser/types.js';
 import {
   collectTraversals,
+  findLiteralMismatch,
   literalAttributeValue,
   requiredProviderEntries,
   traversalHead,
@@ -179,5 +180,30 @@ describe('literalAttributeValue', () => {
     const block = await terraformOf('resource "x" "y" {\n  mode = var.mode\n}');
     expect(literalAttributeValue(block, 'mode')).toBeUndefined();
     expect(literalAttributeValue(block, 'other')).toBeUndefined();
+  });
+});
+
+describe('findLiteralMismatch', () => {
+  it('returns the block when the attribute is missing', async () => {
+    const block = await terraformOf('resource "x" "y" {}');
+    expect(findLiteralMismatch(block, 'comment', 'ok')).toBe(block);
+  });
+
+  it('returns the attribute when its literal differs', async () => {
+    const block = await terraformOf('resource "x" "y" {\n  comment = "no"\n}');
+    expect(findLiteralMismatch(block, 'comment', 'ok')).toBe(
+      block.body.attributes[0],
+    );
+  });
+
+  it('is undefined when the literal matches or the value is dynamic', async () => {
+    const matching = await terraformOf(
+      'resource "x" "y" {\n  comment = "ok"\n}',
+    );
+    const dynamic = await terraformOf(
+      'resource "x" "y" {\n  comment = var.c\n}',
+    );
+    expect(findLiteralMismatch(matching, 'comment', 'ok')).toBeUndefined();
+    expect(findLiteralMismatch(dynamic, 'comment', 'ok')).toBeUndefined();
   });
 });

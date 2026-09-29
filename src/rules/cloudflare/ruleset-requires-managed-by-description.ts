@@ -1,9 +1,5 @@
 import type { OpenTofuRuleDefinition } from '../../types.js';
-import {
-  findAttribute,
-  literalAttributeValue,
-  literalStringValue,
-} from '../core/utils.js';
+import { findLiteralMismatch, literalAttributeValue } from '../core/utils.js';
 
 const DEFAULT_DESCRIPTION = 'Managed by terraform';
 
@@ -46,13 +42,10 @@ const rule: OpenTofuRuleDefinition<{
         if (node.kind !== 'resource') return;
         if (node.labels[0] !== 'cloudflare_ruleset') return;
         if (literalAttributeValue(node, 'kind') === 'managed') return;
-        const attr = findAttribute(node.body.attributes, 'description');
-        if (attr) {
-          const value = literalStringValue(attr.expression);
-          if (value === undefined || value === description) return;
-        }
+        const mismatch = findLiteralMismatch(node, 'description', description);
+        if (!mismatch) return;
         context.report({
-          node: attr ?? node,
+          node: mismatch,
           messageId: 'missingDescription',
           data: { description },
         });
