@@ -1,14 +1,14 @@
 # dns-record-requires-managed-by-annotation
 
-Flag a `resource "cloudflare_dns_record"` that is missing the Terraform ownership markers. The record needs a `comment` equal to the configured comment on every plan. On Pro and higher, it also needs the configured tag in `tags`.
+Flag a `resource "cloudflare_dns_record"` that lacks a Terraform ownership marker. Every record needs the configured `comment`. On Pro and higher, `tags` also needs the configured tag.
 
 ## Why
 
-The Cloudflare dashboard shows no sign of which DNS records Terraform owns, so a change made by hand gets overwritten on the next apply. The comment marks the record on every zone. The tag lets the dashboard filter records by owner. See [record attributes](https://developers.cloudflare.com/dns/manage-dns-records/reference/record-attributes/#availability) in the Cloudflare docs. Comments are available on every plan, and tags need Pro or higher.
+The Cloudflare dashboard doesn't show which DNS records Terraform owns. Someone who edits a record by hand has no warning that the next apply will revert it. The comment marks the record on any zone, and the tag lets the dashboard filter records by owner. Comments work on every plan and tags need Pro or higher, per Cloudflare's [record attributes](https://developers.cloudflare.com/dns/manage-dns-records/reference/record-attributes/#availability) page.
 
 ## Plan setting
 
-The tag check reads the account plan from ESLint shared settings, the same `settings.lintofu.cloudflare.plan` value the other Cloudflare rules use:
+The tag check reads `settings.lintofu.cloudflare.plan`, the same setting the other Cloudflare rules use:
 
 ```js
 export default [
@@ -25,11 +25,11 @@ export default [
 | `free`                          | yes             | no          |
 | `pro`, `business`, `enterprise` | yes             | yes         |
 
-A plan value outside the accepted four reports one error at the top of each linted file naming the value. The tag check is skipped for that file, and the comment check still runs. The [configuration guide](../user-guide/configuration.md#cloudflare) covers the setting in full.
+An unrecognized plan value gets one error at the top of each file. The rule then skips the tag check for that file and still checks the comment. The [configuration guide](../user-guide/configuration.md#cloudflare) covers the setting in full.
 
 ## What it flags
 
-On `plan: 'pro'`, a record with no comment and no tag reports twice:
+On `plan: 'pro'`, this record gets two reports:
 
 ```hcl
 resource "cloudflare_dns_record" "app" {    # flagged: no comment, no tag
@@ -59,18 +59,18 @@ resource "cloudflare_dns_record" "app" {
 
 On Free, the same record passes without `tags`.
 
-The comment must match exactly. The tag follows Cloudflare's rules for [tags](https://developers.cloudflare.com/dns/manage-dns-records/reference/record-attributes/#tags). The name matches without case and the value matches with case, so `Managed-By:terraform` passes and `managed-by:Terraform` does not.
+The comment must match exactly. The tag follows Cloudflare's [tag rules](https://developers.cloudflare.com/dns/manage-dns-records/reference/record-attributes/#tags), where names ignore case and values don't. `Managed-By:terraform` passes and `managed-by:Terraform` fails.
 
 ## What it does not flag
 
-- A `comment` set to a variable, local, or expression, whose value cannot be resolved at lint time.
-- A `tags` value that is not a list literal, such as `var.tags` or `concat(...)`.
-- A `tags` list with no matching literal entry that holds at least one entry the rule cannot resolve, since that entry may be the tag.
-- A `data "cloudflare_dns_record"` block, or the v4 `cloudflare_record` resource.
+- A `comment` set to a variable, local, or expression. The rule can't know its value at lint time.
+- A `tags` value that isn't a list literal, such as `var.tags` or `concat(...)`.
+- A `tags` list that contains a variable or expression, when no literal entry matches. That entry could be the tag.
+- A `data "cloudflare_dns_record"` block or the v4 `cloudflare_record` resource.
 
 ## Autofix
 
-None. The rule does not know where the team wants the arguments placed.
+None. The rule can't know where your team wants the arguments placed.
 
 ## Options
 
