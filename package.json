@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-plugin": "^7.6.2",
@@ -70,11 +70,11 @@
     "eslint-plugin-tsdoc": "^0.5.3",
     "globals": "^17.12.0",
     "lefthook": "^2.1.14",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "prettier-plugin-organize-imports": "^4.3.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.70.0",
+    "typescript-eslint": "^8.70.1",
     "vitepress": "^1.6.4",
     "vitest": "^5.0.2"
   },
