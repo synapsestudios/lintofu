@@ -32,6 +32,12 @@ describe('appliesTo rule metadata', () => {
     ).toEqual({ cloudflare: '>=5.0.0' });
   });
 
+  it('declares appliesTo on the cloudflare v5 dns record rule', () => {
+    expect(
+      rules['dns-record-requires-managed-by-annotation'].meta?.docs?.appliesTo,
+    ).toEqual({ cloudflare: '>=5.0.0' });
+  });
+
   it('keeps appliesTo entries in the adr 0005 vocabulary', () => {
     for (const [name, rule] of Object.entries(rules)) {
       const appliesTo = rule.meta?.docs?.appliesTo;

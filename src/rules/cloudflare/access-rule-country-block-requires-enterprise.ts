@@ -2,15 +2,15 @@ import type { Block } from '../../parser/types.js';
 import type { OpenTofuRuleDefinition } from '../../types.js';
 import {
   findAttribute,
+  literalAttributeValue,
   literalStringValue,
   objectItemKeyName,
 } from '../core/utils.js';
-import { entitlesCountryBlock, readCloudflarePlan } from './utils.js';
-
-function literalAttributeValue(block: Block, name: string): string | undefined {
-  const attr = findAttribute(block.body.attributes, name);
-  return attr ? literalStringValue(attr.expression) : undefined;
-}
+import {
+  entitlesCountryBlock,
+  INVALID_PLAN_MESSAGE,
+  readCloudflarePlan,
+} from './utils.js';
 
 function configurationTarget(block: Block): string | undefined {
   const attr = findAttribute(block.body.attributes, 'configuration');
@@ -44,8 +44,7 @@ const rule: OpenTofuRuleDefinition<{
     messages: {
       countryBlockRequiresEnterprise:
         'Blocking by country in a Cloudflare IP Access rule requires the Enterprise plan. The configured plan is "{{plan}}", so this resource fails at apply.',
-      invalidPlan:
-        'Unrecognized Cloudflare plan "{{value}}" in `settings.lintofu.cloudflare.plan`. Accepted values are `free`, `pro`, `business`, and `enterprise`.',
+      invalidPlan: INVALID_PLAN_MESSAGE,
     },
     schema: [],
   },

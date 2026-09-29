@@ -138,6 +138,10 @@ provider does not check entitlements at plan time. A configuration that uses a
 paywalled feature plans clean and fails at apply. The `cloudflare` rules report
 those cases during linting, once they know which plan the account is on.
 
+The same tier checks that DNS records and rulesets carry a Terraform ownership
+marker. Those checks run on any plan, except the DNS record tag check, which
+needs Pro or higher.
+
 Declare the plan in ESLint shared settings under `lintofu.cloudflare.plan`:
 
 ```js
@@ -159,17 +163,18 @@ account. Every plan-gated rule reads the same value, so you declare it once.
 
 Two behaviors follow from the setting:
 
-- **No plan set.** Rules that depend on the plan report nothing. The tier is
-  otherwise silent until you add the setting, so a `cloudflare/recommended`
-  config with no `settings.lintofu.cloudflare.plan` is a common reason for
-  "the rule never fires".
+- **No plan set.** The country block check and the DNS record tag check
+  report nothing. The other ownership checks still run.
 - **Any other value.** Each plan-gated rule reports one error at the top of
-  every linted file naming the unrecognized value, and skips its own check for
-  that file, since it cannot judge entitlement on a plan it does not know.
+  every linted file naming the unrecognized value. It then skips its
+  plan-dependent check for that file, since it can't judge entitlement on an
+  unknown plan.
 
 Rules that read the plan today:
 
 - [`access-rule-country-block-requires-enterprise`](../rules/access-rule-country-block-requires-enterprise.md)
+- [`dns-record-requires-managed-by-annotation`](../rules/dns-record-requires-managed-by-annotation.md),
+  for its tag check only
 
 ## Ignoring files
 

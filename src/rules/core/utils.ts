@@ -104,6 +104,28 @@ export function findAttribute(
   return attrs.find((a) => a.name === name);
 }
 
+export function literalAttributeValue(
+  block: Block,
+  name: string,
+): string | undefined {
+  const attr = findAttribute(block.body.attributes, name);
+  return attr ? literalStringValue(attr.expression) : undefined;
+}
+
+// Returns the node to report when the attribute is missing (the block) or is
+// a literal other than expected (the attribute). Dynamic values return
+// undefined because they cannot be judged at lint time.
+export function findLiteralMismatch(
+  block: Block,
+  name: string,
+  expected: string,
+): Block | Attribute | undefined {
+  const attr = findAttribute(block.body.attributes, name);
+  if (!attr) return block;
+  const value = literalStringValue(attr.expression);
+  return value === undefined || value === expected ? undefined : attr;
+}
+
 export function trimNumericVersion(
   version: string,
   depth: number,

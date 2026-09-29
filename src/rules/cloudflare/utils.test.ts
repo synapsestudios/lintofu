@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { entitlesCountryBlock, readCloudflarePlan } from './utils.js';
+import {
+  entitlesCountryBlock,
+  entitlesDnsRecordTags,
+  readCloudflarePlan,
+} from './utils.js';
 
 describe('readCloudflarePlan', () => {
   it('returns the plan when settings name an accepted value', () => {
@@ -59,5 +63,14 @@ describe('entitlesCountryBlock', () => {
     expect(entitlesCountryBlock('business')).toBe(false);
     expect(entitlesCountryBlock('pro')).toBe(false);
     expect(entitlesCountryBlock('free')).toBe(false);
+  });
+});
+
+describe('entitlesDnsRecordTags', () => {
+  it('is true for pro and higher', () => {
+    expect(entitlesDnsRecordTags('enterprise')).toBe(true);
+    expect(entitlesDnsRecordTags('business')).toBe(true);
+    expect(entitlesDnsRecordTags('pro')).toBe(true);
+    expect(entitlesDnsRecordTags('free')).toBe(false);
   });
 });
