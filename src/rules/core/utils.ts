@@ -104,6 +104,14 @@ export function findAttribute(
   return attrs.find((a) => a.name === name);
 }
 
+export function literalAttributeValue(
+  block: Block,
+  name: string,
+): string | undefined {
+  const attr = findAttribute(block.body.attributes, name);
+  return attr ? literalStringValue(attr.expression) : undefined;
+}
+
 export function trimNumericVersion(
   version: string,
   depth: number,

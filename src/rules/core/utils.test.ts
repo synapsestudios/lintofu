@@ -3,6 +3,7 @@ import { initialize, parse } from '../../parser/index.js';
 import type { Block, Expression } from '../../parser/types.js';
 import {
   collectTraversals,
+  literalAttributeValue,
   requiredProviderEntries,
   traversalHead,
   traversalText,
@@ -165,5 +166,18 @@ describe('collectTraversals', () => {
 
   it('renders a folded constant index as part of the traversal text', async () => {
     expect(names(await exprOf('var.commands[0]'))).toEqual(['var.commands[0]']);
+  });
+});
+
+describe('literalAttributeValue', () => {
+  it('returns the literal string of the named attribute', async () => {
+    const block = await terraformOf('resource "x" "y" {\n  mode = "block"\n}');
+    expect(literalAttributeValue(block, 'mode')).toBe('block');
+  });
+
+  it('is undefined when the attribute is missing or dynamic', async () => {
+    const block = await terraformOf('resource "x" "y" {\n  mode = var.mode\n}');
+    expect(literalAttributeValue(block, 'mode')).toBeUndefined();
+    expect(literalAttributeValue(block, 'other')).toBeUndefined();
   });
 });

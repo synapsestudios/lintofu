@@ -8,6 +8,9 @@ export const CLOUDFLARE_PLANS = [
   'enterprise',
 ] as const;
 
+export const INVALID_PLAN_MESSAGE =
+  'Unrecognized Cloudflare plan "{{value}}" in `settings.lintofu.cloudflare.plan`. Accepted values are `free`, `pro`, `business`, and `enterprise`.';
+
 export type CloudflarePlan = (typeof CLOUDFLARE_PLANS)[number];
 
 export type PlanSetting =
