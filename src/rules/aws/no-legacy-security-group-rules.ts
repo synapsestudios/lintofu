@@ -7,7 +7,7 @@ const rule: OpenTofuRuleDefinition<{
     type: 'problem',
     docs: {
       description:
-        'Flag legacy `aws_security_group_rule` resources and inline `ingress`/`egress` blocks; prefer `aws_vpc_security_group_{ingress,egress}_rule`.',
+        'Flag legacy `aws_security_group_rule` resources and inline `ingress`/`egress` blocks; prefer `aws_vpc_security_group_ingress_rule` and `aws_vpc_security_group_egress_rule`.',
       recommended: true,
       severity: 'error',
       category: 'aws',
