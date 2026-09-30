@@ -208,10 +208,17 @@ describe('groupRulesByCategory', () => {
 });
 
 describe('renderRuleIndex', () => {
-  it('opens with a generated-file header warning against hand edits', () => {
+  it('opens with frontmatter that turns off the aside so the tables get the full content width', () => {
     const markdown = renderRuleIndex([entry()]);
 
-    const firstLine = markdown.split('\n')[0] ?? '';
+    expect(markdown.startsWith('---\naside: false\n---\n')).toBe(true);
+  });
+
+  it('follows the frontmatter with a generated-file header warning against hand edits', () => {
+    const markdown = renderRuleIndex([entry()]);
+
+    const afterFrontmatter = markdown.split(/^---$/m)[2] ?? '';
+    const firstLine = afterFrontmatter.trimStart().split('\n')[0] ?? '';
     expect(firstLine.toLowerCase()).toContain('do not edit');
     expect(firstLine).toContain('npm run docs:rules');
   });
