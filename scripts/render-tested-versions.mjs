@@ -15,14 +15,14 @@ export function renderTestedVersions(readme, versions) {
     .sort()
     .map(
       (provider) =>
-        `- ${provider} provider ${versions[provider].map((v) => `v${v}`).join(', ')}`,
+        `- ${provider} provider ${versions[provider].map((v) => `\`v${v}\``).join(', ')}`,
     );
   const section = [
     START,
     '',
     '## Tested provider versions',
     '',
-    'Provider-specific rules are validated against these versions. [`provider-versions.json`](./provider-versions.json) is the source of truth; edit it and run `npm run docs:versions` to update this section. CI fails if the two drift.',
+    'Provider-specific rules are validated against these versions. This is a list located here: [`provider-versions.json`](./provider-versions.json) which defines which provider versions we test against in CI.',
     '',
     ...lines,
     '',

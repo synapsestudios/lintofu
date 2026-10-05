@@ -8,7 +8,7 @@ const readme = `before\n${START}\nstale\n${END}\nafter`;
 describe('renderTestedVersions', () => {
   it('renders a section for a single provider between the markers', () => {
     const out = renderTestedVersions(readme, { aws: ['6.42.0'] });
-    expect(out).toContain('- aws provider v6.42.0');
+    expect(out).toContain('- aws provider `v6.42.0`');
     expect(out).not.toContain('stale');
   });
 
@@ -22,11 +22,11 @@ describe('renderTestedVersions', () => {
     );
   });
 
-  it('prefixes versions with v and joins with commas in json order', () => {
+  it('prefixes versions with v, wraps them in backticks, and joins with commas in json order', () => {
     const out = renderTestedVersions(readme, {
       aws: ['6.42.0', '6.41.0', '6.40.0'],
     });
-    expect(out).toContain('- aws provider v6.42.0, v6.41.0, v6.40.0');
+    expect(out).toContain('- aws provider `v6.42.0`, `v6.41.0`, `v6.40.0`');
   });
 
   it('leaves content outside the markers untouched', () => {
