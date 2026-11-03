@@ -7,7 +7,7 @@ An ESLint plugin for linting [OpenTofu](https://opentofu.org) configurations.
 
 This is a pre-release and experimental ESLint plugin. 
 
-Published to GitHub Packages under the `@synapsestudios` scope while it's being tested. We will push it up to NPM under our organization soon.
+Published to npm as [`@synapsestudios/lintofu`](https://www.npmjs.com/package/@synapsestudios/lintofu).
 
 ## Head striaght to the docs?
 
@@ -51,7 +51,7 @@ Required versions:
 npm install --save-dev @synapsestudios/lintofu
 ```
 
-The package lives in GitHub Packages, so consumers need an `.npmrc` that maps the `@synapsestudios` scope to the registry and supplies a token with `read:packages`:
+If you installed it from GitHub Packages before, delete these lines from your `.npmrc`. While they're there, npm resolves every `@synapsestudios` package from GitHub Packages, which no longer gets new releases:
 
 ```
 @synapsestudios:registry=https://npm.pkg.github.com
