@@ -3,6 +3,9 @@ name: Go Fast Checks
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   fast-checks:
     name: Format, Lint, and Unit Tests

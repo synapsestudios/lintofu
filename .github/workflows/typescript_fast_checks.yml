@@ -3,6 +3,9 @@ name: TypeScript Fast Checks
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   fast-checks:
     name: Type Check and Unit Tests (node ${{ matrix.node }})
