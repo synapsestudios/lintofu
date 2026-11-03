@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/synapsestudios/lintofu/compare/v0.9.0...v0.9.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* install from the public npm registry ([#248](https://github.com/synapsestudios/lintofu/issues/248)) ([af7f18f](https://github.com/synapsestudios/lintofu/commit/af7f18f50e52660af27627b1439ff893cea1e105))
+
 ## [0.9.0](https://github.com/synapsestudios/lintofu/compare/v0.8.0...v0.9.0) (2026-09-29)
 
 
