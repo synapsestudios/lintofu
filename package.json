@@ -10,7 +10,7 @@
     "url": "https://github.com/synapsestudios/lintofu.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "exports": {
     ".": {
