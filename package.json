@@ -1,6 +1,6 @@
 {
   "name": "@synapsestudios/lintofu",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "ESLint plugin for linting OpenTofu configurations",
   "type": "module",
   "main": "./dist/index.js",
